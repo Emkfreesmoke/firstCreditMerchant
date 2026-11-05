@@ -1,0 +1,134 @@
+<!-- jQuery -->
+
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+<script src="/vendor/validator/validator.min.js"></script>
+<script src="/vendor/slicknav/jquery.slicknav.min.js"></script>
+<script src="/vendor/swiper/swiper-bundle.min.js"></script>
+<script src="/vendor/waypoints/jquery.waypoints.min.js"></script>
+<script src="/vendor/counterup/jquery.counterup.min.js"></script>
+<script src="/vendor/isotope/isotope.pkgd.min.js"></script>
+<script src="/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
+<script src="/vendor/smoothscroll/smoothscroll.js"></script>
+<script src="/vendor/parallaxie/parallaxie.js"></script>
+<script src="/vendor/gsap/gsap.min.js"></script>
+<script src="/vendor/gsap/ScrollTrigger.min.js"></script>
+<script src="/vendor/gsap/SplitText.min.js"></script>
+<script src="/vendor/ytplayer/ytplayer.js"></script>
+<script src="/vendor/wow/wow.min.js"></script>
+<script src="/vendor/magiccursor/magiccursor.js"></script>
+<script src="/js/cursor.js"></script>
+<script src="/js/main.js"></script>
+
+<!-- Smartsupp Live Chat -->
+
+<script type="text/javascript">
+var _smartsupp = _smartsupp || {};
+_smartsupp.key = 'c65f5e99902ebf42fd9cb916f8c8394dc7562b53';
+
+window.smartsupp || (function(d) {
+
+    var s;
+    var c;
+
+    var o = smartsupp = function() {
+        o._.push(arguments);
+    };
+
+    o._ = [];
+
+    s = d.getElementsByTagName('script')[0];
+
+    c = d.createElement('script');
+
+    c.type = 'text/javascript';
+    c.charset = 'utf-8';
+    c.async = true;
+    c.src = 'https://www.smartsuppchat.com/loader.js?';
+
+    s.parentNode.insertBefore(c, s);
+
+})(document);
+</script>
+
+<noscript>
+    Powered by
+    <a
+        href="https://www.smartsupp.com"
+        target="_blank"
+    >
+        Smartsupp
+    </a>
+</noscript>
+<script>
+  window.addEventListener("load", function () {
+    const preloader = document.querySelector(".preloader");
+
+    if (preloader) {
+      preloader.style.opacity = "0";
+      preloader.style.visibility = "hidden";
+
+      setTimeout(function () {
+        preloader.remove();
+      }, 400);
+    }
+  });
+
+  // Fallback so a missing image cannot trap the page indefinitely
+  setTimeout(function () {
+    const preloader = document.querySelector(".preloader");
+
+    if (preloader) {
+      preloader.remove();
+    }
+  }, 3000);
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const videos = document.querySelectorAll(
+    ".hero-bg-video video, .about-us-video video"
+  );
+
+  videos.forEach(function (video) {
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+
+    const startVideo = function () {
+      const playback = video.play();
+
+      if (
+        playback &&
+        typeof playback.catch === "function"
+      ) {
+        playback.catch(function (error) {
+          console.warn(
+            "Video autoplay failed:",
+            video.currentSrc ||
+              video.querySelector("source")?.src,
+            error.name,
+            error.message
+          );
+        });
+      }
+    };
+
+    if (video.readyState >= 2) {
+      startVideo();
+    } else {
+      video.addEventListener(
+        "canplay",
+        startVideo,
+        {
+          once: true
+        }
+      );
+    }
+  });
+});
+</script>
+
+</body>
+</html>

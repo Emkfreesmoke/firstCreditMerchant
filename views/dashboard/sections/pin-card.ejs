@@ -1,0 +1,278 @@
+<div
+  x-data="pinInterface()"
+  x-init="init()"
+  class="flex items-center justify-center w-full"
+>
+  <!-- Card -->
+  <div
+    class="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 pin-card"
+  >
+    <!-- =====================================
+             HEADER
+        ====================================== -->
+    <div class="relative">
+      <!-- Background -->
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700 opacity-95"
+      ></div>
+
+      <!-- Decorative Circles -->
+      <div class="absolute inset-0 overflow-hidden">
+        <div
+          class="absolute -top-20 -left-20 w-64 h-64 rounded-full bg-white opacity-10 animate-pulse-slow"
+        ></div>
+
+        <div
+          class="absolute top-10 right-10 w-20 h-20 rounded-full bg-white opacity-10 animate-pulse-slow delay-100"
+        ></div>
+
+        <div
+          class="absolute bottom-0 right-0 w-40 h-40 rounded-full bg-white opacity-10 animate-pulse-slow delay-200"
+        ></div>
+
+        <div
+          class="absolute bottom-10 left-10 w-16 h-16 rounded-full bg-white opacity-10 animate-pulse-slow delay-300"
+        ></div>
+      </div>
+
+      <!-- Header Content -->
+      <div class="relative py-10 px-6 flex flex-col items-center">
+        <div
+          class="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center mb-6 shadow-lg"
+        >
+          <i data-lucide="fingerprint" class="h-10 w-10 text-white"></i>
+        </div>
+
+        <h1 class="text-2xl font-bold text-white text-center mb-1">
+          Verify Your Identity
+        </h1>
+
+        <p class="text-white/90 text-center max-w-xs">
+          Please enter your secure 4-digit PIN to continue
+        </p>
+      </div>
+    </div>
+
+    <!-- =====================================
+             ACCOUNT DISPLAY
+        ====================================== -->
+    <div class="flex flex-col items-center pt-8 pb-4 relative">
+      <div class="relative">
+        <!-- Neutral Avatar -->
+        <div
+          class="w-24 h-24 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-100 flex items-center justify-center"
+        >
+          <i data-lucide="user" class="h-10 w-10 text-gray-400"></i>
+        </div>
+
+        <!-- Security Badge -->
+        <div
+          class="absolute -right-2 -bottom-1 bg-primary-100 text-primary-700 p-1.5 rounded-full border-2 border-white shadow-md"
+        >
+          <i data-lucide="shield" class="h-5 w-5"></i>
+        </div>
+      </div>
+
+      <h2 class="mt-4 text-xl font-bold text-gray-800">Account Holder</h2>
+
+      <!-- Success Indicator -->
+      <div
+        x-show="successMessage"
+        x-cloak
+        class="mt-4 flex items-center justify-center"
+      >
+        <div
+          class="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center text-green-500 shadow-lg animate-success"
+        >
+          <i data-lucide="check" class="h-10 w-10"></i>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div
+        x-show="errorMessage"
+        x-cloak
+        x-transition
+        class="mt-4 text-center text-red-600 text-sm font-medium max-w-xs"
+      >
+        <span x-text="errorMessage"></span>
+      </div>
+
+      <!-- Success -->
+      <div
+        x-show="successMessage"
+        x-cloak
+        x-transition
+        class="mt-4 text-center text-green-600 text-sm font-medium max-w-xs"
+      >
+        <span x-text="successMessage"></span>
+      </div>
+    </div>
+
+    <!-- =====================================
+             MOBILE PIN UI
+        ====================================== -->
+    <div class="px-6 pb-6 w-full md:hidden">
+      <!-- PIN Dots -->
+      <div class="pin-display flex justify-center space-x-4 mb-6">
+        <template x-for="index in maxLength" :key="index">
+          <div
+            class="w-5 h-5 rounded-full transition-all duration-300"
+            :class="
+                            index <= pin.length
+                                ? 'bg-primary-600 scale-110 shadow-md'
+                                : 'bg-gray-200'
+                        "
+          ></div>
+        </template>
+      </div>
+
+      <p class="text-xs text-gray-500 text-center mb-6">
+        Enter the 4-digit PIN created during registration
+      </p>
+
+      <!-- Keypad -->
+      <div class="keypad">
+        <template x-for="n in 9" :key="n">
+          <button
+            type="button"
+            @click="addDigit(n)"
+            :disabled="
+                            isProcessing ||
+                            pin.length >= maxLength
+                        "
+            class="key pin-number-key"
+          >
+            <span x-text="n"></span>
+          </button>
+        </template>
+
+        <!-- Clear -->
+        <button
+          type="button"
+          @click="clearPin()"
+          :disabled="
+                        isProcessing ||
+                        pin.length === 0
+                    "
+          class="key pin-clear-key"
+        >
+          <i data-lucide="rotate-ccw" class="h-6 w-6"></i>
+        </button>
+
+        <!-- Zero -->
+        <button
+          type="button"
+          @click="addDigit(0)"
+          :disabled="
+                        isProcessing ||
+                        pin.length >= maxLength
+                    "
+          class="key pin-number-key"
+        >
+          0
+        </button>
+
+        <!-- Backspace -->
+        <button
+          type="button"
+          @click="removeDigit()"
+          :disabled="
+                        isProcessing ||
+                        pin.length === 0
+                    "
+          class="key pin-backspace-key"
+        >
+          <i data-lucide="delete" class="h-6 w-6"></i>
+        </button>
+      </div>
+
+      <!-- Verify -->
+      <button
+        type="button"
+        @click="previewVerification()"
+        :disabled="
+                    isProcessing ||
+                    pin.length !== maxLength
+                "
+        class="w-full mt-8 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-xl flex items-center justify-center transition-all duration-300 shadow-md"
+        :class="{
+                    'opacity-50 cursor-not-allowed':
+                        isProcessing ||
+                        pin.length !== maxLength
+                }"
+      >
+        <i data-lucide="shield-check" class="h-5 w-5 mr-2"></i>
+
+        Verify PIN
+      </button>
+    </div>
+
+    <!-- =====================================
+             DESKTOP PIN UI
+        ====================================== -->
+    <div class="px-6 pb-6 w-full hidden md:block">
+      <div class="mb-6">
+        <label
+          for="desktop-pin"
+          class="block text-sm font-medium text-gray-700 mb-2"
+        >
+          Enter your 4-digit verification PIN
+        </label>
+
+        <input
+          id="desktop-pin"
+          type="password"
+          inputmode="numeric"
+          maxlength="4"
+          x-model="pin"
+          @input="
+                        pin =
+                            pin.replace(/\D/g, '')
+                               .slice(0, maxLength)
+                    "
+          :disabled="isProcessing"
+          class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-center text-xl tracking-widest"
+          placeholder="••••"
+          autocomplete="off"
+        />
+      </div>
+
+      <button
+        type="button"
+        @click="previewVerification()"
+        :disabled="
+                    isProcessing ||
+                    pin.length !== maxLength
+                "
+        class="w-full py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg flex items-center justify-center transition-all duration-300 shadow-md"
+        :class="{
+                    'opacity-50 cursor-not-allowed':
+                        isProcessing ||
+                        pin.length !== maxLength
+                }"
+      >
+        <i data-lucide="shield-check" class="h-5 w-5 mr-2"></i>
+
+        Verify PIN
+      </button>
+    </div>
+
+    <!-- =====================================
+             SECURITY INFO
+        ====================================== -->
+    <div class="px-6 pb-8 pt-4">
+      <div class="flex items-center justify-center p-3 bg-gray-50 rounded-xl">
+        <i
+          data-lucide="lock"
+          class="h-4 w-4 text-primary-500 mr-2 flex-shrink-0"
+        ></i>
+
+        <p class="text-xs text-gray-600">
+          Your security is our priority. PIN verification protects your account
+          from unauthorized access.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

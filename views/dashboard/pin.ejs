@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title><%= title || "PIN Verification - First Credit Merchant" %></title>
+
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="https://i.postimg.cc/6qdzfgQL/favicon.png"
+    />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Dashboard / PIN Tailwind Theme -->
+    <script src="/js/dashboard-config.js"></script>
+
+    <!-- PIN Styles -->
+    <link rel="stylesheet" href="/css/pin.css" />
+
+    <!-- Alpine -->
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
+
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body class="font-sans bg-gray-50 text-gray-900">
+    <!-- Loader -->
+    <%- include("partials/pin-loader") %>
+
+    <div class="min-h-screen flex flex-col">
+      <main class="flex-grow flex items-center justify-center px-4 py-12">
+        <div class="w-full max-w-md"><%- include("sections/pin-card") %></div>
+      </main>
+
+      <!-- Footer -->
+      <footer class="py-4 bg-white border-t border-gray-200">
+        <div class="container mx-auto px-4 text-center">
+          <p class="text-sm text-gray-600">
+            © 2026 First Credit Merchant. All rights reserved.
+          </p>
+
+          <div class="mt-2 flex justify-center space-x-4">
+            <a
+              href="/privacy"
+              class="text-xs text-gray-500 hover:text-primary-600"
+            >
+              Privacy Policy
+            </a>
+
+            <a
+              href="/terms"
+              class="text-xs text-gray-500 hover:text-primary-600"
+            >
+              Terms of Service
+            </a>
+
+            <a
+              href="/contact"
+              class="text-xs text-gray-500 hover:text-primary-600"
+            >
+              Contact Support
+            </a>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script src="/js/pin.js"></script>
+  </body>
+</html>

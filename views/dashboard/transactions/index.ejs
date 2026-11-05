@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head") %>
+  </head>
+
+  <body class="bg-gray-50">
+    <%- include("partials/loader") %>
+
+    <div
+      class="flex h-screen overflow-hidden"
+      x-data="{
+            mobileMenuOpen: false,
+            transactionFilter: 'all'
+        }"
+    >
+      <%- include("partials/sidebar") %>
+
+      <div class="flex flex-col flex-1 overflow-hidden">
+        <%- include("partials/topbar") %> <%- include("partials/mobile-menu") %>
+        <%- include("partials/mobile-nav") %>
+
+        <main class="flex-1 overflow-y-auto pb-24 md:pb-8">
+          <div class="py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+              <!-- Page Header -->
+              <div
+                class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+              >
+                <div>
+                  <h1 class="text-2xl font-bold text-gray-900">Transactions</h1>
+
+                  <p class="text-sm text-gray-500 mt-1">
+                    Review your recent account activity.
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <button
+                    type="button"
+                    class="inline-flex items-center px-4 py-2 border border-gray-200 rounded-lg bg-white text-sm font-medium text-gray-600"
+                  >
+                    <i data-lucide="download" class="h-4 w-4 mr-2"></i>
+
+                    Export
+                  </button>
+                </div>
+              </div>
+
+              <!-- Summary -->
+              <div
+                class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6"
+              >
+                <div
+                  class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm"
+                >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-xs text-gray-500">Total Transactions</p>
+
+                      <p class="text-xl font-bold text-gray-900 mt-2">0</p>
+                    </div>
+
+                    <div
+                      class="h-11 w-11 rounded-full bg-primary-100 flex items-center justify-center"
+                    >
+                      <i
+                        data-lucide="activity"
+                        class="h-5 w-5 text-gray-700"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm"
+                >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-xs text-gray-500">Incoming</p>
+
+                      <p class="text-xl font-bold text-green-700 mt-2">$0.00</p>
+                    </div>
+
+                    <div
+                      class="h-11 w-11 rounded-full bg-green-100 flex items-center justify-center"
+                    >
+                      <i
+                        data-lucide="arrow-down-left"
+                        class="h-5 w-5 text-green-600"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm"
+                >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-xs text-gray-500">Outgoing</p>
+
+                      <p class="text-xl font-bold text-red-700 mt-2">$0.00</p>
+                    </div>
+
+                    <div
+                      class="h-11 w-11 rounded-full bg-red-100 flex items-center justify-center"
+                    >
+                      <i
+                        data-lucide="arrow-up-right"
+                        class="h-5 w-5 text-red-600"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  class="bg-white border border-gray-100 rounded-xl p-5 shadow-sm"
+                >
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <p class="text-xs text-gray-500">Pending</p>
+
+                      <p class="text-xl font-bold text-yellow-700 mt-2">
+                        $0.00
+                      </p>
+                    </div>
+
+                    <div
+                      class="h-11 w-11 rounded-full bg-yellow-100 flex items-center justify-center"
+                    >
+                      <i
+                        data-lucide="clock"
+                        class="h-5 w-5 text-yellow-600"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Filters -->
+              <div
+                class="bg-white border border-gray-100 rounded-xl p-4 shadow-sm mb-6"
+              >
+                <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+                  <div class="relative flex-1">
+                    <i
+                      data-lucide="search"
+                      class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400"
+                    ></i>
+
+                    <input
+                      type="search"
+                      placeholder="Search by reference or description..."
+                      class="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg bg-gray-50 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+
+                  <div class="flex flex-wrap gap-2">
+                    <button
+                      type="button"
+                      @click="transactionFilter = 'all'"
+                      :class="
+                                            transactionFilter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                      class="px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      All
+                    </button>
+
+                    <button
+                      type="button"
+                      @click="transactionFilter = 'incoming'"
+                      :class="
+                                            transactionFilter === 'incoming'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                      class="px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      Incoming
+                    </button>
+
+                    <button
+                      type="button"
+                      @click="transactionFilter = 'outgoing'"
+                      :class="
+                                            transactionFilter === 'outgoing'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                      class="px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      Outgoing
+                    </button>
+
+                    <button
+                      type="button"
+                      @click="transactionFilter = 'pending'"
+                      :class="
+                                            transactionFilter === 'pending'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                      class="px-4 py-2 rounded-lg text-sm font-medium"
+                    >
+                      Pending
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Transaction History -->
+              <div
+                class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden"
+              >
+                <div class="px-6 py-4 border-b border-gray-200">
+                  <h2 class="text-lg font-semibold text-gray-900">
+                    Transaction History
+                  </h2>
+                </div>
+
+                <div class="overflow-x-auto">
+                  <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                      <tr>
+                        <th class="dashboard-table-heading">Transaction</th>
+
+                        <th class="dashboard-table-heading">Reference</th>
+
+                        <th class="dashboard-table-heading">Type</th>
+
+                        <th class="dashboard-table-heading">Amount</th>
+
+                        <th class="dashboard-table-heading">Status</th>
+
+                        <th class="dashboard-table-heading">Date</th>
+
+                        <th class="dashboard-table-heading">Action</th>
+                      </tr>
+                    </thead>
+
+                    <tbody class="bg-white">
+                      <tr>
+                        <td colspan="7" class="px-6 py-14 text-center">
+                          <div
+                            class="h-12 w-12 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-3"
+                          >
+                            <i
+                              data-lucide="activity"
+                              class="h-6 w-6 text-gray-400"
+                            ></i>
+                          </div>
+
+                          <p class="text-sm font-medium text-gray-700">
+                            No transactions yet
+                          </p>
+
+                          <p class="text-xs text-gray-500 mt-1">
+                            Customer transaction activity will appear here.
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <%- include("partials/footer") %>
+      </div>
+    </div>
+
+    <%- include("partials/scripts") %>
+  </body>
+</html>

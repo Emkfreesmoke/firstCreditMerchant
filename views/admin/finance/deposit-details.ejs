@@ -1,0 +1,670 @@
+<%
+  const record =
+    typeof deposit !== "undefined"
+      ? deposit
+      : null;
+
+  const recordCustomer =
+    typeof customer !== "undefined"
+      ? customer
+      : null;
+
+  const recordAccount =
+    typeof account !== "undefined"
+      ? account
+      : null;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+  <div
+    x-data="{ mobileMenuOpen: false }"
+    class="admin-app-shell
+           flex h-screen
+           overflow-hidden"
+  >
+
+    <%- include("../partials/sidebar") %>
+
+
+    <div
+      class="admin-main-column
+             flex flex-col
+             flex-1
+             overflow-hidden"
+    >
+
+      <%- include("../partials/topbar") %>
+
+      <%- include("../partials/mobile-menu") %>
+
+
+      <main class="admin-main-content">
+
+        <div class="py-6">
+
+          <div
+            class="max-w-6xl
+                   mx-auto
+                   px-4
+                   sm:px-6
+                   lg:px-8"
+          >
+
+            <a
+              href="/admin/deposits"
+              class="inline-flex
+                     items-center
+                     text-sm
+                     text-gray-500
+                     hover:text-gray-700
+                     mb-6"
+            >
+              <i
+                data-lucide="arrow-left"
+                class="h-4 w-4 mr-2"
+              ></i>
+
+              Back to Deposits
+            </a>
+
+
+            <% if (
+              typeof approved !== "undefined" &&
+              approved
+            ) { %>
+
+              <div
+                class="mb-6
+                       px-4 py-3
+                       bg-green-50
+                       border
+                       border-green-200
+                       rounded-lg"
+              >
+
+                <p class="text-sm text-green-800">
+                  Deposit approved and customer balance credited.
+                </p>
+
+              </div>
+
+            <% } %>
+
+
+            <% if (
+              typeof rejected !== "undefined" &&
+              rejected
+            ) { %>
+
+              <div
+                class="mb-6
+                       px-4 py-3
+                       bg-red-50
+                       border
+                       border-red-200
+                       rounded-lg"
+              >
+
+                <p class="text-sm text-red-800">
+                  Deposit rejected.
+                </p>
+
+              </div>
+
+            <% } %>
+
+
+            <% if (!record) { %>
+
+              <div class="admin-panel">
+
+                <div
+                  class="py-16
+                         text-center"
+                >
+
+                  <p class="text-gray-500">
+                    Deposit unavailable
+                  </p>
+
+                </div>
+
+              </div>
+
+
+            <% } else { %>
+
+              <!-- Header -->
+
+              <div
+                class="flex flex-col
+                       sm:flex-row
+                       sm:items-center
+                       sm:justify-between
+                       gap-4 mb-6"
+              >
+
+                <div>
+
+                  <h1
+                    class="text-2xl
+                           font-bold
+                           text-gray-900"
+                  >
+                    Deposit Review
+                  </h1>
+
+                  <p
+                    class="text-sm
+                           text-gray-500
+                           mt-1"
+                  >
+                    <%= record.reference %>
+                  </p>
+
+                </div>
+
+
+                <span
+                  class="admin-badge
+                         <%= record.status === "Completed"
+                           ? "bg-green-100 text-green-700"
+                           : record.status === "Rejected"
+                           ? "bg-red-100 text-red-700"
+                           : "bg-yellow-100 text-yellow-700"
+                         %>"
+                >
+                  <%= record.status %>
+                </span>
+
+              </div>
+
+
+              <div
+                class="grid
+                       grid-cols-1
+                       lg:grid-cols-3
+                       gap-6"
+              >
+
+                <!-- Deposit Details -->
+
+                <div
+                  class="admin-panel
+                         lg:col-span-2"
+                >
+
+                  <div class="admin-panel-header">
+
+                    <h3>
+                      Deposit Information
+                    </h3>
+
+                  </div>
+
+
+                  <div
+                    class="p-6
+                           grid
+                           grid-cols-1
+                           sm:grid-cols-2
+                           gap-6"
+                  >
+
+                    <div class="admin-detail">
+
+                      <span>
+                        Amount
+                      </span>
+
+                      <strong>
+                        <%= record.currency %>
+
+                        <%= Number(
+                          record.amount
+                        ).toLocaleString(
+                          undefined,
+                          {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          }
+                        ) %>
+                      </strong>
+
+                    </div>
+
+
+                    <div class="admin-detail">
+
+                      <span>
+                        Method
+                      </span>
+
+                      <strong>
+                        <%= record.method %>
+                      </strong>
+
+                    </div>
+
+
+                    <% if (
+                      record.paymentReference
+                    ) { %>
+
+                      <div class="admin-detail">
+
+                        <span>
+                          Payment Reference
+                        </span>
+
+                        <strong>
+                          <%= record.paymentReference %>
+                        </strong>
+
+                      </div>
+
+                    <% } %>
+
+
+                    <% if (
+                      record.cryptoAsset
+                    ) { %>
+
+                      <div class="admin-detail">
+
+                        <span>
+                          Cryptocurrency
+                        </span>
+
+                        <strong>
+                          <%= record.cryptoAsset %>
+                        </strong>
+
+                      </div>
+
+
+                      <div class="admin-detail">
+
+                        <span>
+                          Network
+                        </span>
+
+                        <strong>
+                          <%= record.cryptoNetwork || "" %>
+                        </strong>
+
+                      </div>
+
+
+                      <div class="admin-detail">
+
+                        <span>
+                          Crypto Amount
+                        </span>
+
+                        <strong>
+                          <%= record.cryptoAmount || "" %>
+                        </strong>
+
+                      </div>
+
+                    <% } %>
+
+
+                    <% if (
+                      record.transactionHash
+                    ) { %>
+
+                      <div
+                        class="admin-detail
+                               sm:col-span-2"
+                      >
+
+                        <span>
+                          Transaction Hash
+                        </span>
+
+                        <strong
+                          class="break-all"
+                        >
+                          <%= record.transactionHash %>
+                        </strong>
+
+                      </div>
+
+                    <% } %>
+
+
+                    <% if (
+                      record.description
+                    ) { %>
+
+                      <div
+                        class="admin-detail
+                               sm:col-span-2"
+                      >
+
+                        <span>
+                          Customer Note
+                        </span>
+
+                        <strong>
+                          <%= record.description %>
+                        </strong>
+
+                      </div>
+
+                    <% } %>
+
+
+                    <div class="admin-detail">
+
+                      <span>
+                        Submitted
+                      </span>
+
+                      <strong>
+                        <%= record.createdAt
+                          ? new Date(
+                              record.createdAt
+                            ).toLocaleString()
+                          : ""
+                        %>
+                      </strong>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+
+                <!-- Customer / Review -->
+
+                <div class="space-y-6">
+
+                  <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                      <h3>
+                        Customer
+                      </h3>
+
+                    </div>
+
+
+                    <div class="p-6">
+
+                      <% if (recordCustomer) { %>
+
+                        <p
+                          class="text-sm
+                                 font-semibold
+                                 text-gray-900"
+                        >
+                          <%= [
+                            recordCustomer.firstName,
+                            recordCustomer.middleName,
+                            recordCustomer.lastName
+                          ]
+                            .filter(Boolean)
+                            .join(" ")
+                          %>
+                        </p>
+
+
+                        <% if (
+                          recordCustomer.email
+                        ) { %>
+
+                          <p
+                            class="text-sm
+                                   text-gray-500
+                                   mt-1"
+                          >
+                            <%= recordCustomer.email %>
+                          </p>
+
+                        <% } %>
+
+
+                        <% if (
+                          recordAccount &&
+                          recordAccount.accountNumber
+                        ) { %>
+
+                          <div
+                            class="mt-4
+                                   pt-4
+                                   border-t
+                                   border-gray-100"
+                          >
+
+                            <p
+                              class="text-xs
+                                     text-gray-400"
+                            >
+                              Account Number
+                            </p>
+
+                            <p
+                              class="text-sm
+                                     font-semibold
+                                     text-gray-800
+                                     mt-1"
+                            >
+                              <%= recordAccount.accountNumber %>
+                            </p>
+
+                          </div>
+
+                        <% } %>
+
+                      <% } %>
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- Review -->
+
+                  <div class="admin-panel">
+
+                    <div class="admin-panel-header">
+
+                      <h3>
+                        Review Deposit
+                      </h3>
+
+                    </div>
+
+
+                    <div class="p-6">
+
+                      <% if (
+                        record.status ===
+                        "Pending"
+                      ) { %>
+
+                        <form
+                          action="/admin/deposits/<%= record._id %>/approve"
+                          method="POST"
+                        >
+
+                          <label class="admin-label">
+                            Admin Note
+                          </label>
+
+                          <textarea
+                            name="adminNote"
+                            class="admin-input"
+                            placeholder="Optional review note"
+                          ></textarea>
+
+
+                          <button
+                            type="submit"
+                            class="admin-primary-button
+                                   w-full mt-4"
+                          >
+                            <i
+                              data-lucide="circle-check"
+                              class="h-4 w-4"
+                            ></i>
+
+                            Approve Deposit
+                          </button>
+
+                        </form>
+
+
+                        <form
+                          action="/admin/deposits/<%= record._id %>/reject"
+                          method="POST"
+                          class="mt-3"
+                        >
+
+                          <label class="admin-label">
+                            Rejection Note
+                          </label>
+
+                          <textarea
+                            name="adminNote"
+                            class="admin-input"
+                            placeholder="Reason for rejection"
+                          ></textarea>
+
+
+                          <button
+                            type="submit"
+                            class="w-full
+                                   mt-4
+                                   inline-flex
+                                   items-center
+                                   justify-center
+                                   px-4 py-2.5
+                                   bg-red-600
+                                   hover:bg-red-700
+                                   text-white
+                                   text-sm
+                                   font-semibold
+                                   rounded-lg"
+                          >
+                            <i
+                              data-lucide="x-circle"
+                              class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Reject Deposit
+                          </button>
+
+                        </form>
+
+
+                      <% } else if (
+                        record.status ===
+                        "Completed"
+                      ) { %>
+
+                        <div
+                          class="p-4
+                                 bg-green-50
+                                 border
+                                 border-green-200
+                                 rounded-lg"
+                        >
+
+                          <p
+                            class="text-sm
+                                   font-semibold
+                                   text-green-800"
+                          >
+                            Deposit Completed
+                          </p>
+
+                          <p
+                            class="text-xs
+                                   text-green-700
+                                   mt-1"
+                          >
+                            The customer balance has
+                            been credited.
+                          </p>
+
+                        </div>
+
+
+                      <% } else { %>
+
+                        <div
+                          class="p-4
+                                 bg-red-50
+                                 border
+                                 border-red-200
+                                 rounded-lg"
+                        >
+
+                          <p
+                            class="text-sm
+                                   font-semibold
+                                   text-red-800"
+                          >
+                            Deposit Rejected
+                          </p>
+
+                          <% if (
+                            record.adminNote
+                          ) { %>
+
+                            <p
+                              class="text-xs
+                                     text-red-700
+                                     mt-2"
+                            >
+                              <%= record.adminNote %>
+                            </p>
+
+                          <% } %>
+
+                        </div>
+
+                      <% } %>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            <% } %>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

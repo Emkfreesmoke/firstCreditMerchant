@@ -1,0 +1,606 @@
+<%
+    const editCustomer =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : editCustomer;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <a
+                            href="/dashboard/profile"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Profile
+                        </a>
+
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Edit Profile
+                            </h1>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Update your personal and contact information.
+                            </p>
+
+                        </div>
+
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-red-50 border
+                                       border-red-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3 mt-0.5"
+                                    ></i>
+
+                                    <p class="text-sm text-red-800">
+                                        <%= error %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!editCustomer) { %>
+
+                            <section class="dashboard-card">
+
+                                <div class="py-16 px-6 text-center">
+
+                                    <i
+                                        data-lucide="user"
+                                        class="h-10 w-10
+                                               mx-auto
+                                               text-gray-400
+                                               mb-4"
+                                    ></i>
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Profile information unavailable
+                                    </h2>
+
+                                </div>
+
+                            </section>
+
+                        <% } else { %>
+
+                            <section class="dashboard-card">
+
+                                <div class="dashboard-card-header">
+
+                                    <div>
+
+                                        <h2
+                                            class="text-lg
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Profile Information
+                                        </h2>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Your account number, account
+                                            type, currency and account status
+                                            cannot be changed here.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <form
+                                    action="/dashboard/profile/edit"
+                                    method="POST"
+                                    class="p-6"
+                                >
+
+                                    <!-- Personal -->
+
+                                    <h3
+                                        class="text-sm
+                                               font-semibold
+                                               text-gray-900
+                                               mb-4"
+                                    >
+                                        Personal Information
+                                    </h3>
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-5"
+                                    >
+
+                                        <div>
+
+                                            <label
+                                                for="firstName"
+                                                class="dashboard-form-label"
+                                            >
+                                                First Name
+                                            </label>
+
+                                            <input
+                                                id="firstName"
+                                                type="text"
+                                                name="firstName"
+                                                value="<%= oldForm &&
+                                                    oldForm.firstName
+                                                        ? oldForm.firstName
+                                                        : ""
+                                                %>"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label
+                                                for="middleName"
+                                                class="dashboard-form-label"
+                                            >
+                                                Middle Name
+                                            </label>
+
+                                            <input
+                                                id="middleName"
+                                                type="text"
+                                                name="middleName"
+                                                value="<%= oldForm &&
+                                                    oldForm.middleName
+                                                        ? oldForm.middleName
+                                                        : ""
+                                                %>"
+                                                class="dashboard-form-input"
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label
+                                                for="lastName"
+                                                class="dashboard-form-label"
+                                            >
+                                                Last Name
+                                            </label>
+
+                                            <input
+                                                id="lastName"
+                                                type="text"
+                                                name="lastName"
+                                                value="<%= oldForm &&
+                                                    oldForm.lastName
+                                                        ? oldForm.lastName
+                                                        : ""
+                                                %>"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label
+                                                for="username"
+                                                class="dashboard-form-label"
+                                            >
+                                                Username
+                                            </label>
+
+                                            <input
+                                                id="username"
+                                                type="text"
+                                                name="username"
+                                                value="<%= oldForm &&
+                                                    oldForm.username
+                                                        ? oldForm.username
+                                                        : ""
+                                                %>"
+                                                class="dashboard-form-input"
+                                                autocomplete="username"
+                                                required
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Contact -->
+
+                                    <div
+                                        class="border-t
+                                               border-gray-100
+                                               pt-6 mt-7"
+                                    >
+
+                                        <h3
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900
+                                                   mb-4"
+                                        >
+                                            Contact Information
+                                        </h3>
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+                                            <div>
+
+                                                <label
+                                                    for="email"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Email Address
+                                                </label>
+
+                                                <input
+                                                    id="email"
+                                                    type="email"
+                                                    name="email"
+                                                    value="<%= oldForm &&
+                                                        oldForm.email
+                                                            ? oldForm.email
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="email"
+                                                    required
+                                                >
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Changing your email
+                                                    address will require the
+                                                    new address to be verified.
+                                                </p>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="phone"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Phone Number
+                                                </label>
+
+                                                <input
+                                                    id="phone"
+                                                    type="tel"
+                                                    name="phone"
+                                                    value="<%= oldForm &&
+                                                        oldForm.phone
+                                                            ? oldForm.phone
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="tel"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="country"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Country
+                                                </label>
+
+                                                <input
+                                                    id="country"
+                                                    type="text"
+                                                    name="country"
+                                                    value="<%= oldForm &&
+                                                        oldForm.country
+                                                            ? oldForm.country
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="country-name"
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Address -->
+
+                                    <div
+                                        class="border-t
+                                               border-gray-100
+                                               pt-6 mt-7"
+                                    >
+
+                                        <h3
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900
+                                                   mb-4"
+                                        >
+                                            Address Information
+                                        </h3>
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+                                            <div class="md:col-span-2">
+
+                                                <label
+                                                    for="address"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Address
+                                                </label>
+
+                                                <input
+                                                    id="address"
+                                                    type="text"
+                                                    name="address"
+                                                    value="<%= oldForm &&
+                                                        oldForm.address
+                                                            ? oldForm.address
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="street-address"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="city"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    City
+                                                </label>
+
+                                                <input
+                                                    id="city"
+                                                    type="text"
+                                                    name="city"
+                                                    value="<%= oldForm &&
+                                                        oldForm.city
+                                                            ? oldForm.city
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="address-level2"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="region"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    State / Region
+                                                </label>
+
+                                                <input
+                                                    id="region"
+                                                    type="text"
+                                                    name="region"
+                                                    value="<%= oldForm &&
+                                                        oldForm.region
+                                                            ? oldForm.region
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="address-level1"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="postalCode"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Postal Code
+                                                </label>
+
+                                                <input
+                                                    id="postalCode"
+                                                    type="text"
+                                                    name="postalCode"
+                                                    value="<%= oldForm &&
+                                                        oldForm.postalCode
+                                                            ? oldForm.postalCode
+                                                            : ""
+                                                    %>"
+                                                    class="dashboard-form-input"
+                                                    autocomplete="postal-code"
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="flex flex-col-reverse
+                                               sm:flex-row
+                                               sm:justify-end
+                                               gap-3 mt-7"
+                                    >
+
+                                        <a
+                                            href="/dashboard/profile"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-5 py-3
+                                                   border
+                                                   border-gray-200
+                                                   rounded-lg
+                                                   bg-white
+                                                   text-gray-700"
+                                        >
+                                            Cancel
+                                        </a>
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   hover:bg-primary-700
+                                                   text-white
+                                                   font-medium
+                                                   rounded-lg"
+                                        >
+
+                                            <i
+                                                data-lucide="save"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Save Changes
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </section>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

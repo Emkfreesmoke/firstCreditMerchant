@@ -1,0 +1,1250 @@
+<%
+    const loanRecord =
+        typeof loan !== "undefined"
+            ? loan
+            : null;
+
+    const loanCustomer =
+        typeof customer !== "undefined" &&
+        customer
+            ? customer
+            : (
+                loanRecord &&
+                loanRecord.customer
+                    ? loanRecord.customer
+                    : null
+            );
+
+    const loanAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/loans"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Loans
+
+                        </a>
+
+
+                        <!-- Messages -->
+
+                        <% if (
+                            typeof created !== "undefined" &&
+                            created
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Loan created successfully.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof approved !== "undefined" &&
+                            approved
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Loan approved successfully.
+                                The loan has not been funded yet.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof rejected !== "undefined" &&
+                            rejected
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-lg
+                                       text-sm
+                                       text-red-800"
+                            >
+                                Loan rejected.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof activated !== "undefined" &&
+                            activated
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Loan activated and customer
+                                balance funded.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!loanRecord) { %>
+
+                            <section class="admin-panel">
+
+                                <div
+                                    class="py-16
+                                           text-center"
+                                >
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Loan unavailable
+                                    </h1>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- =================================
+                                 HEADER
+                            ================================== -->
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        Loan Details
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        <%= loanRecord.reference || "" %>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="admin-badge
+                                           <%= loanRecord.status === "Active"
+                                               ? "bg-green-50 text-green-700"
+                                               : loanRecord.status === "Approved"
+                                               ? "bg-blue-50 text-blue-700"
+                                               : loanRecord.status === "Rejected"
+                                               ? "bg-red-50 text-red-700"
+                                               : loanRecord.status === "Completed"
+                                               ? "bg-green-50 text-green-700"
+                                               : "bg-yellow-50 text-yellow-700"
+                                           %>"
+                                >
+                                    <%= loanRecord.status || "" %>
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       lg:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- =================================
+                                     LOAN INFORMATION
+                                ================================== -->
+
+                                <section
+                                    class="admin-panel
+                                           lg:col-span-2"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <div>
+
+                                            <h3>
+                                                Loan Information
+                                            </h3>
+
+                                            <p
+                                                class="text-xs
+                                                       text-gray-500
+                                                       mt-1"
+                                            >
+                                                Review the customer request
+                                                and approved loan terms.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <!-- Type -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Loan Type
+                                            </span>
+
+                                            <strong>
+                                                <%= loanRecord.type || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Requested -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Requested Amount
+                                            </span>
+
+                                            <strong>
+
+                                                <%= loanRecord.currency || "" %>
+
+                                                <%= Number(
+                                                    loanRecord.requestedAmount ||
+                                                    0
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Approved -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Approved Amount
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    loanRecord.approvedAmount !==
+                                                        undefined &&
+                                                    loanRecord.approvedAmount !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= loanRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        loanRecord.approvedAmount
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                <% } else { %>
+
+                                                    Not approved
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Outstanding -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Outstanding Amount
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    loanRecord.outstandingAmount !==
+                                                        undefined &&
+                                                    loanRecord.outstandingAmount !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= loanRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        loanRecord.outstandingAmount
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                <% } else { %>
+
+                                                    Not set
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Monthly -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Monthly Payment
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    loanRecord.monthlyPayment !==
+                                                        undefined &&
+                                                    loanRecord.monthlyPayment !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= loanRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        loanRecord.monthlyPayment
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                <% } else { %>
+
+                                                    Not set
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Interest -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Interest Rate
+                                            </span>
+
+                                            <strong>
+
+                                                <%= loanRecord.interestRate !==
+                                                    undefined &&
+                                                    loanRecord.interestRate !==
+                                                    null
+                                                        ? loanRecord.interestRate +
+                                                          "%"
+                                                        : "Not set"
+                                                %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Term -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Term
+                                            </span>
+
+                                            <strong>
+                                                <%= loanRecord.term || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Currency -->
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Currency
+                                            </span>
+
+                                            <strong>
+                                                <%= loanRecord.currency || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Start -->
+
+                                        <% if (
+                                            loanRecord.startDate
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Start Date
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        loanRecord.startDate
+                                                    ).toLocaleDateString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- End -->
+
+                                        <% if (
+                                            loanRecord.endDate
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    End Date
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        loanRecord.endDate
+                                                    ).toLocaleDateString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            loanRecord.nextPaymentDate
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Next Payment
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        loanRecord.nextPaymentDate
+                                                    ).toLocaleDateString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- Purpose -->
+
+                                        <% if (
+                                            loanRecord.purpose
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       sm:col-span-2"
+                                            >
+
+                                                <span>
+                                                    Purpose
+                                                </span>
+
+                                                <strong
+                                                    class="whitespace-pre-line"
+                                                >
+                                                    <%= loanRecord.purpose %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- Note -->
+
+                                        <% if (
+                                            loanRecord.adminNote
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       sm:col-span-2"
+                                            >
+
+                                                <span>
+                                                    Admin Note
+                                                </span>
+
+                                                <strong
+                                                    class="whitespace-pre-line"
+                                                >
+                                                    <%= loanRecord.adminNote %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </section>
+
+
+                                <!-- =================================
+                                     RIGHT COLUMN
+                                ================================== -->
+
+                                <aside class="space-y-6">
+
+                                    <!-- Customer -->
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Customer
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <% if (loanCustomer) { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= [
+                                                        loanCustomer.firstName,
+                                                        loanCustomer.middleName,
+                                                        loanCustomer.lastName
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                    %>
+                                                </p>
+
+
+                                                <% if (
+                                                    loanCustomer.email
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-gray-500
+                                                               mt-1"
+                                                    >
+                                                        <%= loanCustomer.email %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    loanAccount &&
+                                                    loanAccount.accountNumber
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Account Number
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+                                                            <%= loanAccount.accountNumber %>
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    values &&
+                                                    values.displayedBalance !==
+                                                        undefined &&
+                                                    values.displayedBalance !==
+                                                        null
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Current Balance
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+
+                                                            <%= values.currency ||
+                                                                loanRecord.currency ||
+                                                                ""
+                                                            %>
+
+                                                            <%= Number(
+                                                                values.displayedBalance
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+
+                                    <!-- =================================
+                                         REVIEW ACTIONS
+                                    ================================== -->
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Loan Actions
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <!-- Pending -->
+
+                                            <% if (
+                                                loanRecord.status ===
+                                                    "Pending" ||
+                                                loanRecord.status ===
+                                                    "Under Review"
+                                            ) { %>
+
+                                                <!-- Approve -->
+
+                                                <form
+                                                    action="/admin/loans/<%= loanRecord._id || loanRecord.id %>/approve"
+                                                    method="POST"
+                                                    class="space-y-4"
+                                                >
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Approved Amount
+                                                        </label>
+
+                                                        <input
+                                                            type="number"
+                                                            name="approvedAmount"
+                                                            min="0.01"
+                                                            step="0.01"
+                                                            value="<%= loanRecord.requestedAmount || "" %>"
+                                                            class="admin-input"
+                                                            required
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Interest Rate (%)
+                                                        </label>
+
+                                                        <input
+                                                            type="number"
+                                                            name="interestRate"
+                                                            min="0"
+                                                            step="0.01"
+                                                            class="admin-input"
+                                                            required
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Monthly Payment
+                                                        </label>
+
+                                                        <input
+                                                            type="number"
+                                                            name="monthlyPayment"
+                                                            min="0.01"
+                                                            step="0.01"
+                                                            class="admin-input"
+                                                            required
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Term
+                                                        </label>
+
+                                                        <select
+                                                            name="term"
+                                                            class="admin-input"
+                                                            required
+                                                        >
+
+                                                            <% [
+                                                                "3 Months",
+                                                                "6 Months",
+                                                                "12 Months",
+                                                                "24 Months",
+                                                                "36 Months",
+                                                                "60 Months"
+                                                            ].forEach(
+                                                                function(term) {
+                                                            %>
+
+                                                                <option
+                                                                    value="<%= term %>"
+                                                                    <%= loanRecord.term === term
+                                                                        ? "selected"
+                                                                        : ""
+                                                                    %>
+                                                                >
+                                                                    <%= term %>
+                                                                </option>
+
+                                                            <% }); %>
+
+                                                        </select>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Start Date
+                                                        </label>
+
+                                                        <input
+                                                            type="date"
+                                                            name="startDate"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            End Date
+                                                        </label>
+
+                                                        <input
+                                                            type="date"
+                                                            name="endDate"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Next Payment Date
+                                                        </label>
+
+                                                        <input
+                                                            type="date"
+                                                            name="nextPaymentDate"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <label
+                                                            class="admin-label"
+                                                        >
+                                                            Admin Note
+                                                        </label>
+
+                                                        <textarea
+                                                            name="adminNote"
+                                                            rows="3"
+                                                            class="admin-input"
+                                                            placeholder="Approval note"
+                                                        ></textarea>
+
+                                                    </div>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-primary-button
+                                                               w-full"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="circle-check"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Approve Loan
+
+                                                    </button>
+
+                                                </form>
+
+
+                                                <div
+                                                    class="my-5
+                                                           border-t
+                                                           border-gray-100"
+                                                ></div>
+
+
+                                                <!-- Reject -->
+
+                                                <form
+                                                    action="/admin/loans/<%= loanRecord._id || loanRecord.id %>/reject"
+                                                    method="POST"
+                                                >
+
+                                                    <label
+                                                        class="admin-label"
+                                                    >
+                                                        Rejection Note
+                                                    </label>
+
+                                                    <textarea
+                                                        name="adminNote"
+                                                        rows="3"
+                                                        class="admin-input"
+                                                        placeholder="Reason for rejection"
+                                                        required
+                                                    ></textarea>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="inline-flex
+                                                               items-center
+                                                               justify-center
+                                                               w-full
+                                                               px-4 py-2.5
+                                                               mt-3
+                                                               bg-red-600
+                                                               hover:bg-red-700
+                                                               text-white
+                                                               text-sm
+                                                               font-semibold
+                                                               rounded-lg"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="x-circle"
+                                                            class="h-4 w-4 mr-2"
+                                                        ></i>
+
+                                                        Reject Loan
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- Approved -->
+
+                                            <% } else if (
+                                                loanRecord.status ===
+                                                "Approved"
+                                            ) { %>
+
+                                                <div
+                                                    class="mb-4
+                                                           p-4
+                                                           bg-blue-50
+                                                           border
+                                                           border-blue-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-blue-900"
+                                                    >
+                                                        Loan Approved
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-blue-700
+                                                               mt-1"
+                                                    >
+                                                        Activate the loan to
+                                                        fund the approved amount
+                                                        to the customer's account.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <form
+                                                    action="/admin/loans/<%= loanRecord._id || loanRecord.id %>/activate"
+                                                    method="POST"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-primary-button
+                                                               w-full"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="banknote"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Activate and Fund Loan
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- Active -->
+
+                                            <% } else if (
+                                                loanRecord.status ===
+                                                "Active"
+                                            ) { %>
+
+                                                <div
+                                                    class="p-4
+                                                           bg-green-50
+                                                           border
+                                                           border-green-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-green-800"
+                                                    >
+                                                        Loan Active
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-green-700
+                                                               mt-1"
+                                                    >
+                                                        The customer account
+                                                        has been funded.
+                                                    </p>
+
+                                                </div>
+
+
+                                            <!-- Rejected -->
+
+                                            <% } else if (
+                                                loanRecord.status ===
+                                                "Rejected"
+                                            ) { %>
+
+                                                <div
+                                                    class="p-4
+                                                           bg-red-50
+                                                           border
+                                                           border-red-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-red-800"
+                                                    >
+                                                        Loan Rejected
+                                                    </p>
+
+
+                                                    <% if (
+                                                        loanRecord.adminNote
+                                                    ) { %>
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-red-700
+                                                                   mt-2"
+                                                        >
+                                                            <%= loanRecord.adminNote %>
+                                                        </p>
+
+                                                    <% } %>
+
+                                                </div>
+
+
+                                            <% } else { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           text-gray-500"
+                                                >
+                                                    No review action is
+                                                    available for this loan.
+                                                </p>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+                                </aside>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

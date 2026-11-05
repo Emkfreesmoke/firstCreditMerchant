@@ -1,0 +1,565 @@
+<%
+    const customerRecord =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const accountRecord =
+        typeof account !== "undefined"
+            ? account
+            : null;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="flex h-screen overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div class="flex flex-col flex-1 overflow-hidden">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="flex-1 overflow-y-auto">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl mx-auto
+                               px-4 sm:px-6 lg:px-8"
+                    >
+
+                        <a
+                            href="<%= customerRecord && customerRecord.id
+                                ? '/admin/customers/' + customerRecord.id
+                                : '/admin/customers'
+                            %>"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back
+                        </a>
+
+
+                        <% if (!customerRecord) { %>
+
+                            <div
+                                class="bg-white
+                                       border border-gray-100
+                                       rounded-xl
+                                       shadow-sm
+                                       py-16 px-6
+                                       text-center"
+                            >
+
+                                <i
+                                    data-lucide="user-x"
+                                    class="h-10 w-10
+                                           mx-auto
+                                           text-gray-400
+                                           mb-4"
+                                ></i>
+
+
+                                <h1
+                                    class="text-xl
+                                           font-semibold
+                                           text-gray-900"
+                                >
+                                    Customer unavailable
+                                </h1>
+
+                            </div>
+
+                        <% } else { %>
+
+                            <div class="mb-6">
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Edit Customer
+                                </h1>
+
+
+                                <% if (
+                                    customerRecord.fullName
+                                ) { %>
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        <%= customerRecord.fullName %>
+                                    </p>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <div
+                                class="bg-white
+                                       border border-gray-100
+                                       rounded-xl
+                                       shadow-sm
+                                       overflow-hidden"
+                            >
+
+                                <div
+                                    class="px-6 py-4
+                                           border-b border-gray-200"
+                                >
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Customer Information
+                                    </h2>
+                                </div>
+
+
+                                <form class="p-6">
+
+                                    <!-- Personal -->
+
+                                    <h3
+                                        class="text-sm
+                                               font-semibold
+                                               text-gray-900
+                                               mb-4"
+                                    >
+                                        Personal Information
+                                    </h3>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-5"
+                                    >
+
+                                        <div>
+                                            <label class="admin-label">
+                                                First Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="firstName"
+                                                value="<%= customerRecord.firstName || '' %>"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+
+                                        <div>
+                                            <label class="admin-label">
+                                                Middle Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="middleName"
+                                                value="<%= customerRecord.middleName || '' %>"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+
+                                        <div>
+                                            <label class="admin-label">
+                                                Last Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                value="<%= customerRecord.lastName || '' %>"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+
+                                        <div>
+                                            <label class="admin-label">
+                                                Username
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="username"
+                                                value="<%= customerRecord.username || '' %>"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Contact -->
+
+                                    <div
+                                        class="border-t
+                                               border-gray-100
+                                               pt-6 mt-7"
+                                    >
+
+                                        <h3
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900
+                                                   mb-4"
+                                        >
+                                            Contact Information
+                                        </h3>
+
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    Email Address
+                                                </label>
+
+                                                <input
+                                                    type="email"
+                                                    name="email"
+                                                    value="<%= customerRecord.email || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    Phone Number
+                                                </label>
+
+                                                <input
+                                                    type="tel"
+                                                    name="phone"
+                                                    value="<%= customerRecord.phone || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    Country
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="country"
+                                                    value="<%= customerRecord.country || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Address -->
+
+                                    <div
+                                        class="border-t
+                                               border-gray-100
+                                               pt-6 mt-7"
+                                    >
+
+                                        <h3
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900
+                                                   mb-4"
+                                        >
+                                            Address
+                                        </h3>
+
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+                                            <div class="md:col-span-2">
+                                                <label class="admin-label">
+                                                    Address
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="address"
+                                                    value="<%= customerRecord.address || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    City
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="city"
+                                                    value="<%= customerRecord.city || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    State / Region
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="region"
+                                                    value="<%= customerRecord.region || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+
+                                            <div>
+                                                <label class="admin-label">
+                                                    Postal Code
+                                                </label>
+
+                                                <input
+                                                    type="text"
+                                                    name="postalCode"
+                                                    value="<%= customerRecord.postalCode || '' %>"
+                                                    class="admin-input"
+                                                >
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Account -->
+
+                                    <% if (accountRecord) { %>
+
+                                        <div
+                                            class="border-t
+                                                   border-gray-100
+                                                   pt-6 mt-7"
+                                        >
+
+                                            <h3
+                                                class="text-sm
+                                                       font-semibold
+                                                       text-gray-900
+                                                       mb-4"
+                                            >
+                                                Account Information
+                                            </h3>
+
+
+                                            <div
+                                                class="grid grid-cols-1
+                                                       md:grid-cols-2
+                                                       gap-5"
+                                            >
+
+                                                <div>
+                                                    <label class="admin-label">
+                                                        Account Type
+                                                    </label>
+
+                                                    <input
+                                                        type="text"
+                                                        name="accountType"
+                                                        value="<%= accountRecord.accountType || '' %>"
+                                                        class="admin-input"
+                                                    >
+                                                </div>
+
+
+                                                <div>
+                                                    <label class="admin-label">
+                                                        Currency
+                                                    </label>
+
+                                                    <select
+                                                        name="currency"
+                                                        class="admin-input"
+                                                    >
+                                                        <option value="">
+                                                            Select currency
+                                                        </option>
+
+                                                        <% [
+                                                            "USD",
+                                                            "GBP",
+                                                            "EUR"
+                                                        ].forEach(
+                                                            function(currency) {
+                                                        %>
+
+                                                            <option
+                                                                value="<%= currency %>"
+                                                                <%= accountRecord.currency === currency
+                                                                    ? "selected"
+                                                                    : ""
+                                                                %>
+                                                            >
+                                                                <%= currency %>
+                                                            </option>
+
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+
+
+                                                <div>
+                                                    <label class="admin-label">
+                                                        Account Status
+                                                    </label>
+
+                                                    <select
+                                                        name="accountStatus"
+                                                        class="admin-input"
+                                                    >
+                                                        <option value="">
+                                                            Select status
+                                                        </option>
+
+                                                        <% [
+                                                            "Active",
+                                                            "Pending",
+                                                            "Suspended",
+                                                            "Closed"
+                                                        ].forEach(
+                                                            function(status) {
+                                                        %>
+
+                                                            <option
+                                                                value="<%= status %>"
+                                                                <%= accountRecord.status === status
+                                                                    ? "selected"
+                                                                    : ""
+                                                                %>
+                                                            >
+                                                                <%= status %>
+                                                            </option>
+
+                                                        <% }); %>
+                                                    </select>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    <% } %>
+
+
+                                    <!-- Actions -->
+
+                                    <div
+                                        class="flex
+                                               justify-end
+                                               gap-3 mt-7"
+                                    >
+
+                                        <a
+                                            href="/admin/customers/<%= customerRecord.id %>"
+                                            class="inline-flex
+                                                   items-center
+                                                   px-5 py-3
+                                                   border
+                                                   border-gray-200
+                                                   bg-white
+                                                   text-gray-700
+                                                   rounded-lg"
+                                        >
+                                            Cancel
+                                        </a>
+
+
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="inline-flex
+                                                   items-center
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   text-white
+                                                   font-medium
+                                                   rounded-lg
+                                                   opacity-50
+                                                   cursor-not-allowed"
+                                        >
+                                            <i
+                                                data-lucide="save"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Save Changes
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,564 @@
+<%
+    const notificationRecord =
+        typeof notification !== "undefined"
+            ? notification
+            : null;
+
+    const notificationType =
+        notificationRecord &&
+        notificationRecord.type
+            ? String(notificationRecord.type)
+            : "";
+
+    const notificationPriority =
+        notificationRecord &&
+        notificationRecord.priority
+            ? String(notificationRecord.priority)
+            : "Normal";
+
+    const typeLower =
+        notificationType.toLowerCase();
+
+    const priorityLower =
+        notificationPriority.toLowerCase();
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data='{
+            mobileMenuOpen: false
+        }'
+        class="dashboard-app-shell"
+    >
+
+        <!-- =========================================
+             DESKTOP SIDEBAR
+        ========================================== -->
+
+        <%- include("partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN DASHBOARD COLUMN
+        ========================================== -->
+
+        <div class="dashboard-main-column">
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+            <%- include("partials/mobile-nav") %>
+
+
+            <!-- =====================================
+                 MAIN CONTENT
+            ====================================== -->
+
+            <main class="dashboard-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-4xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =================================
+                             BACK
+                        ================================== -->
+
+                        <div class="mb-6">
+
+                            <a
+                                href="/dashboard/notifications"
+                                class="inline-flex
+                                       items-center
+                                       text-sm
+                                       font-medium
+                                       text-gray-500
+                                       hover:text-gray-700"
+                            >
+
+                                <i
+                                    data-lucide="arrow-left"
+                                    class="h-4 w-4 mr-2"
+                                ></i>
+
+                                Back to Notifications
+
+                            </a>
+
+                        </div>
+
+
+                        <% if (!notificationRecord) { %>
+
+                            <!-- =================================
+                                 NOTIFICATION UNAVAILABLE
+                            ================================== -->
+
+                            <section
+                                class="dashboard-card"
+                            >
+
+                                <div
+                                    class="py-16
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-14
+                                               w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mx-auto
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="bell-off"
+                                            class="h-7
+                                                   w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Notification unavailable
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        This notification could
+                                        not be found.
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- =================================
+                                 NOTIFICATION
+                            ================================== -->
+
+                            <article
+                                class="dashboard-card
+                                       overflow-hidden"
+                            >
+
+                                <!-- =============================
+                                     HEADER
+                                ============================== -->
+
+                                <div
+                                    class="px-5
+                                           sm:px-6
+                                           py-5
+                                           border-b
+                                           border-gray-200"
+                                >
+
+                                    <div
+                                        class="flex
+                                               items-start
+                                               gap-4"
+                                    >
+
+                                        <!-- Icon -->
+
+                                        <div
+                                            class="h-11
+                                                   w-11
+                                                   rounded-full
+                                                   flex
+                                                   items-center
+                                                   justify-center
+                                                   flex-shrink-0
+
+                                                   <%= priorityLower === "urgent"
+                                                       ? "bg-red-100"
+                                                       : priorityLower === "important"
+                                                       ? "bg-orange-100"
+                                                       : typeLower === "security"
+                                                       ? "bg-purple-100"
+                                                       : typeLower === "deposit"
+                                                       ? "bg-green-100"
+                                                       : typeLower === "transfer"
+                                                       ? "bg-blue-100"
+                                                       : "bg-gray-100"
+                                                   %>"
+                                        >
+
+                                            <i
+                                                data-lucide="<%= priorityLower === "urgent"
+                                                    ? "circle-alert"
+                                                    : typeLower === "security"
+                                                    ? "shield-check"
+                                                    : typeLower === "deposit"
+                                                    ? "download"
+                                                    : typeLower === "transfer"
+                                                    ? "send"
+                                                    : typeLower === "support"
+                                                    ? "messages-square"
+                                                    : "bell"
+                                                %>"
+                                                class="h-5
+                                                       w-5
+
+                                                       <%= priorityLower === "urgent"
+                                                           ? "text-red-600"
+                                                           : priorityLower === "important"
+                                                           ? "text-orange-600"
+                                                           : typeLower === "security"
+                                                           ? "text-purple-600"
+                                                           : typeLower === "deposit"
+                                                           ? "text-green-600"
+                                                           : typeLower === "transfer"
+                                                           ? "text-blue-600"
+                                                           : "text-gray-500"
+                                                       %>"
+                                            ></i>
+
+                                        </div>
+
+
+                                        <div
+                                            class="flex-1
+                                                   min-w-0"
+                                        >
+
+                                            <!-- Badges -->
+
+                                            <div
+                                                class="flex
+                                                       flex-wrap
+                                                       items-center
+                                                       gap-2"
+                                            >
+
+                                                <% if (
+                                                    notificationType
+                                                ) { %>
+
+                                                    <span
+                                                        class="inline-flex
+                                                               px-2.5
+                                                               py-1
+                                                               rounded-full
+                                                               bg-gray-100
+                                                               text-gray-700
+                                                               text-xs
+                                                               font-medium"
+                                                    >
+                                                        <%= notificationType %>
+                                                    </span>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    priorityLower !== "normal"
+                                                ) { %>
+
+                                                    <span
+                                                        class="inline-flex
+                                                               px-2.5
+                                                               py-1
+                                                               rounded-full
+                                                               text-xs
+                                                               font-medium
+
+                                                               <%= priorityLower === "urgent"
+                                                                   ? "bg-red-100 text-red-700"
+                                                                   : "bg-orange-100 text-orange-700"
+                                                               %>"
+                                                    >
+                                                        <%= notificationPriority %>
+                                                    </span>
+
+                                                <% } %>
+
+                                            </div>
+
+
+                                            <!-- Title -->
+
+                                            <h1
+                                                class="text-xl
+                                                       sm:text-2xl
+                                                       font-bold
+                                                       text-gray-900
+                                                       mt-3
+                                                       break-words"
+                                            >
+                                                <%= notificationRecord.title ||
+                                                    "Notification"
+                                                %>
+                                            </h1>
+
+
+                                            <!-- Date -->
+
+                                            <% if (
+                                                notificationRecord.createdAt
+                                            ) { %>
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-2"
+                                                >
+                                                    <%= new Date(
+                                                        notificationRecord.createdAt
+                                                    ).toLocaleString() %>
+                                                </p>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- =============================
+                                     MESSAGE
+                                ============================== -->
+
+                                <div
+                                    class="p-5
+                                           sm:p-6"
+                                >
+
+                                    <p
+                                        class="text-sm
+                                               sm:text-base
+                                               leading-7
+                                               text-gray-700
+                                               whitespace-pre-line
+                                               break-words"
+                                    >
+                                        <%= notificationRecord.message || "" %>
+                                    </p>
+
+
+                                    <!-- Action -->
+
+                                    <% if (
+                                        notificationRecord.actionUrl
+                                    ) { %>
+
+                                        <div class="mt-6">
+
+                                            <a
+                                                href="<%= notificationRecord.actionUrl %>"
+                                                class="inline-flex
+                                                       items-center
+                                                       justify-center
+                                                       w-full
+                                                       sm:w-auto
+                                                       px-5
+                                                       py-2.5
+                                                       bg-primary-600
+                                                       hover:bg-primary-700
+                                                       text-white
+                                                       text-sm
+                                                       font-medium
+                                                       rounded-lg"
+                                            >
+
+                                                <%= notificationRecord.actionLabel ||
+                                                    "View Details"
+                                                %>
+
+                                                <i
+                                                    data-lucide="arrow-right"
+                                                    class="h-4
+                                                           w-4
+                                                           ml-2"
+                                                ></i>
+
+                                            </a>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+
+                                <!-- =============================
+                                     FOOTER / READ STATUS
+                                ============================== -->
+
+                                <div
+                                    class="px-5
+                                           sm:px-6
+                                           py-4
+                                           bg-gray-50
+                                           border-t
+                                           border-gray-100"
+                                >
+
+                                    <div
+                                        class="flex
+                                               flex-col
+                                               sm:flex-row
+                                               sm:items-center
+                                               sm:justify-between
+                                               gap-2"
+                                    >
+
+                                        <div
+                                            class="inline-flex
+                                                   items-center
+                                                   gap-2"
+                                        >
+
+                                            <span
+                                                class="h-2
+                                                       w-2
+                                                       rounded-full
+
+                                                       <%= notificationRecord.read
+                                                           ? "bg-green-500"
+                                                           : "bg-blue-500"
+                                                       %>"
+                                            ></span>
+
+
+                                            <span
+                                                class="text-xs
+                                                       font-medium
+                                                       text-gray-600"
+                                            >
+                                                <%= notificationRecord.read
+                                                    ? "Read"
+                                                    : "Unread"
+                                                %>
+                                            </span>
+
+                                        </div>
+
+
+                                        <% if (
+                                            notificationRecord.readAt
+                                        ) { %>
+
+                                            <span
+                                                class="text-xs
+                                                       text-gray-400"
+                                            >
+                                                Read
+                                                <%= new Date(
+                                                    notificationRecord.readAt
+                                                ).toLocaleString() %>
+                                            </span>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                            </article>
+
+
+                            <!-- =================================
+                                 RETURN ACTION
+                            ================================== -->
+
+                            <div
+                                class="flex
+                                       justify-end
+                                       mt-6
+                                       mb-6"
+                            >
+
+                                <a
+                                    href="/dashboard/notifications"
+                                    class="inline-flex
+                                           items-center
+                                           justify-center
+                                           w-full
+                                           sm:w-auto
+                                           px-5
+                                           py-2.5
+                                           border
+                                           border-gray-200
+                                           bg-white
+                                           hover:bg-gray-50
+                                           text-gray-700
+                                           text-sm
+                                           font-medium
+                                           rounded-lg"
+                                >
+
+                                    <i
+                                        data-lucide="arrow-left"
+                                        class="h-4
+                                               w-4
+                                               mr-2"
+                                    ></i>
+
+                                    All Notifications
+
+                                </a>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

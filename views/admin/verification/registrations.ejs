@@ -1,0 +1,758 @@
+<%
+    const records =
+        typeof registrations !== "undefined" &&
+        Array.isArray(registrations)
+            ? registrations
+            : [];
+
+    const pendingRecords =
+        records.filter(
+            record =>
+                record &&
+                record.status === "Pending"
+        );
+
+    const activeRecords =
+        records.filter(
+            record =>
+                record &&
+                record.status === "Active"
+        );
+
+    const verifiedRecords =
+        records.filter(
+            record =>
+                record &&
+                record.emailVerified === true
+        );
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            filter: 'all',
+            search: ''
+        }"
+        class="admin-app-shell"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- ==============================
+                             PAGE HEADER
+                        =============================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Registrations
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Review registered customers
+                                and activate verified accounts.
+                            </p>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             SUMMARY CARDS
+                        =============================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- Total -->
+
+                            <div class="admin-mini-stat">
+
+                                <p>
+                                    Registrations
+                                </p>
+
+                                <strong>
+                                    <%= records.length %>
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Pending -->
+
+                            <div class="admin-mini-stat">
+
+                                <p>
+                                    Pending
+                                </p>
+
+                                <strong
+                                    class="text-yellow-700"
+                                >
+                                    <%= pendingRecords.length %>
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Verified -->
+
+                            <div class="admin-mini-stat">
+
+                                <p>
+                                    Email Verified
+                                </p>
+
+                                <strong
+                                    class="text-blue-700"
+                                >
+                                    <%= verifiedRecords.length %>
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Active -->
+
+                            <div class="admin-mini-stat">
+
+                                <p>
+                                    Active
+                                </p>
+
+                                <strong
+                                    class="text-green-700"
+                                >
+                                    <%= activeRecords.length %>
+                                </strong>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             FILTER / SEARCH
+                        =============================== -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Search -->
+
+                                <div
+                                    class="relative
+                                           flex-1
+                                           min-w-0"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4
+                                               w-4
+                                               text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        placeholder="Search registrations..."
+                                        class="admin-input pl-9"
+                                    >
+
+                                </div>
+
+
+                                <!-- Filters -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'all'"
+                                        :class="
+                                            filter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        All
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'pending'"
+                                        :class="
+                                            filter === 'pending'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Pending
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'verified'"
+                                        :class="
+                                            filter === 'verified'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Verified
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'active'"
+                                        :class="
+                                            filter === 'active'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Active
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==============================
+                             REGISTRATION TABLE
+                        =============================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <h3>
+                                    Customer Registrations
+                                </h3>
+
+                            </div>
+
+
+                            <% if (records.length === 0) { %>
+
+                                <!-- Empty State -->
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="user-plus"
+                                    ></i>
+
+                                    <p>
+                                        No registrations
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <div
+                                    class="w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Customer
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Username
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Account Type
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Email
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Status
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Registered
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% records.forEach(
+                                                function(record) {
+
+                                                    const recordName =
+                                                        record.fullName ||
+                                                        [
+                                                            record.firstName,
+                                                            record.middleName,
+                                                            record.lastName
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ");
+
+                                                    const searchableText =
+                                                        [
+                                                            recordName,
+                                                            record.username,
+                                                            record.email,
+                                                            record.customerId,
+                                                            record.requestedAccountType
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                            .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            filter === 'all' ||
+                                                            (
+                                                                filter === 'pending' &&
+                                                                '<%= record.status || "" %>' === 'Pending'
+                                                            ) ||
+                                                            (
+                                                                filter === 'verified' &&
+                                                                <%= record.emailVerified === true
+                                                                    ? "true"
+                                                                    : "false"
+                                                                %>
+                                                            ) ||
+                                                            (
+                                                                filter === 'active' &&
+                                                                '<%= record.status || "" %>' === 'Active'
+                                                            )
+                                                        ) &&
+                                                        (
+                                                            !search.trim() ||
+                                                            <%- JSON.stringify(searchableText) %>
+                                                                .includes(
+                                                                    search
+                                                                        .trim()
+                                                                        .toLowerCase()
+                                                                )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- CUSTOMER -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <div
+                                                            class="flex
+                                                                   items-center
+                                                                   min-w-0"
+                                                        >
+
+                                                            <div
+                                                                class="h-10
+                                                                       w-10
+                                                                       rounded-full
+                                                                       bg-gray-100
+                                                                       flex
+                                                                       items-center
+                                                                       justify-center
+                                                                       mr-3
+                                                                       flex-shrink-0"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="user"
+                                                                    class="h-5
+                                                                           w-5
+                                                                           text-gray-500"
+                                                                ></i>
+
+                                                            </div>
+
+
+                                                            <div class="min-w-0">
+
+                                                                <p
+                                                                    class="text-sm
+                                                                           font-medium
+                                                                           text-gray-900
+                                                                           whitespace-normal
+                                                                           break-words"
+                                                                >
+                                                                    <%= recordName %>
+                                                                </p>
+
+
+                                                                <% if (
+                                                                    record.customerId
+                                                                ) { %>
+
+                                                                    <p
+                                                                        class="text-xs
+                                                                               text-gray-500
+                                                                               mt-1"
+                                                                    >
+                                                                        <%= record.customerId %>
+                                                                    </p>
+
+                                                                <% } %>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+
+
+                                                    <!-- USERNAME -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+                                                        <%= record.username || "" %>
+                                                    </td>
+
+
+                                                    <!-- ACCOUNT TYPE -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+                                                        <%= record.requestedAccountType || "" %>
+                                                    </td>
+
+
+                                                    <!-- EMAIL -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <p
+                                                            class="text-sm
+                                                                   text-gray-700
+                                                                   break-all"
+                                                        >
+                                                            <%= record.email || "" %>
+                                                        </p>
+
+
+                                                        <% if (
+                                                            record.emailVerified
+                                                        ) { %>
+
+                                                            <span
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       mt-1
+                                                                       text-xs
+                                                                       text-green-700"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="badge-check"
+                                                                    class="h-3.5
+                                                                           w-3.5
+                                                                           mr-1"
+                                                                ></i>
+
+                                                                Verified
+
+                                                            </span>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       mt-1
+                                                                       text-xs
+                                                                       text-yellow-700"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="clock"
+                                                                    class="h-3.5
+                                                                           w-3.5
+                                                                           mr-1"
+                                                                ></i>
+
+                                                                Unverified
+
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- STATUS -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            record.status ===
+                                                            "Active"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-green-100
+                                                                       text-green-700"
+                                                            >
+                                                                Active
+                                                            </span>
+
+                                                        <% } else if (
+                                                            record.status ===
+                                                            "Suspended"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-red-100
+                                                                       text-red-700"
+                                                            >
+                                                                Suspended
+                                                            </span>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-yellow-100
+                                                                       text-yellow-700"
+                                                            >
+                                                                <%= record.status ||
+                                                                    "Pending"
+                                                                %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- REGISTERED -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               text-gray-500"
+                                                    >
+
+                                                        <% if (
+                                                            record.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                record.createdAt
+                                                            ).toLocaleDateString() %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- ACTION -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            record._id ||
+                                                            record.id
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/registrations/<%= record._id || record.id %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-800"
+                                                            >
+
+                                                                Review
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

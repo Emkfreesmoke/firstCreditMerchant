@@ -1,0 +1,255 @@
+<!-- =====================================================
+     ADMIN MOBILE NAVIGATION
+====================================================== -->
+
+<div
+  x-cloak
+  x-show="mobileMenuOpen"
+  class="lg:hidden"
+  @keydown.escape.window="mobileMenuOpen = false"
+>
+  <!-- Overlay -->
+  <div
+    x-show="mobileMenuOpen"
+    x-transition.opacity
+    @click="mobileMenuOpen = false"
+    class="admin-mobile-overlay"
+    aria-hidden="true"
+  ></div>
+
+  <!-- Drawer -->
+  <aside
+    x-show="mobileMenuOpen"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="-translate-x-full"
+    x-transition:enter-end="translate-x-0"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="translate-x-0"
+    x-transition:leave-end="-translate-x-full"
+    class="admin-mobile-drawer"
+    aria-label="Admin mobile navigation"
+  >
+    <!-- Header -->
+    <div class="admin-mobile-header">
+      <a href="/admin/dashboard" @click="mobileMenuOpen = false">
+        <img
+          src="/images/logo.png"
+          alt="First Credit Merchant"
+          class="h-9 w-auto"
+        />
+      </a>
+
+      <button
+        type="button"
+        @click="mobileMenuOpen = false"
+        class="admin-mobile-close"
+        aria-label="Close navigation"
+      >
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="admin-mobile-navigation">
+      <!-- OVERVIEW -->
+
+      <p class="admin-sidebar-heading">Overview</p>
+
+      <a
+        href="/admin/dashboard"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="layout-dashboard"></i>
+
+        <span> Dashboard </span>
+      </a>
+
+      <!-- CUSTOMER MANAGEMENT -->
+
+      <p class="admin-sidebar-heading">Customer Management</p>
+
+      <a
+        href="/admin/customers"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="users"></i>
+
+        <span> Customers </span>
+      </a>
+
+      <a
+        href="/admin/registrations"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="user-plus"></i>
+
+        <span> Registrations </span>
+      </a>
+
+      <a
+        href="/admin/kyc"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="badge-check"></i>
+
+        <span> KYC Verification </span>
+      </a>
+
+      <!-- FINANCIAL CONTROL -->
+
+      <p class="admin-sidebar-heading">Financial Control</p>
+
+      <a
+        href="/admin/balances"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="wallet"></i>
+
+        <span> Balance Management </span>
+      </a>
+
+      <a
+        href="/admin/deposits"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="circle-dollar-sign"></i>
+
+        <span> Deposits </span>
+      </a>
+
+      <a
+        href="/admin/transactions"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="arrow-left-right"></i>
+
+        <span> Transactions </span>
+      </a>
+
+      <a
+        href="/admin/transfers"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="send"></i>
+
+        <span> Transfers </span>
+      </a>
+
+      <!-- SERVICES -->
+
+      <p class="admin-sidebar-heading">Services</p>
+
+      <a
+        href="/admin/cards"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="credit-card"></i>
+
+        <span> Cards </span>
+      </a>
+
+      <a
+        href="/admin/loans"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="landmark"></i>
+
+        <span> Loans </span>
+      </a>
+
+      <a
+        href="/admin/investments"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="trending-up"></i>
+
+        <span> Investments </span>
+      </a>
+
+      <!-- COMMUNICATION -->
+
+      <p class="admin-sidebar-heading">Communication</p>
+
+      <a
+        href="/admin/notifications"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="bell"></i>
+
+        <span> Notifications </span>
+      </a>
+
+      <a
+        href="/admin/support"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="messages-square"></i>
+
+        <span> Support Tickets </span>
+      </a>
+
+      <!-- SYSTEM -->
+
+      <p class="admin-sidebar-heading">System</p>
+
+      <a
+        href="/admin/activity"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="history"></i>
+
+        <span> Activity Log </span>
+      </a>
+
+      <a
+        href="/admin/settings"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="settings"></i>
+
+        <span> Settings </span>
+      </a>
+    </nav>
+
+    <!-- Footer -->
+    <div class="admin-mobile-footer">
+      <div class="flex items-center">
+        <div class="admin-sidebar-profile-avatar mr-3">
+          <i data-lucide="shield" class="h-4 w-4"></i>
+        </div>
+
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-medium text-white">Administrator</p>
+
+          <p class="text-xs text-white/50">Admin Panel</p>
+        </div>
+
+        <form action="/logout" method="POST">
+          <button
+            type="submit"
+            class="admin-logout-button"
+            aria-label="Sign out"
+            title="Sign out"
+          >
+            <i data-lucide="log-out" class="h-4 w-4"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </aside>
+</div>

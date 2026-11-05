@@ -1,0 +1,453 @@
+<%
+    const loanRecords =
+        typeof loans !== "undefined" &&
+        Array.isArray(loans)
+            ? loans
+            : [];
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            loanFilter: 'all'
+        }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- Header -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Loan History
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review your loan applications
+                                    and loan records.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/dashboard/loans/request"
+                                class="inline-flex
+                                       items-center
+                                       px-4 py-2.5
+                                       bg-primary-600
+                                       text-white
+                                       text-sm
+                                       font-medium
+                                       rounded-lg"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4 mr-2"
+                                ></i>
+
+                                Request Loan
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- Filters -->
+
+                        <div
+                            class="dashboard-card
+                                   p-4 mb-6"
+                        >
+
+                            <div class="flex flex-wrap gap-2">
+
+                                <button
+                                    type="button"
+                                    @click="loanFilter = 'all'"
+                                    :class="
+                                        loanFilter === 'all'
+                                            ? 'bg-primary-600 text-white'
+                                            : 'bg-gray-100 text-gray-600'
+                                    "
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           text-sm
+                                           font-medium"
+                                >
+                                    All
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    @click="loanFilter = 'pending'"
+                                    :class="
+                                        loanFilter === 'pending'
+                                            ? 'bg-primary-600 text-white'
+                                            : 'bg-gray-100 text-gray-600'
+                                    "
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           text-sm
+                                           font-medium"
+                                >
+                                    Pending
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    @click="loanFilter = 'active'"
+                                    :class="
+                                        loanFilter === 'active'
+                                            ? 'bg-primary-600 text-white'
+                                            : 'bg-gray-100 text-gray-600'
+                                    "
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           text-sm
+                                           font-medium"
+                                >
+                                    Active
+                                </button>
+
+
+                                <button
+                                    type="button"
+                                    @click="loanFilter = 'completed'"
+                                    :class="
+                                        loanFilter === 'completed'
+                                            ? 'bg-primary-600 text-white'
+                                            : 'bg-gray-100 text-gray-600'
+                                    "
+                                    class="px-4 py-2
+                                           rounded-lg
+                                           text-sm
+                                           font-medium"
+                                >
+                                    Completed
+                                </button>
+
+                            </div>
+
+                        </div>
+
+
+                        <section class="dashboard-card">
+
+                            <% if (
+                                loanRecords.length === 0
+                            ) { %>
+
+                                <div
+                                    class="py-14
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <i
+                                        data-lucide="landmark"
+                                        class="h-9 w-9
+                                               mx-auto
+                                               text-gray-400
+                                               mb-3"
+                                    ></i>
+
+
+                                    <p
+                                        class="text-sm
+                                               font-medium
+                                               text-gray-700"
+                                    >
+                                        No loan history yet
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="dashboard-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Type
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Requested
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Approved
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Date
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% loanRecords.forEach(
+                                                function(loan) {
+
+                                                    const loanId =
+                                                        loan.id ||
+                                                        loan._id;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        loanFilter === 'all' ||
+
+                                                        (
+                                                            loanFilter === 'pending' &&
+                                                            (
+                                                                '<%= loan.status || "" %>' === 'Pending' ||
+                                                                '<%= loan.status || "" %>' === 'Under Review'
+                                                            )
+                                                        ) ||
+
+                                                        (
+                                                            loanFilter === 'active' &&
+                                                            (
+                                                                '<%= loan.status || "" %>' === 'Active' ||
+                                                                '<%= loan.status || "" %>' === 'Approved'
+                                                            )
+                                                        ) ||
+
+                                                        (
+                                                            loanFilter === 'completed' &&
+                                                            '<%= loan.status || "" %>' === 'Completed'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <td class="dashboard-table-cell">
+                                                        <%= loan.reference || "" %>
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+                                                        <%= loan.type || "" %>
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <%= loan.currency || "" %>
+
+                                                        <%= Number(
+                                                            loan.requestedAmount ||
+                                                            0
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <% if (
+                                                            loan.approvedAmount !==
+                                                                undefined &&
+                                                            loan.approvedAmount !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= loan.currency || "" %>
+
+                                                            <%= Number(
+                                                                loan.approvedAmount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="inline-flex
+                                                                   px-2.5 py-1
+                                                                   rounded-full
+                                                                   text-xs
+                                                                   font-medium
+                                                                   <%= loan.status === "Active"
+                                                                       ? "bg-green-100 text-green-700"
+                                                                       : loan.status === "Approved"
+                                                                       ? "bg-blue-100 text-blue-700"
+                                                                       : loan.status === "Rejected"
+                                                                       ? "bg-red-100 text-red-700"
+                                                                       : loan.status === "Completed"
+                                                                       ? "bg-green-100 text-green-700"
+                                                                       : "bg-yellow-100 text-yellow-700"
+                                                                   %>"
+                                                        >
+                                                            <%= loan.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <%= loan.createdAt
+                                                            ? new Date(
+                                                                loan.createdAt
+                                                              ).toLocaleDateString()
+                                                            : ""
+                                                        %>
+
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <a
+                                                            href="/dashboard/loans/<%= loanId %>"
+                                                            class="text-primary-700
+                                                                   font-medium"
+                                                        >
+                                                            Details
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

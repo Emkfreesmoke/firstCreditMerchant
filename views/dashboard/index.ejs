@@ -1,0 +1,1118 @@
+<%
+    const dashboardCustomer =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const dashboardAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+
+    const dashboardTransactions =
+        typeof transactions !== "undefined" &&
+        Array.isArray(transactions)
+            ? transactions
+            : [];
+
+    const dashboardCards =
+        typeof cards !== "undefined" &&
+        Array.isArray(cards)
+            ? cards
+            : [];
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <!-- =====================================================
+         CUSTOMER DASHBOARD SHELL
+    ====================================================== -->
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell
+               flex
+               h-screen
+               overflow-hidden"
+    >
+
+        <!-- Desktop Sidebar -->
+
+        <%- include("partials/sidebar") %>
+
+
+        <!-- Main Column -->
+
+        <div
+            class="dashboard-main-column
+                   flex
+                   flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <!-- Topbar -->
+
+            <%- include("partials/topbar") %>
+
+
+            <!--
+                Combined mobile popup + bottom navigation.
+                mobile-nav.ejs is no longer included.
+            -->
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <!-- =================================================
+                 MAIN CONTENT
+            ================================================== -->
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =====================================
+                             HEADER
+                        ====================================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Dashboard
+                            </h1>
+
+
+                            <% if (
+                                dashboardCustomer &&
+                                dashboardCustomer.firstName
+                            ) { %>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Welcome,
+                                    <%= dashboardCustomer.firstName %>.
+                                </p>
+
+                            <% } else { %>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review your account activity
+                                    and services.
+                                </p>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             FINANCIAL VALUES
+                        ====================================== -->
+
+                        <% if (values) { %>
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       sm:grid-cols-2
+                                       xl:grid-cols-4
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <!-- Current Balance -->
+
+                                <% if (
+                                    values.displayedBalance !==
+                                        undefined &&
+                                    values.displayedBalance !==
+                                        null
+                                ) { %>
+
+                                    <div class="dashboard-stat-card">
+
+                                        <div>
+
+                                            <p class="dashboard-stat-label">
+                                                Current Balance
+                                            </p>
+
+                                            <p class="dashboard-stat-value">
+                                                <%= values.currency || "" %>
+                                                <%= Number(
+                                                    values.displayedBalance
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </p>
+
+                                        </div>
+
+
+                                        <div
+                                            class="h-11 w-11
+                                                   rounded-full
+                                                   bg-primary-50
+                                                   flex
+                                                   items-center
+                                                   justify-center
+                                                   flex-shrink-0"
+                                        >
+                                            <i
+                                                data-lucide="wallet"
+                                                class="h-5 w-5
+                                                       text-primary-700"
+                                            ></i>
+                                        </div>
+
+                                    </div>
+
+                                <% } %>
+
+
+                                <!-- Monthly Income -->
+
+                                <% if (
+                                    values.monthlyIncome !==
+                                        undefined &&
+                                    values.monthlyIncome !==
+                                        null
+                                ) { %>
+
+                                    <div class="dashboard-stat-card">
+
+                                        <div>
+
+                                            <p class="dashboard-stat-label">
+                                                Monthly Income
+                                            </p>
+
+                                            <p
+                                                class="dashboard-stat-value
+                                                       text-green-700"
+                                            >
+                                                <%= values.currency || "" %>
+                                                <%= Number(
+                                                    values.monthlyIncome
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </p>
+
+                                        </div>
+
+
+                                        <div
+                                            class="h-11 w-11
+                                                   rounded-full
+                                                   bg-green-50
+                                                   flex
+                                                   items-center
+                                                   justify-center
+                                                   flex-shrink-0"
+                                        >
+                                            <i
+                                                data-lucide="trending-up"
+                                                class="h-5 w-5
+                                                       text-green-700"
+                                            ></i>
+                                        </div>
+
+                                    </div>
+
+                                <% } %>
+
+
+                                <!-- Monthly Outgoing -->
+
+                                <% if (
+                                    values.monthlyOutgoing !==
+                                        undefined &&
+                                    values.monthlyOutgoing !==
+                                        null
+                                ) { %>
+
+                                    <div class="dashboard-stat-card">
+
+                                        <div>
+
+                                            <p class="dashboard-stat-label">
+                                                Monthly Outgoing
+                                            </p>
+
+                                            <p
+                                                class="dashboard-stat-value
+                                                       text-red-700"
+                                            >
+                                                <%= values.currency || "" %>
+                                                <%= Number(
+                                                    values.monthlyOutgoing
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </p>
+
+                                        </div>
+
+
+                                        <div
+                                            class="h-11 w-11
+                                                   rounded-full
+                                                   bg-red-50
+                                                   flex
+                                                   items-center
+                                                   justify-center
+                                                   flex-shrink-0"
+                                        >
+                                            <i
+                                                data-lucide="trending-down"
+                                                class="h-5 w-5
+                                                       text-red-700"
+                                            ></i>
+                                        </div>
+
+                                    </div>
+
+                                <% } %>
+
+
+                                <!-- Transaction Limit -->
+
+                                <% if (
+                                    values.transactionLimit !==
+                                        undefined &&
+                                    values.transactionLimit !==
+                                        null
+                                ) { %>
+
+                                    <div class="dashboard-stat-card">
+
+                                        <div>
+
+                                            <p class="dashboard-stat-label">
+                                                Transaction Limit
+                                            </p>
+
+                                            <p class="dashboard-stat-value">
+                                                <%= values.currency || "" %>
+                                                <%= Number(
+                                                    values.transactionLimit
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </p>
+
+                                        </div>
+
+
+                                        <div
+                                            class="h-11 w-11
+                                                   rounded-full
+                                                   bg-blue-50
+                                                   flex
+                                                   items-center
+                                                   justify-center
+                                                   flex-shrink-0"
+                                        >
+                                            <i
+                                                data-lucide="gauge"
+                                                class="h-5 w-5
+                                                       text-blue-700"
+                                            ></i>
+                                        </div>
+
+                                    </div>
+
+                                <% } %>
+
+                            </div>
+
+
+                        <% } else { %>
+
+                            <div
+                                class="dashboard-card
+                                       p-6
+                                       mb-6"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <div
+                                        class="h-11 w-11
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mr-4
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="wallet"
+                                            class="h-5 w-5
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <h2
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Account values unavailable
+                                        </h2>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Financial values will appear
+                                            when account data is available.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- =====================================
+                             ACCOUNT INFORMATION
+                        ====================================== -->
+
+                        <% if (dashboardAccount) { %>
+
+                            <section
+                                class="dashboard-card
+                                       mb-6"
+                            >
+
+                                <div class="dashboard-card-header">
+
+                                    <div>
+
+                                        <h2
+                                            class="text-lg
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Account Information
+                                        </h2>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Your primary account details.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="p-6
+                                           grid
+                                           grid-cols-1
+                                           sm:grid-cols-2
+                                           lg:grid-cols-4
+                                           gap-6"
+                                >
+
+                                    <% if (
+                                        dashboardAccount.accountNumber
+                                    ) { %>
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Account Number
+                                            </span>
+
+                                            <strong>
+                                                <%= dashboardAccount.accountNumber %>
+                                            </strong>
+
+                                        </div>
+
+                                    <% } %>
+
+
+                                    <% if (
+                                        dashboardAccount.accountType
+                                    ) { %>
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Account Type
+                                            </span>
+
+                                            <strong>
+                                                <%= dashboardAccount.accountType %>
+                                            </strong>
+
+                                        </div>
+
+                                    <% } %>
+
+
+                                    <% if (
+                                        dashboardAccount.currency
+                                    ) { %>
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Currency
+                                            </span>
+
+                                            <strong>
+                                                <%= dashboardAccount.currency %>
+                                            </strong>
+
+                                        </div>
+
+                                    <% } %>
+
+
+                                    <% if (
+                                        dashboardAccount.status
+                                    ) { %>
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Status
+                                            </span>
+
+                                            <strong
+                                                class="<%= dashboardAccount.status === 'Active'
+                                                    ? 'text-green-700'
+                                                    : ''
+                                                %>"
+                                            >
+                                                <%= dashboardAccount.status %>
+                                            </strong>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+
+                        <!-- =====================================
+                             QUICK ACTIONS
+                        ====================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-2
+                                   md:grid-cols-3
+                                   xl:grid-cols-6
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <a
+                                href="/dashboard/local-transfer"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-primary-100"
+                                >
+                                    <i data-lucide="send"></i>
+                                </div>
+
+                                <span>
+                                    Local Transfer
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/international-transfer"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-purple-100"
+                                >
+                                    <i
+                                        data-lucide="globe"
+                                        class="text-purple-600"
+                                    ></i>
+                                </div>
+
+                                <span>
+                                    International
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/deposits"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-green-100"
+                                >
+                                    <i
+                                        data-lucide="download"
+                                        class="text-green-600"
+                                    ></i>
+                                </div>
+
+                                <span>
+                                    Deposits
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/cards"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-blue-100"
+                                >
+                                    <i
+                                        data-lucide="credit-card"
+                                        class="text-blue-600"
+                                    ></i>
+                                </div>
+
+                                <span>
+                                    Cards
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/loans"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-amber-100"
+                                >
+                                    <i
+                                        data-lucide="landmark"
+                                        class="text-amber-600"
+                                    ></i>
+                                </div>
+
+                                <span>
+                                    Loans
+                                </span>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/investments"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-emerald-100"
+                                >
+                                    <i
+                                        data-lucide="trending-up"
+                                        class="text-emerald-600"
+                                    ></i>
+                                </div>
+
+                                <span>
+                                    Investments
+                                </span>
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             CARDS + TRANSACTIONS
+                        ====================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   xl:grid-cols-2
+                                   gap-6"
+                        >
+
+                            <!-- Cards -->
+
+                            <section class="dashboard-card">
+
+                                <div class="dashboard-card-header">
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Cards
+                                    </h2>
+
+
+                                    <a
+                                        href="/dashboard/cards"
+                                        class="text-sm
+                                               font-medium
+                                               text-primary-700
+                                               hover:text-primary-900"
+                                    >
+                                        View All
+                                    </a>
+
+                                </div>
+
+
+                                <% if (
+                                    dashboardCards.length === 0
+                                ) { %>
+
+                                    <div
+                                        class="py-12
+                                               px-6
+                                               text-center"
+                                    >
+
+                                        <i
+                                            data-lucide="credit-card"
+                                            class="h-8 w-8
+                                                   mx-auto
+                                                   text-gray-400
+                                                   mb-3"
+                                        ></i>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-500"
+                                        >
+                                            No cards available
+                                        </p>
+
+                                    </div>
+
+                                <% } else { %>
+
+                                    <div
+                                        class="divide-y
+                                               divide-gray-100"
+                                    >
+
+                                        <% dashboardCards
+                                            .slice(0, 3)
+                                            .forEach(
+                                                function(card) {
+                                        %>
+
+                                            <a
+                                                href="/dashboard/cards/<%= card.id %>"
+                                                class="block
+                                                       px-6 py-4
+                                                       hover:bg-gray-50"
+                                            >
+
+                                                <div
+                                                    class="flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-4"
+                                                >
+
+                                                    <div class="min-w-0">
+
+                                                        <% if (
+                                                            card.displayName
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900
+                                                                       truncate"
+                                                            >
+                                                                <%= card.displayName %>
+                                                            </p>
+
+                                                        <% } %>
+
+
+                                                        <% if (
+                                                            card.lastFour
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1"
+                                                            >
+                                                                ••••
+                                                                <%= card.lastFour %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </div>
+
+
+                                                    <% if (
+                                                        card.status
+                                                    ) { %>
+
+                                                        <span
+                                                            class="text-xs
+                                                                   text-gray-600
+                                                                   flex-shrink-0"
+                                                        >
+                                                            <%= card.status %>
+                                                        </span>
+
+                                                    <% } %>
+
+                                                </div>
+
+                                            </a>
+
+                                        <% }); %>
+
+                                    </div>
+
+                                <% } %>
+
+                            </section>
+
+
+                            <!-- Recent Transactions -->
+
+                            <section class="dashboard-card">
+
+                                <div class="dashboard-card-header">
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Recent Transactions
+                                    </h2>
+
+
+                                    <a
+                                        href="/dashboard/transactions"
+                                        class="text-sm
+                                               font-medium
+                                               text-primary-700
+                                               hover:text-primary-900"
+                                    >
+                                        View All
+                                    </a>
+
+                                </div>
+
+
+                                <% if (
+                                    dashboardTransactions.length === 0
+                                ) { %>
+
+                                    <div
+                                        class="py-12
+                                               px-6
+                                               text-center"
+                                    >
+
+                                        <i
+                                            data-lucide="activity"
+                                            class="h-8 w-8
+                                                   mx-auto
+                                                   text-gray-400
+                                                   mb-3"
+                                        ></i>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-500"
+                                        >
+                                            No transactions available
+                                        </p>
+
+                                    </div>
+
+                                <% } else { %>
+
+                                    <div
+                                        class="divide-y
+                                               divide-gray-100"
+                                    >
+
+                                        <% dashboardTransactions
+                                            .slice(0, 5)
+                                            .forEach(
+                                                function(transaction) {
+                                        %>
+
+                                            <div class="px-6 py-4">
+
+                                                <div
+                                                    class="flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-4"
+                                                >
+
+                                                    <div class="min-w-0">
+
+                                                        <% if (
+                                                            transaction.description
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900
+                                                                       truncate"
+                                                            >
+                                                                <%= transaction.description %>
+                                                            </p>
+
+                                                        <% } %>
+
+
+                                                        <% if (
+                                                            transaction.createdAt
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1"
+                                                            >
+                                                                <%= transaction.createdAt %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </div>
+
+
+                                                    <% if (
+                                                        transaction.amount !==
+                                                            undefined &&
+                                                        transaction.amount !==
+                                                            null
+                                                    ) { %>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-900
+                                                                   flex-shrink-0"
+                                                        >
+                                                            <%= transaction.currency || "" %>
+                                                            <%= Number(
+                                                                transaction.amount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+                                                        </p>
+
+                                                    <% } %>
+
+                                                </div>
+
+                                            </div>
+
+                                        <% }); %>
+
+                                    </div>
+
+                                <% } %>
+
+                            </section>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             SUPPORT
+                        ====================================== -->
+
+                        <div
+                            class="mt-6
+                                   bg-primary-50
+                                   border
+                                   border-primary-100
+                                   rounded-xl
+                                   p-5"
+                        >
+
+                            <div class="flex items-start">
+
+                                <i
+                                    data-lucide="help-circle"
+                                    class="h-5 w-5
+                                           text-primary-600
+                                           mr-3
+                                           flex-shrink-0"
+                                ></i>
+
+
+                                <div>
+
+                                    <h2
+                                        class="text-sm
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Need assistance?
+                                    </h2>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-600
+                                               mt-1"
+                                    >
+                                        Create a support ticket
+                                        for help with your account.
+                                    </p>
+
+
+                                    <a
+                                        href="/dashboard/support/create"
+                                        class="inline-flex
+                                               items-center
+                                               text-sm
+                                               font-medium
+                                               text-primary-700
+                                               mt-3"
+                                    >
+                                        Create Support Ticket
+
+                                        <i
+                                            data-lucide="arrow-right"
+                                            class="h-4 w-4 ml-1"
+                                        ></i>
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

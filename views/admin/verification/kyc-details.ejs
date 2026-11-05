@@ -1,0 +1,1106 @@
+<%
+    const record =
+        typeof kycSubmission !== "undefined"
+            ? kycSubmission
+            : null;
+
+    const docs =
+        record &&
+        Array.isArray(
+            record.documents
+        )
+            ? record.documents
+            : [];
+
+    const recordCustomer =
+        typeof customer !== "undefined" &&
+        customer
+            ? customer
+            : (
+                record &&
+                record.customer
+                    ? record.customer
+                    : null
+            );
+
+    const recordAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    function adminKycStatusClasses(status) {
+        if (status === "Verified") {
+            return "bg-green-50 text-green-700";
+        }
+
+        if (status === "Rejected") {
+            return "bg-red-50 text-red-700";
+        }
+
+        if (status === "Needs Update") {
+            return "bg-orange-50 text-orange-700";
+        }
+
+        if (status === "Under Review") {
+            return "bg-blue-50 text-blue-700";
+        }
+
+        return "bg-yellow-50 text-yellow-700";
+    }
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/kyc"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to KYC
+
+                        </a>
+
+
+                        <!-- Messages -->
+
+                        <% if (
+                            typeof verified !== "undefined" &&
+                            verified
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Customer identity verification
+                                has been marked as verified.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof rejected !== "undefined" &&
+                            rejected
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-lg
+                                       text-sm
+                                       text-red-800"
+                            >
+                                KYC submission rejected.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof needsUpdate !== "undefined" &&
+                            needsUpdate
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-orange-50
+                                       border
+                                       border-orange-200
+                                       rounded-lg
+                                       text-sm
+                                       text-orange-800"
+                            >
+                                Customer has been asked to
+                                update the KYC submission.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof underReview !== "undefined" &&
+                            underReview
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-blue-50
+                                       border
+                                       border-blue-200
+                                       rounded-lg
+                                       text-sm
+                                       text-blue-800"
+                            >
+                                KYC submission marked as
+                                under review.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!record) { %>
+
+                            <section class="admin-panel">
+
+                                <div
+                                    class="py-16
+                                           text-center"
+                                >
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold"
+                                    >
+                                        KYC submission unavailable
+                                    </h1>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- Header -->
+
+                            <div
+                                class="flex flex-col
+                                       sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-4 mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        KYC Review
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1
+                                               break-all"
+                                    >
+                                        Submission:
+                                        <%= record._id || record.id || "" %>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="admin-badge
+                                           <%= adminKycStatusClasses(
+                                               record.status
+                                           ) %>"
+                                >
+                                    <%= record.status || "" %>
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="grid grid-cols-1
+                                       lg:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- Identity -->
+
+                                <section
+                                    class="admin-panel
+                                           lg:col-span-2"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h2>
+                                            Identity Information
+                                        </h2>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-6
+                                               grid grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <%
+                                            const infoItems = [
+                                                [
+                                                    "Legal Name",
+                                                    record.legalName
+                                                ],
+                                                [
+                                                    "Date of Birth",
+                                                    record.dateOfBirth
+                                                        ? new Date(
+                                                            record.dateOfBirth
+                                                          ).toLocaleDateString()
+                                                        : ""
+                                                ],
+                                                [
+                                                    "Nationality",
+                                                    record.nationality
+                                                ],
+                                                [
+                                                    "Country",
+                                                    record.country
+                                                ],
+                                                [
+                                                    "Document Type",
+                                                    record.documentType
+                                                ],
+                                                [
+                                                    "Document Number",
+                                                    record.documentNumber
+                                                ],
+                                                [
+                                                    "Issue Date",
+                                                    record.issueDate
+                                                        ? new Date(
+                                                            record.issueDate
+                                                          ).toLocaleDateString()
+                                                        : ""
+                                                ],
+                                                [
+                                                    "Expiry Date",
+                                                    record.expiryDate
+                                                        ? new Date(
+                                                            record.expiryDate
+                                                          ).toLocaleDateString()
+                                                        : ""
+                                                ],
+                                                [
+                                                    "Address",
+                                                    record.address
+                                                ],
+                                                [
+                                                    "City",
+                                                    record.city
+                                                ],
+                                                [
+                                                    "Region",
+                                                    record.region
+                                                ],
+                                                [
+                                                    "Postal Code",
+                                                    record.postalCode
+                                                ],
+                                                [
+                                                    "Submitted",
+                                                    record.submittedAt
+                                                        ? new Date(
+                                                            record.submittedAt
+                                                          ).toLocaleString()
+                                                        : ""
+                                                ]
+                                            ];
+                                        %>
+
+
+                                        <% infoItems.forEach(
+                                            function(item) {
+                                                if (item[1]) {
+                                        %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    <%= item[0] %>
+                                                </span>
+
+                                                <strong>
+                                                    <%= item[1] %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } }); %>
+
+
+                                        <% if (
+                                            record.reviewMessage
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       sm:col-span-2"
+                                            >
+
+                                                <span>
+                                                    Review Message
+                                                </span>
+
+                                                <strong
+                                                    class="whitespace-pre-line"
+                                                >
+                                                    <%= record.reviewMessage %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </section>
+
+
+                                <!-- Customer -->
+
+                                <aside class="space-y-6">
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Customer
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <% if (
+                                                recordCustomer
+                                            ) { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= [
+                                                        recordCustomer.firstName,
+                                                        recordCustomer.middleName,
+                                                        recordCustomer.lastName
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                    %>
+                                                </p>
+
+
+                                                <% if (
+                                                    recordCustomer.email
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-gray-500
+                                                               mt-1"
+                                                    >
+                                                        <%= recordCustomer.email %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    recordCustomer.customerId
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400
+                                                               mt-2"
+                                                    >
+                                                        <%= recordCustomer.customerId %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    recordAccount &&
+                                                    recordAccount.accountNumber
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Account Number
+                                                        </p>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+                                                            <%= recordAccount.accountNumber %>
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+
+                                    <!-- Review state -->
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Review Status
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6 space-y-4">
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Status
+                                                </span>
+
+                                                <strong>
+                                                    <%= record.status || "" %>
+                                                </strong>
+
+                                            </div>
+
+
+                                            <% if (
+                                                record.reviewedAt
+                                            ) { %>
+
+                                                <div class="admin-detail">
+
+                                                    <span>
+                                                        Last Reviewed
+                                                    </span>
+
+                                                    <strong>
+                                                        <%= new Date(
+                                                            record.reviewedAt
+                                                        ).toLocaleString() %>
+                                                    </strong>
+
+                                                </div>
+
+                                            <% } %>
+
+
+                                            <% if (
+                                                record.verifiedAt
+                                            ) { %>
+
+                                                <div class="admin-detail">
+
+                                                    <span>
+                                                        Verified
+                                                    </span>
+
+                                                    <strong>
+                                                        <%= new Date(
+                                                            record.verifiedAt
+                                                        ).toLocaleString() %>
+                                                    </strong>
+
+                                                </div>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+                                </aside>
+
+                            </div>
+
+
+                            <!-- Documents -->
+
+                            <section
+                                class="admin-panel
+                                       mt-6"
+                            >
+
+                                <div class="admin-panel-header">
+
+                                    <div>
+
+                                        <h2>
+                                            Documents
+                                        </h2>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Customer identity documents
+                                            are accessed through protected
+                                            administrator routes.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <% if (
+                                    docs.length === 0
+                                ) { %>
+
+                                    <div
+                                        class="py-10
+                                               text-center
+                                               text-sm
+                                               text-gray-500"
+                                    >
+                                        No documents available
+                                    </div>
+
+
+                                <% } else { %>
+
+                                    <div
+                                        class="p-6
+                                               grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <% docs.forEach(
+                                            function(doc) {
+
+                                                const documentUrl =
+                                                    "/admin/kyc/" +
+                                                    (
+                                                        record._id ||
+                                                        record.id
+                                                    ) +
+                                                    "/documents/" +
+                                                    encodeURIComponent(
+                                                        doc.field ||
+                                                        ""
+                                                    );
+                                        %>
+
+                                            <article
+                                                class="border
+                                                       border-gray-200
+                                                       rounded-xl
+                                                       overflow-hidden"
+                                            >
+
+                                                <div
+                                                    class="p-4
+                                                           border-b
+                                                           border-gray-200"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        <%= doc.label ||
+                                                            "Verification Document"
+                                                        %>
+                                                    </p>
+
+
+                                                    <% if (
+                                                        doc.originalName
+                                                    ) { %>
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1
+                                                                   break-all"
+                                                        >
+                                                            <%= doc.originalName %>
+                                                        </p>
+
+                                                    <% } %>
+
+                                                </div>
+
+
+                                                <div
+                                                    class="min-h-[240px]
+                                                           flex
+                                                           items-center
+                                                           justify-center
+                                                           p-4"
+                                                >
+
+                                                    <% if (
+                                                        doc.kind ===
+                                                            "image" &&
+                                                        doc.field
+                                                    ) { %>
+
+                                                        <a
+                                                            href="<%= documentUrl %>"
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                        >
+
+                                                            <img
+                                                                src="<%= documentUrl %>"
+                                                                alt="<%= doc.label || "Verification document" %>"
+                                                                class="max-w-full
+                                                                       max-h-[280px]
+                                                                       object-contain
+                                                                       rounded-lg"
+                                                            >
+
+                                                        </a>
+
+
+                                                    <% } else if (
+                                                        doc.field
+                                                    ) { %>
+
+                                                        <div class="text-center">
+
+                                                            <i
+                                                                data-lucide="file-text"
+                                                                class="h-12 w-12
+                                                                       mx-auto
+                                                                       text-red-500
+                                                                       mb-4"
+                                                            ></i>
+
+
+                                                            <a
+                                                                href="<%= documentUrl %>"
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                class="text-primary-700
+                                                                       font-medium"
+                                                            >
+                                                                Open Document
+                                                            </a>
+
+                                                        </div>
+
+                                                    <% } %>
+
+                                                </div>
+
+                                            </article>
+
+                                        <% }); %>
+
+                                    </div>
+
+                                <% } %>
+
+                            </section>
+
+
+                            <!-- Review actions -->
+
+                            <section
+                                class="admin-panel
+                                       mt-6"
+                            >
+
+                                <div class="admin-panel-header">
+
+                                    <div>
+
+                                        <h2>
+                                            Review Actions
+                                        </h2>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Update the customer's identity
+                                            verification status.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="p-6">
+
+                                    <% if (
+                                        record.status === "Pending"
+                                    ) { %>
+
+                                        <form
+                                            action="/admin/kyc/<%= record._id || record.id %>/review"
+                                            method="POST"
+                                            class="mb-6"
+                                        >
+
+                                            <label class="admin-label">
+                                                Review Note
+                                            </label>
+
+                                            <textarea
+                                                name="reviewMessage"
+                                                rows="3"
+                                                class="admin-input"
+                                                placeholder="Optional review note"
+                                            ></textarea>
+
+
+                                            <button
+                                                type="submit"
+                                                class="admin-secondary-button
+                                                       mt-3"
+                                            >
+
+                                                <i
+                                                    data-lucide="search-check"
+                                                    class="h-4 w-4"
+                                                ></i>
+
+                                                Mark Under Review
+
+                                            </button>
+
+                                        </form>
+
+                                    <% } %>
+
+
+                                    <% if (
+                                        record.status !== "Verified"
+                                    ) { %>
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   lg:grid-cols-3
+                                                   gap-5"
+                                        >
+
+                                            <!-- Verify -->
+
+                                            <form
+                                                action="/admin/kyc/<%= record._id || record.id %>/verify"
+                                                method="POST"
+                                                class="p-4
+                                                       border
+                                                       border-green-200
+                                                       bg-green-50
+                                                       rounded-xl"
+                                            >
+
+                                                <label class="admin-label">
+                                                    Verification Note
+                                                </label>
+
+                                                <textarea
+                                                    name="reviewMessage"
+                                                    rows="3"
+                                                    class="admin-input"
+                                                    placeholder="Optional verification note"
+                                                ></textarea>
+
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           justify-center
+                                                           w-full
+                                                           px-4 py-2.5
+                                                           mt-3
+                                                           bg-green-600
+                                                           hover:bg-green-700
+                                                           text-white
+                                                           text-sm
+                                                           font-semibold
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="badge-check"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Mark Verified
+
+                                                </button>
+
+                                            </form>
+
+
+                                            <!-- Needs Update -->
+
+                                            <form
+                                                action="/admin/kyc/<%= record._id || record.id %>/needs-update"
+                                                method="POST"
+                                                class="p-4
+                                                       border
+                                                       border-orange-200
+                                                       bg-orange-50
+                                                       rounded-xl"
+                                            >
+
+                                                <label class="admin-label">
+                                                    Update Instructions
+                                                </label>
+
+                                                <textarea
+                                                    name="reviewMessage"
+                                                    rows="3"
+                                                    class="admin-input"
+                                                    placeholder="Explain exactly what must be updated"
+                                                    required
+                                                ></textarea>
+
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           justify-center
+                                                           w-full
+                                                           px-4 py-2.5
+                                                           mt-3
+                                                           bg-orange-600
+                                                           hover:bg-orange-700
+                                                           text-white
+                                                           text-sm
+                                                           font-semibold
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="refresh-cw"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Request Update
+
+                                                </button>
+
+                                            </form>
+
+
+                                            <!-- Reject -->
+
+                                            <form
+                                                action="/admin/kyc/<%= record._id || record.id %>/reject"
+                                                method="POST"
+                                                class="p-4
+                                                       border
+                                                       border-red-200
+                                                       bg-red-50
+                                                       rounded-xl"
+                                            >
+
+                                                <label class="admin-label">
+                                                    Rejection Reason
+                                                </label>
+
+                                                <textarea
+                                                    name="reviewMessage"
+                                                    rows="3"
+                                                    class="admin-input"
+                                                    placeholder="Explain why the verification is rejected"
+                                                    required
+                                                ></textarea>
+
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           justify-center
+                                                           w-full
+                                                           px-4 py-2.5
+                                                           mt-3
+                                                           bg-red-600
+                                                           hover:bg-red-700
+                                                           text-white
+                                                           text-sm
+                                                           font-semibold
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="circle-x"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Reject Verification
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+
+
+                                    <% } else { %>
+
+                                        <div
+                                            class="p-4
+                                                   bg-green-50
+                                                   border
+                                                   border-green-200
+                                                   rounded-lg"
+                                        >
+
+                                            <div class="flex items-start">
+
+                                                <i
+                                                    data-lucide="badge-check"
+                                                    class="h-5 w-5
+                                                           text-green-600
+                                                           mr-3
+                                                           mt-0.5"
+                                                ></i>
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-green-800"
+                                                    >
+                                                        Identity Verified
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-green-700
+                                                               mt-1"
+                                                    >
+                                                        No additional
+                                                        verification action
+                                                        is currently required.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

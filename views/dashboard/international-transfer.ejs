@@ -1,0 +1,1019 @@
+<%
+    const sourceAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data='{
+            mobileMenuOpen: false,
+
+            step: 1,
+
+            amount:
+                <%- JSON.stringify(
+                    oldForm.amount || ""
+                ) %>,
+
+            currency:
+                <%- JSON.stringify(
+                    oldForm.currency ||
+                    (
+                        sourceAccount
+                            ? sourceAccount.currency
+                            : ""
+                    )
+                ) %>,
+
+            recipientName:
+                <%- JSON.stringify(
+                    oldForm.recipientName || ""
+                ) %>,
+
+            recipientCountry:
+                <%- JSON.stringify(
+                    oldForm.recipientCountry || ""
+                ) %>,
+
+            recipientAddress:
+                <%- JSON.stringify(
+                    oldForm.recipientAddress || ""
+                ) %>,
+
+            recipientBank:
+                <%- JSON.stringify(
+                    oldForm.recipientBank || ""
+                ) %>,
+
+            bankCountry:
+                <%- JSON.stringify(
+                    oldForm.bankCountry || ""
+                ) %>,
+
+            bankAddress:
+                <%- JSON.stringify(
+                    oldForm.bankAddress || ""
+                ) %>,
+
+            recipientAccount:
+                <%- JSON.stringify(
+                    oldForm.recipientAccount || ""
+                ) %>,
+
+            iban:
+                <%- JSON.stringify(
+                    oldForm.iban || ""
+                ) %>,
+
+            swiftCode:
+                <%- JSON.stringify(
+                    oldForm.swiftCode || ""
+                ) %>,
+
+            reference:
+                <%- JSON.stringify(
+                    oldForm.reference || ""
+                ) %>,
+
+            transferPurpose:
+                <%- JSON.stringify(
+                    oldForm.transferPurpose ||
+                    oldForm.purpose ||
+                    ""
+                ) %>,
+
+            description:
+                <%- JSON.stringify(
+                    oldForm.description || ""
+                ) %>,
+
+            nextStep() {
+                if (
+                    Number(this.amount) > 0 &&
+                    this.currency &&
+                    this.recipientName.trim() &&
+                    this.recipientCountry.trim() &&
+                    this.recipientBank.trim() &&
+                    this.bankCountry.trim() &&
+                    this.recipientAccount.trim() &&
+                    this.swiftCode.trim() &&
+                    this.transferPurpose
+                ) {
+                    this.step = 2;
+                }
+            }
+        }'
+        class="dashboard-app-shell
+               flex
+               h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div
+            class="dashboard-main-column
+                   flex
+                   flex-col
+                   flex-1
+                   min-w-0
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+            <main
+                class="dashboard-main-content
+                       flex-1
+                       min-w-0
+                       overflow-y-auto"
+            >
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- Back -->
+
+                        <a
+                            href="/dashboard/transfers"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Transfers
+
+                        </a>
+
+
+                        <!-- Header -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                International Wire
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Enter international recipient
+                                and bank information.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Error -->
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3
+                                               mt-0.5"
+                                    ></i>
+
+                                    <p
+                                        class="text-sm
+                                               text-red-800"
+                                    >
+                                        <%= error %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- Source Account -->
+
+                        <% if (sourceAccount) { %>
+
+                            <section
+                                class="dashboard-card
+                                       p-5
+                                       mb-6"
+                            >
+
+                                <p
+                                    class="text-xs
+                                           text-gray-500"
+                                >
+                                    Source Account
+                                </p>
+
+                                <div
+                                    class="flex
+                                           flex-col
+                                           sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between
+                                           gap-4
+                                           mt-2"
+                                >
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-medium
+                                                   text-gray-900"
+                                        >
+                                            <%= sourceAccount.accountType || "" %>
+                                        </p>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            <%= sourceAccount.accountNumber || "" %>
+                                        </p>
+
+                                    </div>
+
+
+                                    <% if (
+                                        values &&
+                                        values.displayedBalance !== undefined &&
+                                        values.displayedBalance !== null
+                                    ) { %>
+
+                                        <div class="sm:text-right">
+
+                                            <p
+                                                class="text-xs
+                                                       text-gray-500"
+                                            >
+                                                Available Balance
+                                            </p>
+
+                                            <p
+                                                class="text-lg
+                                                       font-semibold
+                                                       text-gray-900
+                                                       mt-1"
+                                            >
+
+                                                <%= values.currency ||
+                                                    sourceAccount.currency ||
+                                                    ""
+                                                %>
+
+                                                <%= Number(
+                                                    values.displayedBalance
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+
+                                            </p>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+
+                        <!-- Transfer Form -->
+
+                        <section class="dashboard-card">
+
+                            <!--
+                                This page retains the current
+                                two-step UI. The POST target should
+                                remain aligned with the international
+                                transfer controller when that handler
+                                is enabled.
+                            -->
+
+                            <div
+                                x-show="step === 1"
+                                class="p-6"
+                            >
+
+                                <div class="mb-6">
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Recipient & Bank Information
+                                    </h2>
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Enter the external recipient
+                                        and destination bank details.
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="grid
+                                           grid-cols-1
+                                           md:grid-cols-2
+                                           gap-5"
+                                >
+
+                                    <!-- Recipient Name -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Recipient Name
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="recipientName"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Recipient Country -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Recipient Country
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="recipientCountry"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Recipient Address -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Recipient Address
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="recipientAddress"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Bank Name -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Bank Name
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="recipientBank"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Bank Country -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Bank Country
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="bankCountry"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Bank Address -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Bank Address
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="bankAddress"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Account -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Account Number
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="recipientAccount"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- IBAN -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            IBAN
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="iban"
+                                            class="dashboard-form-input"
+                                            placeholder="Optional where not applicable"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- SWIFT -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            SWIFT / BIC
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="swiftCode"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Amount -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Amount
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            step="0.01"
+                                            min="0.01"
+                                            x-model="amount"
+                                            class="dashboard-form-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Currency -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Currency
+                                        </label>
+
+                                        <select
+                                            x-model="currency"
+                                            class="dashboard-form-input"
+                                        >
+
+                                            <option value="">
+                                                Select currency
+                                            </option>
+
+                                            <option value="USD">
+                                                USD
+                                            </option>
+
+                                            <option value="GBP">
+                                                GBP
+                                            </option>
+
+                                            <option value="EUR">
+                                                EUR
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Purpose -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Purpose
+                                        </label>
+
+                                        <select
+                                            x-model="transferPurpose"
+                                            class="dashboard-form-input"
+                                        >
+
+                                            <option value="">
+                                                Select purpose
+                                            </option>
+
+                                            <option value="Personal">
+                                                Personal
+                                            </option>
+
+                                            <option value="Family Support">
+                                                Family Support
+                                            </option>
+
+                                            <option value="Business">
+                                                Business
+                                            </option>
+
+                                            <option value="Education">
+                                                Education
+                                            </option>
+
+                                            <option value="Goods / Services">
+                                                Goods / Services
+                                            </option>
+
+                                            <option value="Other">
+                                                Other
+                                            </option>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Customer Reference -->
+
+                                    <div>
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Payment Reference
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            x-model="reference"
+                                            class="dashboard-form-input"
+                                            placeholder="Optional"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Description -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            class="dashboard-form-label"
+                                        >
+                                            Description
+                                        </label>
+
+                                        <textarea
+                                            rows="4"
+                                            x-model="description"
+                                            class="dashboard-form-input
+                                                   resize-none"
+                                            placeholder="Optional transfer note"
+                                        ></textarea>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="flex
+                                           justify-end
+                                           mt-7"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="nextStep()"
+                                        class="inline-flex
+                                               items-center
+                                               justify-center
+                                               px-6 py-3
+                                               bg-primary-600
+                                               hover:bg-primary-700
+                                               text-white
+                                               text-sm
+                                               font-medium
+                                               rounded-lg"
+                                    >
+
+                                        Review Wire
+
+                                        <i
+                                            data-lucide="arrow-right"
+                                            class="h-4 w-4 ml-2"
+                                        ></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Review -->
+
+                            <div
+                                x-show="step === 2"
+                                x-cloak
+                                class="p-6"
+                            >
+
+                                <div class="mb-6">
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Review International Wire
+                                    </h2>
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Confirm the recipient,
+                                        bank and transfer information.
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="divide-y
+                                           divide-gray-100
+                                           border
+                                           border-gray-100
+                                           rounded-xl
+                                           overflow-hidden"
+                                >
+
+                                    <div class="transfer-review-row">
+                                        <span>Recipient</span>
+                                        <strong x-text="recipientName"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Recipient Country</span>
+                                        <strong x-text="recipientCountry"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Recipient Address</span>
+                                        <strong
+                                            class="text-right max-w-sm"
+                                            x-text="
+                                                recipientAddress ||
+                                                'Not provided'
+                                            "
+                                        ></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Bank</span>
+                                        <strong x-text="recipientBank"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Bank Country</span>
+                                        <strong x-text="bankCountry"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Bank Address</span>
+                                        <strong
+                                            class="text-right max-w-sm"
+                                            x-text="
+                                                bankAddress ||
+                                                'Not provided'
+                                            "
+                                        ></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Account</span>
+                                        <strong x-text="recipientAccount"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>IBAN</span>
+                                        <strong
+                                            x-text="
+                                                iban ||
+                                                'Not provided'
+                                            "
+                                        ></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>SWIFT / BIC</span>
+                                        <strong x-text="swiftCode"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+
+                                        <span>Amount</span>
+
+                                        <strong>
+                                            <span x-text="currency"></span>
+                                            <span x-text="amount"></span>
+                                        </strong>
+
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Purpose</span>
+                                        <strong x-text="transferPurpose"></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+                                        <span>Reference</span>
+                                        <strong
+                                            x-text="
+                                                reference ||
+                                                'Not provided'
+                                            "
+                                        ></strong>
+                                    </div>
+
+                                    <div class="transfer-review-row">
+
+                                        <span>Description</span>
+
+                                        <strong
+                                            class="text-right max-w-sm"
+                                            x-text="
+                                                description ||
+                                                'Not provided'
+                                            "
+                                        ></strong>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="mt-6
+                                           p-4
+                                           bg-blue-50
+                                           border
+                                           border-blue-100
+                                           rounded-xl"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="info"
+                                            class="h-5 w-5
+                                                   text-blue-600
+                                                   mr-3
+                                                   mt-0.5
+                                                   flex-shrink-0"
+                                        ></i>
+
+                                        <p
+                                            class="text-sm
+                                                   text-blue-800"
+                                        >
+                                            International wires require
+                                            administrator processing before
+                                            they can be completed.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="flex
+                                           flex-col-reverse
+                                           sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between
+                                           gap-3
+                                           mt-7"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="step = 1"
+                                        class="inline-flex
+                                               items-center
+                                               justify-center
+                                               px-5 py-3
+                                               border
+                                               border-gray-200
+                                               bg-white
+                                               text-gray-700
+                                               text-sm
+                                               font-medium
+                                               rounded-lg"
+                                    >
+
+                                        <i
+                                            data-lucide="arrow-left"
+                                            class="h-4 w-4 mr-2"
+                                        ></i>
+
+                                        Edit Wire
+
+                                    </button>
+
+
+                                    <!--
+                                        Kept disabled until the
+                                        international POST controller
+                                        is wired.
+                                    -->
+
+                                    <button
+                                        type="button"
+                                        disabled
+                                        class="inline-flex
+                                               items-center
+                                               justify-center
+                                               px-6 py-3
+                                               bg-primary-600
+                                               text-white
+                                               text-sm
+                                               font-medium
+                                               rounded-lg
+                                               opacity-50
+                                               cursor-not-allowed"
+                                    >
+
+                                        Submit Wire
+
+                                        <i
+                                            data-lucide="send"
+                                            class="h-4 w-4 ml-2"
+                                        ></i>
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,925 @@
+<%
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+
+    function kycDateValue(value) {
+        if (!value) {
+            return "";
+        }
+
+        const date =
+            new Date(value);
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+            return "";
+        }
+
+        return date
+            .toISOString()
+            .slice(0, 10);
+    }
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="customerKycDocuments()"
+        x-init="
+            legalName = <%- JSON.stringify(oldForm.legalName || '') %>;
+            dateOfBirth = <%- JSON.stringify(kycDateValue(oldForm.dateOfBirth)) %>;
+            nationality = <%- JSON.stringify(oldForm.nationality || '') %>;
+            country = <%- JSON.stringify(oldForm.country || '') %>;
+            address = <%- JSON.stringify(oldForm.address || '') %>;
+            city = <%- JSON.stringify(oldForm.city || '') %>;
+            region = <%- JSON.stringify(oldForm.region || '') %>;
+            postalCode = <%- JSON.stringify(oldForm.postalCode || '') %>;
+            documentType = <%- JSON.stringify(oldForm.documentType || 'national-id') %>;
+            documentNumber = <%- JSON.stringify(oldForm.documentNumber || '') %>;
+            issueDate = <%- JSON.stringify(kycDateValue(oldForm.issueDate)) %>;
+            expiryDate = <%- JSON.stringify(kycDateValue(oldForm.expiryDate)) %>;
+        "
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <a
+                            href="/dashboard/kyc"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Verification
+                        </a>
+
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl font-bold
+                                       text-gray-900"
+                            >
+                                Verify Your Identity
+                            </h1>
+
+                            <p
+                                class="text-sm text-gray-500
+                                       mt-1"
+                            >
+                                Complete your information and upload
+                                the required documents.
+                            </p>
+
+                        </div>
+
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-red-50 border
+                                       border-red-200
+                                       rounded-xl"
+                            >
+                                <p class="text-sm text-red-800">
+                                    <%= error %>
+                                </p>
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- Steps -->
+
+                        <div class="dashboard-card p-5 mb-6">
+
+                            <div class="flex items-center">
+
+                                <% [1, 2, 3].forEach(
+                                    function(number, index) {
+                                %>
+
+                                    <div
+                                        class="h-9 w-9
+                                               rounded-full
+                                               flex items-center
+                                               justify-center
+                                               text-sm font-semibold"
+                                        :class="
+                                            step >= <%= number %>
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-400'
+                                        "
+                                    >
+                                        <%= number %>
+                                    </div>
+
+                                    <% if (index < 2) { %>
+                                        <div
+                                            class="flex-1 h-px
+                                                   mx-3 bg-gray-200"
+                                        ></div>
+                                    <% } %>
+
+                                <% }); %>
+
+                            </div>
+
+                        </div>
+
+
+                        <section class="dashboard-card">
+
+                            <form
+                                action="/dashboard/kyc/submit"
+                                method="POST"
+                                enctype="multipart/form-data"
+                            >
+
+                                <!-- STEP 1 -->
+
+                                <div
+                                    x-show="step === 1"
+                                    class="p-6"
+                                >
+
+                                    <h2
+                                        class="text-lg font-semibold
+                                               text-gray-900 mb-5"
+                                    >
+                                        Personal Information
+                                    </h2>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-5"
+                                    >
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Legal Name
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="legalName"
+                                                x-model="legalName"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Date of Birth
+                                            </label>
+
+                                            <input
+                                                type="date"
+                                                name="dateOfBirth"
+                                                x-model="dateOfBirth"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Nationality
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="nationality"
+                                                x-model="nationality"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Country
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="country"
+                                                x-model="country"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div class="md:col-span-2">
+
+                                            <label class="dashboard-form-label">
+                                                Residential Address
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="address"
+                                                x-model="address"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                City
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="city"
+                                                x-model="city"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                State / Region
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="region"
+                                                x-model="region"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Postal Code
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="postalCode"
+                                                x-model="postalCode"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="flex justify-end mt-7">
+
+                                        <button
+                                            type="button"
+                                            @click="goToDocuments()"
+                                            class="inline-flex
+                                                   items-center
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   text-white
+                                                   rounded-lg"
+                                        >
+                                            Continue
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- STEP 2 -->
+
+                                <div
+                                    x-show="step === 2"
+                                    x-cloak
+                                    class="p-6"
+                                >
+
+                                    <h2
+                                        class="text-lg font-semibold
+                                               text-gray-900 mb-5"
+                                    >
+                                        Identity Documents
+                                    </h2>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2 gap-5
+                                               mb-6"
+                                    >
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Document Type
+                                            </label>
+
+                                            <select
+                                                name="documentType"
+                                                x-model="documentType"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+                                                <option value="national-id">
+                                                    National Identification
+                                                </option>
+
+                                                <option value="passport">
+                                                    Passport
+                                                </option>
+
+                                                <option value="drivers-license">
+                                                    Driver's License
+                                                </option>
+
+                                                <option value="residence-permit">
+                                                    Residence Permit
+                                                </option>
+
+                                                <option value="other">
+                                                    Other Document
+                                                </option>
+                                            </select>
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Document Number
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="documentNumber"
+                                                x-model="documentNumber"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Issue Date
+                                            </label>
+
+                                            <input
+                                                type="date"
+                                                name="issueDate"
+                                                x-model="issueDate"
+                                                class="dashboard-form-input"
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Expiry Date
+                                            </label>
+
+                                            <input
+                                                type="date"
+                                                name="expiryDate"
+                                                x-model="expiryDate"
+                                                class="dashboard-form-input"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <!-- Front -->
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Document Front
+                                            </label>
+
+                                            <label
+                                                for="customer-kyc-front"
+                                                class="kyc-upload-zone"
+                                            >
+
+                                                <input
+                                                    id="customer-kyc-front"
+                                                    type="file"
+                                                    name="documentFront"
+                                                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                                    class="hidden"
+                                                    @change="selectFile(
+                                                        $event,
+                                                        'front'
+                                                    )"
+                                                >
+
+                                                <div
+                                                    x-show="!front.file"
+                                                    class="text-center"
+                                                >
+                                                    <i
+                                                        data-lucide="upload-cloud"
+                                                        class="h-8 w-8
+                                                               mx-auto
+                                                               text-gray-400
+                                                               mb-3"
+                                                    ></i>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium
+                                                               text-gray-700"
+                                                    >
+                                                        Select front document
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400
+                                                               mt-1"
+                                                    >
+                                                        Maximum 10 MB
+                                                    </p>
+                                                </div>
+
+                                                <img
+                                                    x-show="
+                                                        front.file &&
+                                                        front.kind === 'image'
+                                                    "
+                                                    x-cloak
+                                                    :src="front.url"
+                                                    class="kyc-document-preview"
+                                                    alt="Document Front"
+                                                >
+
+                                                <div
+                                                    x-show="
+                                                        front.file &&
+                                                        front.kind === 'pdf'
+                                                    "
+                                                    x-cloak
+                                                    class="text-center"
+                                                >
+                                                    <i
+                                                        data-lucide="file-text"
+                                                        class="h-10 w-10
+                                                               mx-auto
+                                                               text-red-500
+                                                               mb-3"
+                                                    ></i>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium"
+                                                        x-text="front.name"
+                                                    ></p>
+                                                </div>
+
+                                            </label>
+
+                                            <button
+                                                x-show="front.file"
+                                                x-cloak
+                                                type="button"
+                                                @click="clearFile('front')"
+                                                class="text-xs
+                                                       text-red-600
+                                                       mt-3"
+                                            >
+                                                Remove
+                                            </button>
+
+                                        </div>
+
+
+                                        <!-- Back -->
+
+                                        <div>
+
+                                            <label class="dashboard-form-label">
+                                                Document Back
+                                            </label>
+
+                                            <label
+                                                for="customer-kyc-back"
+                                                class="kyc-upload-zone"
+                                            >
+
+                                                <input
+                                                    id="customer-kyc-back"
+                                                    type="file"
+                                                    name="documentBack"
+                                                    accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                                    class="hidden"
+                                                    @change="selectFile(
+                                                        $event,
+                                                        'back'
+                                                    )"
+                                                >
+
+                                                <div
+                                                    x-show="!back.file"
+                                                    class="text-center"
+                                                >
+
+                                                    <i
+                                                        data-lucide="upload-cloud"
+                                                        class="h-8 w-8
+                                                               mx-auto
+                                                               text-gray-400
+                                                               mb-3"
+                                                    ></i>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium
+                                                               text-gray-700"
+                                                    >
+                                                        Select back document
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400
+                                                               mt-1"
+                                                    >
+                                                        Optional for passport.
+                                                        Maximum 10 MB
+                                                    </p>
+
+                                                </div>
+
+                                                <img
+                                                    x-show="
+                                                        back.file &&
+                                                        back.kind === 'image'
+                                                    "
+                                                    x-cloak
+                                                    :src="back.url"
+                                                    class="kyc-document-preview"
+                                                    alt="Document Back"
+                                                >
+
+                                                <div
+                                                    x-show="
+                                                        back.file &&
+                                                        back.kind === 'pdf'
+                                                    "
+                                                    x-cloak
+                                                    class="text-center"
+                                                >
+                                                    <i
+                                                        data-lucide="file-text"
+                                                        class="h-10 w-10
+                                                               mx-auto
+                                                               text-red-500
+                                                               mb-3"
+                                                    ></i>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium"
+                                                        x-text="back.name"
+                                                    ></p>
+                                                </div>
+
+                                            </label>
+
+                                            <button
+                                                x-show="back.file"
+                                                x-cloak
+                                                type="button"
+                                                @click="clearFile('back')"
+                                                class="text-xs
+                                                       text-red-600
+                                                       mt-3"
+                                            >
+                                                Remove
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Additional -->
+
+                                    <div class="mt-6">
+
+                                        <label class="dashboard-form-label">
+                                            Supporting Document
+                                        </label>
+
+                                        <label
+                                            for="customer-kyc-additional"
+                                            class="kyc-additional-upload"
+                                        >
+
+                                            <input
+                                                id="customer-kyc-additional"
+                                                type="file"
+                                                name="supportingDocument"
+                                                accept=".jpg,.jpeg,.png,.webp,.pdf"
+                                                class="hidden"
+                                                @change="selectFile(
+                                                    $event,
+                                                    'additional'
+                                                )"
+                                            >
+
+                                            <span
+                                                class="text-sm
+                                                       text-gray-700"
+                                                x-text="
+                                                    additional.file
+                                                        ? additional.name
+                                                        : 'Select optional supporting file'
+                                                "
+                                            ></span>
+
+                                            <span
+                                                class="text-sm
+                                                       font-medium
+                                                       text-primary-700"
+                                            >
+                                                Browse
+                                            </span>
+
+                                        </label>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-400
+                                                   mt-2"
+                                        >
+                                            Maximum 10 MB
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        class="flex justify-between
+                                               gap-3 mt-7"
+                                    >
+
+                                        <button
+                                            type="button"
+                                            @click="previousStep()"
+                                            class="inline-flex
+                                                   px-5 py-3
+                                                   border
+                                                   border-gray-200
+                                                   bg-white
+                                                   rounded-lg"
+                                        >
+                                            Back
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            @click="goToReview()"
+                                            class="inline-flex
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   text-white
+                                                   rounded-lg"
+                                        >
+                                            Review
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- STEP 3 -->
+
+                                <div
+                                    x-show="step === 3"
+                                    x-cloak
+                                    class="p-6"
+                                >
+
+                                    <h2
+                                        class="text-lg font-semibold
+                                               text-gray-900 mb-6"
+                                    >
+                                        Review Verification
+                                    </h2>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <% [
+                                            ["Legal Name", "legalName"],
+                                            ["Date of Birth", "dateOfBirth"],
+                                            ["Nationality", "nationality"],
+                                            ["Country", "country"],
+                                            ["Address", "address"],
+                                            ["City", "city"],
+                                            ["State / Region", "region"],
+                                            ["Postal Code", "postalCode"],
+                                            ["Document Type", "documentType"],
+                                            ["Document Number", "documentNumber"],
+                                            ["Front Document", "front.name"],
+                                            ["Back Document", "back.name"]
+                                        ].forEach(function(item) { %>
+
+                                            <div>
+
+                                                <p class="text-xs text-gray-400">
+                                                    <%= item[0] %>
+                                                </p>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-medium
+                                                           text-gray-800
+                                                           mt-1"
+                                                    x-text="<%= item[1] %>"
+                                                ></p>
+
+                                            </div>
+
+                                        <% }); %>
+
+                                    </div>
+
+
+                                    <div
+                                        x-show="additional.file"
+                                        class="mt-6"
+                                    >
+                                        <p class="text-xs text-gray-400">
+                                            Supporting Document
+                                        </p>
+
+                                        <p
+                                            class="text-sm
+                                                   font-medium
+                                                   text-gray-800
+                                                   mt-1"
+                                            x-text="additional.name"
+                                        ></p>
+                                    </div>
+
+
+                                    <div
+                                        class="flex justify-between
+                                               gap-3 mt-7"
+                                    >
+
+                                        <button
+                                            type="button"
+                                            @click="previousStep()"
+                                            class="inline-flex
+                                                   px-5 py-3
+                                                   border
+                                                   border-gray-200
+                                                   bg-white
+                                                   rounded-lg"
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex
+                                                   items-center
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   text-white
+                                                   rounded-lg"
+                                        >
+                                            Submit Verification
+
+                                            <i
+                                                data-lucide="send"
+                                                class="h-4 w-4 ml-2"
+                                            ></i>
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

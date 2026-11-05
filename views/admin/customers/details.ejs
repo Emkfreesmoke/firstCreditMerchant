@@ -1,0 +1,981 @@
+<%
+    const customerRecord =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const accountRecord =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+
+    const kycRecord =
+        typeof kyc !== "undefined"
+            ? kyc
+            : null;
+
+    const customerTransactions =
+        typeof transactions !== "undefined" &&
+        Array.isArray(transactions)
+            ? transactions
+            : [];
+
+    const customerCards =
+        typeof cards !== "undefined" &&
+        Array.isArray(cards)
+            ? cards
+            : [];
+
+    const customerLoans =
+        typeof loans !== "undefined" &&
+        Array.isArray(loans)
+            ? loans
+            : [];
+
+    const customerInvestments =
+        typeof investments !== "undefined" &&
+        Array.isArray(investments)
+            ? investments
+            : [];
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             DESKTOP SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 MAIN CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =============================
+                             BACK LINK
+                        ============================== -->
+
+                        <div class="mb-6">
+
+                            <a
+                                href="/admin/customers"
+                                class="inline-flex
+                                       items-center
+                                       text-sm
+                                       font-medium
+                                       text-gray-500
+                                       hover:text-gray-700"
+                            >
+
+                                <i
+                                    data-lucide="arrow-left"
+                                    class="h-4 w-4 mr-2"
+                                ></i>
+
+                                Back to Customers
+
+                            </a>
+
+                        </div>
+
+
+                        <% if (!customerRecord) { %>
+
+                            <!-- =========================
+                                 CUSTOMER UNAVAILABLE
+                            ========================== -->
+
+                            <section
+                                class="w-full
+                                       bg-white
+                                       border
+                                       border-gray-100
+                                       rounded-xl
+                                       shadow-sm
+                                       py-16
+                                       px-6
+                                       text-center"
+                            >
+
+                                <i
+                                    data-lucide="user-x"
+                                    class="h-10 w-10
+                                           mx-auto
+                                           text-gray-400
+                                           mb-4"
+                                ></i>
+
+                                <h1
+                                    class="text-xl
+                                           font-semibold
+                                           text-gray-900"
+                                >
+                                    Customer unavailable
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-2"
+                                >
+                                    The requested customer record
+                                    is not available.
+                                </p>
+
+                            </section>
+
+                        <% } else { %>
+
+
+                            <!-- =================================
+                                 CUSTOMER HEADER
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       lg:justify-between
+                                       gap-5
+                                       mb-6"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-center
+                                           min-w-0"
+                                >
+
+                                    <!-- Avatar -->
+
+                                    <div
+                                        class="h-16
+                                               w-16
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="user"
+                                            class="h-8
+                                                   w-8
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <!-- Customer Identity -->
+
+                                    <div
+                                        class="ml-4
+                                               min-w-0"
+                                    >
+
+                                        <h1
+                                            class="text-2xl
+                                                   font-bold
+                                                   text-gray-900
+                                                   break-words"
+                                        >
+                                            <%= customerRecord.fullName ||
+                                                [
+                                                    customerRecord.firstName,
+                                                    customerRecord.middleName,
+                                                    customerRecord.lastName
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" ")
+                                            %>
+                                        </h1>
+
+
+                                        <% if (
+                                            customerRecord.customerId
+                                        ) { %>
+
+                                            <p
+                                                class="text-sm
+                                                       text-gray-500
+                                                       mt-1
+                                                       break-all"
+                                            >
+                                                Customer ID:
+                                                <%= customerRecord.customerId %>
+                                            </p>
+
+                                        <% } else { %>
+
+                                            <p
+                                                class="text-sm
+                                                       text-gray-400
+                                                       mt-1"
+                                            >
+                                                Customer ID pending
+                                            </p>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            customerRecord.email
+                                        ) { %>
+
+                                            <p
+                                                class="text-sm
+                                                       text-gray-500
+                                                       mt-1
+                                                       break-all"
+                                            >
+                                                <%= customerRecord.email %>
+                                            </p>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Actions -->
+
+                                <% if (customerRecord.id) { %>
+
+                                    <div
+                                        class="flex
+                                               flex-col
+                                               sm:flex-row
+                                               gap-2
+                                               w-full
+                                               lg:w-auto
+                                               lg:flex-shrink-0"
+                                    >
+
+                                        <a
+                                            href="/admin/customers/<%= customerRecord.id %>/financial-values"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-4
+                                                   py-2.5
+                                                   border
+                                                   border-gray-200
+                                                   bg-white
+                                                   text-gray-700
+                                                   text-sm
+                                                   font-medium
+                                                   rounded-lg
+                                                   hover:bg-gray-50"
+                                        >
+
+                                            <i
+                                                data-lucide="sliders-horizontal"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Financial Values
+
+                                        </a>
+
+
+                                        <a
+                                            href="/admin/customers/<%= customerRecord.id %>/edit"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-4
+                                                   py-2.5
+                                                   bg-primary-600
+                                                   hover:bg-primary-700
+                                                   text-white
+                                                   text-sm
+                                                   font-medium
+                                                   rounded-lg"
+                                        >
+
+                                            <i
+                                                data-lucide="pencil"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Edit Customer
+
+                                        </a>
+
+                                    </div>
+
+                                <% } %>
+
+                            </section>
+
+
+                            <!-- =================================
+                                 STATUS SUMMARY
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       grid
+                                       grid-cols-1
+                                       sm:grid-cols-2
+                                       xl:grid-cols-4
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <!-- Customer Status -->
+
+                                <div class="admin-mini-stat min-w-0">
+
+                                    <p>
+                                        Customer Status
+                                    </p>
+
+                                    <strong
+                                        class="break-words"
+                                    >
+                                        <%= customerRecord.status ||
+                                            "Unavailable"
+                                        %>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Account Type -->
+
+                                <div class="admin-mini-stat min-w-0">
+
+                                    <p>
+                                        Account Type
+                                    </p>
+
+                                    <strong
+                                        class="break-words"
+                                    >
+                                        <%= accountRecord
+                                            ? accountRecord.accountType ||
+                                                "Unavailable"
+                                            : "Unavailable"
+                                        %>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- Currency -->
+
+                                <div class="admin-mini-stat min-w-0">
+
+                                    <p>
+                                        Currency
+                                    </p>
+
+                                    <strong>
+                                        <%= accountRecord
+                                            ? accountRecord.currency ||
+                                                "Unavailable"
+                                            : "Unavailable"
+                                        %>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- KYC -->
+
+                                <div class="admin-mini-stat min-w-0">
+
+                                    <p>
+                                        KYC Status
+                                    </p>
+
+                                    <strong
+                                        class="break-words"
+                                    >
+                                        <%= kycRecord
+                                            ? kycRecord.status ||
+                                                "Not Submitted"
+                                            : "Not Submitted"
+                                        %>
+                                    </strong>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- =================================
+                                 CUSTOMER / ACCOUNT INFORMATION
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       grid
+                                       grid-cols-1
+                                       xl:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- =========================
+                                     CUSTOMER INFORMATION
+                                ========================== -->
+
+                                <div
+                                    class="admin-panel
+                                           xl:col-span-2
+                                           min-w-0"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Customer Information
+                                        </h3>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-5
+                                               sm:p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-x-8
+                                               gap-y-6"
+                                    >
+
+                                        <% [
+                                            ["First Name", customerRecord.firstName],
+                                            ["Middle Name", customerRecord.middleName],
+                                            ["Last Name", customerRecord.lastName],
+                                            ["Username", customerRecord.username],
+                                            ["Email Address", customerRecord.email],
+                                            ["Phone Number", customerRecord.phone],
+                                            ["Country", customerRecord.country],
+                                            ["Created", customerRecord.createdAt]
+                                        ].forEach(function(item) {
+
+                                            if (
+                                                item[1] !== undefined &&
+                                                item[1] !== null &&
+                                                item[1] !== ""
+                                            ) {
+                                        %>
+
+                                            <div
+                                                class="admin-detail
+                                                       min-w-0"
+                                            >
+
+                                                <span>
+                                                    <%= item[0] %>
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= item[1] %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } }); %>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- =========================
+                                     ACCOUNT
+                                ========================== -->
+
+                                <div
+                                    class="admin-panel
+                                           min-w-0"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Account
+                                        </h3>
+
+                                    </div>
+
+
+                                    <% if (accountRecord) { %>
+
+                                        <div
+                                            class="p-5
+                                                   sm:p-6
+                                                   space-y-5"
+                                        >
+
+                                            <% [
+                                                ["Account Number", accountRecord.accountNumber],
+                                                ["Account Type", accountRecord.accountType],
+                                                ["Currency", accountRecord.currency],
+                                                ["Status", accountRecord.status]
+                                            ].forEach(function(item) {
+
+                                                if (
+                                                    item[1] !== undefined &&
+                                                    item[1] !== null &&
+                                                    item[1] !== ""
+                                                ) {
+                                            %>
+
+                                                <div
+                                                    class="admin-detail
+                                                           min-w-0"
+                                                >
+
+                                                    <span>
+                                                        <%= item[0] %>
+                                                    </span>
+
+                                                    <strong
+                                                        class="block
+                                                               break-all"
+                                                    >
+                                                        <%= item[1] %>
+                                                    </strong>
+
+                                                </div>
+
+                                            <% } }); %>
+
+                                        </div>
+
+                                    <% } else { %>
+
+                                        <div
+                                            class="p-6
+                                                   text-sm
+                                                   text-gray-500"
+                                        >
+
+                                            No customer account
+                                            has been created yet.
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- =================================
+                                 ADDRESS
+                            ================================== -->
+
+                            <% if (
+                                customerRecord.address ||
+                                customerRecord.city ||
+                                customerRecord.region ||
+                                customerRecord.postalCode ||
+                                customerRecord.country
+                            ) { %>
+
+                                <section
+                                    class="admin-panel
+                                           w-full
+                                           mt-6"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Address
+                                        </h3>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-5
+                                               sm:p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               lg:grid-cols-3
+                                               gap-6"
+                                    >
+
+                                        <% [
+                                            ["Address", customerRecord.address],
+                                            ["City", customerRecord.city],
+                                            ["State / Region", customerRecord.region],
+                                            ["Postal Code", customerRecord.postalCode],
+                                            ["Country", customerRecord.country]
+                                        ].forEach(function(item) {
+
+                                            if (
+                                                item[1] !== undefined &&
+                                                item[1] !== null &&
+                                                item[1] !== ""
+                                            ) {
+                                        %>
+
+                                            <div
+                                                class="admin-detail
+                                                       min-w-0"
+                                            >
+
+                                                <span>
+                                                    <%= item[0] %>
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= item[1] %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } }); %>
+
+                                    </div>
+
+                                </section>
+
+                            <% } %>
+
+
+                            <!-- =================================
+                                 FINANCIAL VALUES
+                            ================================== -->
+
+                            <% if (values) { %>
+
+                                <section
+                                    class="admin-panel
+                                           w-full
+                                           mt-6"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Financial Values
+                                        </h3>
+
+
+                                        <% if (
+                                            customerRecord.id
+                                        ) { %>
+
+                                            <a
+                                                href="/admin/customers/<%= customerRecord.id %>/financial-values"
+                                                class="font-medium"
+                                            >
+                                                Manage
+                                            </a>
+
+                                        <% } %>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-5
+                                               sm:p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               xl:grid-cols-4
+                                               gap-6"
+                                    >
+
+                                        <% [
+                                            ["Displayed Balance", "displayedBalance"],
+                                            ["Monthly Income", "monthlyIncome"],
+                                            ["Monthly Outgoing", "monthlyOutgoing"],
+                                            ["Transaction Limit", "transactionLimit"]
+                                        ].forEach(function(item) {
+
+                                            if (
+                                                values[item[1]] !== undefined &&
+                                                values[item[1]] !== null
+                                            ) {
+                                        %>
+
+                                            <div
+                                                class="admin-detail
+                                                       min-w-0"
+                                            >
+
+                                                <span>
+                                                    <%= item[0] %>
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           text-base
+                                                           break-words"
+                                                >
+
+                                                    <%= values.currency ||
+                                                        (
+                                                            accountRecord
+                                                                ? accountRecord.currency || ""
+                                                                : ""
+                                                        )
+                                                    %>
+
+                                                    <%= Number(
+                                                        values[item[1]]
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                </strong>
+
+                                            </div>
+
+                                        <% } }); %>
+
+                                    </div>
+
+                                </section>
+
+                            <% } %>
+
+
+                            <!-- =================================
+                                 LINKED RECORD COUNTS
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       grid
+                                       grid-cols-1
+                                       sm:grid-cols-2
+                                       xl:grid-cols-4
+                                       gap-4
+                                       mt-6
+                                       pb-8"
+                            >
+
+                                <!-- Transactions -->
+
+                                <div class="admin-mini-stat">
+
+                                    <div
+                                        class="flex
+                                               items-center
+                                               justify-between
+                                               gap-4"
+                                    >
+
+                                        <div>
+
+                                            <p>
+                                                Transactions
+                                            </p>
+
+                                            <strong>
+                                                <%= customerTransactions.length %>
+                                            </strong>
+
+                                        </div>
+
+                                        <i
+                                            data-lucide="receipt-text"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-300
+                                                   flex-shrink-0"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Cards -->
+
+                                <div class="admin-mini-stat">
+
+                                    <div
+                                        class="flex
+                                               items-center
+                                               justify-between
+                                               gap-4"
+                                    >
+
+                                        <div>
+
+                                            <p>
+                                                Cards
+                                            </p>
+
+                                            <strong>
+                                                <%= customerCards.length %>
+                                            </strong>
+
+                                        </div>
+
+                                        <i
+                                            data-lucide="credit-card"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-300
+                                                   flex-shrink-0"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Loans -->
+
+                                <div class="admin-mini-stat">
+
+                                    <div
+                                        class="flex
+                                               items-center
+                                               justify-between
+                                               gap-4"
+                                    >
+
+                                        <div>
+
+                                            <p>
+                                                Loans
+                                            </p>
+
+                                            <strong>
+                                                <%= customerLoans.length %>
+                                            </strong>
+
+                                        </div>
+
+                                        <i
+                                            data-lucide="landmark"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-300
+                                                   flex-shrink-0"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Investments -->
+
+                                <div class="admin-mini-stat">
+
+                                    <div
+                                        class="flex
+                                               items-center
+                                               justify-between
+                                               gap-4"
+                                    >
+
+                                        <div>
+
+                                            <p>
+                                                Investments
+                                            </p>
+
+                                            <strong>
+                                                <%= customerInvestments.length %>
+                                            </strong>
+
+                                        </div>
+
+                                        <i
+                                            data-lucide="trending-up"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-300
+                                                   flex-shrink-0"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

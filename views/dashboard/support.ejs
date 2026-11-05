@@ -1,0 +1,374 @@
+<%
+    const ticketRecords =
+        typeof supportTickets !== "undefined" &&
+        Array.isArray(supportTickets)
+            ? supportTickets
+            : [];
+
+    const openTickets =
+        ticketRecords.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "Open"
+        );
+
+    const progressTickets =
+        ticketRecords.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "In Progress"
+        );
+
+    const resolvedTickets =
+        ticketRecords.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "Resolved"
+        );
+
+    function ticketStatusClasses(status) {
+        if (status === "Open") {
+            return "bg-blue-100 text-blue-700";
+        }
+
+        if (status === "In Progress") {
+            return "bg-yellow-100 text-yellow-700";
+        }
+
+        if (status === "Resolved") {
+            return "bg-green-100 text-green-700";
+        }
+
+        return "bg-gray-100 text-gray-700";
+    }
+
+    function ticketPriorityClasses(priority) {
+        if (priority === "Urgent") {
+            return "bg-red-100 text-red-700";
+        }
+
+        if (priority === "High") {
+            return "bg-orange-100 text-orange-700";
+        }
+
+        return "bg-gray-100 text-gray-600";
+    }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            ticketFilter: 'all'
+        }"
+        class="dashboard-app-shell flex h-screen overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div class="dashboard-main-column flex flex-col flex-1 overflow-hidden">
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+
+                        <% if (
+                            typeof created !== "undefined" &&
+                            created
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-green-50 border
+                                       border-green-200 rounded-xl"
+                            >
+                                <p class="text-sm text-green-800">
+                                    Support ticket created successfully.
+                                </p>
+                            </div>
+
+                        <% } %>
+
+                        <div
+                            class="flex flex-col sm:flex-row
+                                   sm:items-center sm:justify-between
+                                   gap-4 mb-6"
+                        >
+
+                            <div>
+
+                                <h1 class="text-2xl font-bold text-gray-900">
+                                    Support Tickets
+                                </h1>
+
+                                <p class="text-sm text-gray-500 mt-1">
+                                    Create and review your support requests.
+                                </p>
+
+                            </div>
+
+                            <a
+                                href="/dashboard/support/create"
+                                class="inline-flex items-center
+                                       px-4 py-2.5
+                                       bg-primary-600 hover:bg-primary-700
+                                       text-white text-sm font-medium
+                                       rounded-lg"
+                            >
+                                <i data-lucide="plus" class="h-4 w-4 mr-2"></i>
+                                New Ticket
+                            </a>
+
+                        </div>
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2
+                                   xl:grid-cols-4 gap-4 mb-6"
+                        >
+
+                            <div class="dashboard-stat-card">
+                                <div>
+                                    <p class="dashboard-stat-label">Total Tickets</p>
+                                    <p class="dashboard-stat-value">
+                                        <%= ticketRecords.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-stat-card">
+                                <div>
+                                    <p class="dashboard-stat-label">Open</p>
+                                    <p class="dashboard-stat-value text-blue-700">
+                                        <%= openTickets.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-stat-card">
+                                <div>
+                                    <p class="dashboard-stat-label">In Progress</p>
+                                    <p class="dashboard-stat-value text-yellow-700">
+                                        <%= progressTickets.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="dashboard-stat-card">
+                                <div>
+                                    <p class="dashboard-stat-label">Resolved</p>
+                                    <p class="dashboard-stat-value text-green-700">
+                                        <%= resolvedTickets.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="dashboard-card p-4 mb-6">
+
+                            <div class="flex flex-wrap gap-2">
+
+                                <% [
+                                    ["all", "All"],
+                                    ["open", "Open"],
+                                    ["progress", "In Progress"],
+                                    ["resolved", "Resolved"],
+                                    ["closed", "Closed"]
+                                ].forEach(function(item) { %>
+
+                                    <button
+                                        type="button"
+                                        @click="ticketFilter = '<%= item[0] %>'"
+                                        :class="
+                                            ticketFilter === '<%= item[0] %>'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4 py-2 rounded-lg
+                                               text-sm font-medium"
+                                    >
+                                        <%= item[1] %>
+                                    </button>
+
+                                <% }); %>
+
+                            </div>
+
+                        </div>
+
+                        <section class="dashboard-card">
+
+                            <% if (!ticketRecords.length) { %>
+
+                                <div class="py-14 px-6 text-center">
+
+                                    <i
+                                        data-lucide="messages-square"
+                                        class="h-10 w-10 mx-auto
+                                               text-gray-400 mb-4"
+                                    ></i>
+
+                                    <h2 class="text-base font-semibold text-gray-900">
+                                        No support tickets yet
+                                    </h2>
+
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        Create a ticket when assistance is required.
+                                    </p>
+
+                                    <a
+                                        href="/dashboard/support/create"
+                                        class="inline-flex px-4 py-2.5 mt-5
+                                               bg-primary-600 text-white
+                                               text-sm font-medium rounded-lg"
+                                    >
+                                        Create Ticket
+                                    </a>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <div class="divide-y divide-gray-100">
+
+                                    <% ticketRecords.forEach(function(ticket) {
+                                        const ticketId =
+                                            ticket._id ||
+                                            ticket.id;
+                                    %>
+
+                                        <a
+                                            href="/dashboard/support/<%= ticketId %>"
+                                            x-show="
+                                                ticketFilter === 'all' ||
+
+                                                (
+                                                    ticketFilter === 'open' &&
+                                                    '<%= ticket.status || "" %>' === 'Open'
+                                                ) ||
+
+                                                (
+                                                    ticketFilter === 'progress' &&
+                                                    '<%= ticket.status || "" %>' === 'In Progress'
+                                                ) ||
+
+                                                (
+                                                    ticketFilter === 'resolved' &&
+                                                    '<%= ticket.status || "" %>' === 'Resolved'
+                                                ) ||
+
+                                                (
+                                                    ticketFilter === 'closed' &&
+                                                    '<%= ticket.status || "" %>' === 'Closed'
+                                                )
+                                            "
+                                            class="block p-5 hover:bg-gray-50"
+                                        >
+
+                                            <div
+                                                class="flex flex-col sm:flex-row
+                                                       sm:items-start
+                                                       sm:justify-between
+                                                       gap-4"
+                                            >
+
+                                                <div class="min-w-0">
+
+                                                    <div
+                                                        class="flex flex-wrap
+                                                               items-center gap-2"
+                                                    >
+
+                                                        <h3
+                                                            class="text-sm font-semibold
+                                                                   text-gray-900"
+                                                        >
+                                                            <%= ticket.subject || "Support Ticket" %>
+                                                        </h3>
+
+                                                        <span
+                                                            class="inline-flex px-2 py-0.5
+                                                                   rounded-full text-[11px]
+                                                                   <%= ticketPriorityClasses(
+                                                                       ticket.priority
+                                                                   ) %>"
+                                                        >
+                                                            <%= ticket.priority || "Normal" %>
+                                                        </span>
+
+                                                    </div>
+
+                                                    <p class="text-xs text-gray-500 mt-1">
+                                                        <%= ticket.reference || "" %>
+                                                        <% if (ticket.category) { %>
+                                                            · <%= ticket.category %>
+                                                        <% } %>
+                                                    </p>
+
+                                                    <% if (ticket.lastMessageAt) { %>
+                                                        <p class="text-xs text-gray-400 mt-2">
+                                                            Last activity:
+                                                            <%= new Date(
+                                                                ticket.lastMessageAt
+                                                            ).toLocaleString() %>
+                                                        </p>
+                                                    <% } %>
+
+                                                </div>
+
+                                                <span
+                                                    class="inline-flex self-start
+                                                           px-2.5 py-1
+                                                           rounded-full text-xs
+                                                           font-medium
+                                                           <%= ticketStatusClasses(
+                                                               ticket.status
+                                                           ) %>"
+                                                >
+                                                    <%= ticket.status || "" %>
+                                                </span>
+
+                                            </div>
+
+                                        </a>
+
+                                    <% }); %>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

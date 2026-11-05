@@ -1,0 +1,392 @@
+<%
+    const customerRecords =
+        typeof customers !== "undefined" &&
+        Array.isArray(customers)
+            ? customers
+            : [];
+
+    const selectedId =
+        typeof selectedCustomerId !== "undefined"
+            ? selectedCustomerId
+            : null;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            depositMethod: '',
+            cryptoAsset: ''
+        }"
+        class="flex h-screen overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+        <div class="flex flex-col flex-1 overflow-hidden">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+            <main class="flex-1 overflow-y-auto">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl mx-auto
+                               px-4 sm:px-6 lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/deposits"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500 mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Deposits
+                        </a>
+
+
+                        <div class="mb-6">
+                            <h1 class="text-2xl font-bold text-gray-900">
+                                Record Deposit
+                            </h1>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Create a deposit record for a customer.
+                            </p>
+                        </div>
+
+
+                        <div
+                            class="bg-white border border-gray-100
+                                   rounded-xl shadow-sm overflow-hidden"
+                        >
+
+                            <form class="p-6">
+
+                                <div
+                                    class="grid grid-cols-1
+                                           md:grid-cols-2 gap-5"
+                                >
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Customer
+                                        </label>
+
+                                        <select
+                                            name="customerId"
+                                            class="admin-input"
+                                        >
+                                            <option value="">
+                                                Select customer
+                                            </option>
+
+                                            <% customerRecords.forEach(
+                                                function(customer) {
+                                            %>
+
+                                                <% if (customer.id) { %>
+                                                    <option
+                                                        value="<%= customer.id %>"
+                                                        <%= String(customer.id) === String(selectedId)
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        <%= customer.fullName || customer.customerId || customer.id %>
+                                                    </option>
+                                                <% } %>
+
+                                            <% }); %>
+                                        </select>
+                                    </div>
+
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Deposit Method
+                                        </label>
+
+                                        <select
+                                            name="method"
+                                            x-model="depositMethod"
+                                            class="admin-input"
+                                        >
+                                            <option value="">
+                                                Select method
+                                            </option>
+                                            <option value="Bank Transfer">
+                                                Bank Transfer
+                                            </option>
+                                            <option value="Cash Deposit">
+                                                Cash Deposit
+                                            </option>
+                                            <option value="Wire Transfer">
+                                                Wire Transfer
+                                            </option>
+                                            <option value="Check">
+                                                Check
+                                            </option>
+                                            <option value="Cryptocurrency">
+                                                Cryptocurrency
+                                            </option>
+                                            <option value="Other">
+                                                Other
+                                            </option>
+                                        </select>
+                                    </div>
+
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Amount
+                                        </label>
+
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            step="0.01"
+                                            name="amount"
+                                            class="admin-input"
+                                        >
+                                    </div>
+
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Currency
+                                        </label>
+
+                                        <select
+                                            name="currency"
+                                            class="admin-input"
+                                        >
+                                            <option value="">
+                                                Select currency
+                                            </option>
+                                            <option value="USD">USD</option>
+                                            <option value="GBP">GBP</option>
+                                            <option value="EUR">EUR</option>
+                                        </select>
+                                    </div>
+
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Reference
+                                        </label>
+
+                                        <input
+                                            type="text"
+                                            name="reference"
+                                            class="admin-input"
+                                        >
+                                    </div>
+
+
+                                    <div>
+                                        <label class="admin-label">
+                                            Status
+                                        </label>
+
+                                        <select
+                                            name="status"
+                                            class="admin-input"
+                                        >
+                                            <option value="">
+                                                Select status
+                                            </option>
+                                            <option value="Pending">
+                                                Pending
+                                            </option>
+                                            <option value="Completed">
+                                                Completed
+                                            </option>
+                                            <option value="Rejected">
+                                                Rejected
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Cryptocurrency -->
+
+                                <div
+                                    x-show="
+                                        depositMethod ===
+                                            'Cryptocurrency'
+                                    "
+                                    x-cloak
+                                    class="border-t
+                                           border-gray-100
+                                           pt-6 mt-7"
+                                >
+
+                                    <h2
+                                        class="text-sm font-semibold
+                                               text-gray-900 mb-4"
+                                    >
+                                        Cryptocurrency Deposit
+                                    </h2>
+
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               md:grid-cols-2 gap-5"
+                                    >
+
+                                        <div>
+                                            <label class="admin-label">
+                                                Cryptocurrency
+                                            </label>
+
+                                            <select
+                                                name="cryptoAsset"
+                                                x-model="cryptoAsset"
+                                                class="admin-input"
+                                            >
+                                                <option value="">
+                                                    Select cryptocurrency
+                                                </option>
+                                                <option value="BTC">
+                                                    Bitcoin (BTC)
+                                                </option>
+                                                <option value="USDT">
+                                                    USDT
+                                                </option>
+                                                <option value="ETH">
+                                                    Ethereum (ETH)
+                                                </option>
+                                            </select>
+                                        </div>
+
+
+                                        <div>
+                                            <label class="admin-label">
+                                                Crypto Amount
+                                            </label>
+
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                step="any"
+                                                name="cryptoAmount"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+
+                                        <div
+                                            x-show="
+                                                cryptoAsset === 'USDT'
+                                            "
+                                            x-cloak
+                                        >
+                                            <label class="admin-label">
+                                                USDT Network
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="cryptoNetwork"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+
+                                        <div
+                                            class="md:col-span-2"
+                                        >
+                                            <label class="admin-label">
+                                                Transaction Hash /
+                                                Blockchain Reference
+                                            </label>
+
+                                            <input
+                                                type="text"
+                                                name="transactionHash"
+                                                class="admin-input"
+                                            >
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div class="mt-6">
+                                    <label class="admin-label">
+                                        Description
+                                    </label>
+
+                                    <textarea
+                                        name="description"
+                                        rows="4"
+                                        class="admin-input resize-none"
+                                    ></textarea>
+                                </div>
+
+
+                                <div
+                                    class="flex justify-end
+                                           gap-3 mt-7"
+                                >
+                                    <a
+                                        href="/admin/deposits"
+                                        class="inline-flex
+                                               px-5 py-3
+                                               border border-gray-200
+                                               rounded-lg"
+                                    >
+                                        Cancel
+                                    </a>
+
+                                    <button
+                                        type="button"
+                                        disabled
+                                        class="inline-flex
+                                               px-6 py-3
+                                               bg-primary-600
+                                               text-white rounded-lg
+                                               opacity-50
+                                               cursor-not-allowed"
+                                    >
+                                        Record Deposit
+                                    </button>
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

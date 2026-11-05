@@ -1,0 +1,1068 @@
+<%
+    const record =
+        typeof registration !== "undefined"
+            ? registration
+            : null;
+
+    const wasApproved =
+        typeof approved !== "undefined" &&
+        approved === true;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =================================
+                             BACK
+                        ================================== -->
+
+                        <div class="mb-6">
+
+                            <a
+                                href="/admin/registrations"
+                                class="inline-flex
+                                       items-center
+                                       text-sm
+                                       font-medium
+                                       text-gray-500
+                                       hover:text-gray-700"
+                            >
+
+                                <i
+                                    data-lucide="arrow-left"
+                                    class="h-4 w-4 mr-2"
+                                ></i>
+
+                                Back to Registrations
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================
+                             APPROVAL SUCCESS
+                        ================================== -->
+
+                        <% if (wasApproved) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4
+                                       py-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-xl"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-start"
+                                >
+
+                                    <i
+                                        data-lucide="circle-check"
+                                        class="h-5
+                                               w-5
+                                               text-green-600
+                                               mr-3
+                                               mt-0.5
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-green-800"
+                                        >
+                                            Registration approved
+                                        </p>
+
+                                        <p
+                                            class="text-sm
+                                                   text-green-700
+                                                   mt-1"
+                                        >
+                                            The customer account
+                                            is now active.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!record) { %>
+
+                            <!-- =================================
+                                 REGISTRATION UNAVAILABLE
+                            ================================== -->
+
+                            <section
+                                class="admin-panel
+                                       w-full"
+                            >
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14
+                                               w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="user-x"
+                                            class="h-7
+                                                   w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900
+                                               mb-2"
+                                    >
+                                        Registration unavailable
+                                    </h1>
+
+
+                                    <p>
+                                        The requested registration
+                                        could not be found.
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+                        <% } else { %>
+
+
+                            <!-- =================================
+                                 PAGE HEADER
+                            ================================== -->
+
+                            <div
+                                class="w-full
+                                       flex
+                                       flex-col
+                                       sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <div class="min-w-0">
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        Registration Details
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Review customer registration
+                                        information and account status.
+                                    </p>
+
+                                </div>
+
+
+                                <% if (record.status) { %>
+
+                                    <span
+                                        class="admin-badge
+                                               flex-shrink-0
+
+                                               <%= record.status === "Active"
+                                                   ? "bg-green-100 text-green-700"
+                                                   : record.status === "Suspended"
+                                                   ? "bg-red-100 text-red-700"
+                                                   : "bg-yellow-100 text-yellow-700"
+                                               %>"
+                                    >
+                                        <%= record.status %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <!-- =================================
+                                 SUMMARY
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       grid
+                                       grid-cols-1
+                                       sm:grid-cols-2
+                                       xl:grid-cols-4
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <!-- EMAIL VERIFICATION -->
+
+                                <div class="admin-mini-stat">
+
+                                    <p>
+                                        Email Verification
+                                    </p>
+
+
+                                    <% if (
+                                        record.emailVerified
+                                    ) { %>
+
+                                        <div
+                                            class="flex
+                                                   items-center
+                                                   gap-2
+                                                   mt-2
+                                                   text-green-700"
+                                        >
+
+                                            <i
+                                                data-lucide="badge-check"
+                                                class="h-4
+                                                       w-4
+                                                       flex-shrink-0"
+                                            ></i>
+
+                                            <strong
+                                                class="mt-0
+                                                       text-green-700"
+                                            >
+                                                Verified
+                                            </strong>
+
+                                        </div>
+
+                                    <% } else { %>
+
+                                        <div
+                                            class="flex
+                                                   items-center
+                                                   gap-2
+                                                   mt-2
+                                                   text-yellow-700"
+                                        >
+
+                                            <i
+                                                data-lucide="clock"
+                                                class="h-4
+                                                       w-4
+                                                       flex-shrink-0"
+                                            ></i>
+
+                                            <strong
+                                                class="mt-0
+                                                       text-yellow-700"
+                                            >
+                                                Unverified
+                                            </strong>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+
+                                <!-- REQUESTED ACCOUNT -->
+
+                                <div class="admin-mini-stat">
+
+                                    <p>
+                                        Requested Account
+                                    </p>
+
+                                    <strong
+                                        class="break-words"
+                                    >
+                                        <%= record.requestedAccountType ||
+                                            "Not specified"
+                                        %>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- ROLE -->
+
+                                <div class="admin-mini-stat">
+
+                                    <p>
+                                        Role
+                                    </p>
+
+                                    <strong
+                                        class="capitalize"
+                                    >
+                                        <%= record.role || "Customer" %>
+                                    </strong>
+
+                                </div>
+
+
+                                <!-- REGISTERED -->
+
+                                <div class="admin-mini-stat">
+
+                                    <p>
+                                        Registered
+                                    </p>
+
+                                    <strong>
+
+                                        <% if (
+                                            record.createdAt
+                                        ) { %>
+
+                                            <%= new Date(
+                                                record.createdAt
+                                            ).toLocaleDateString() %>
+
+                                        <% } else { %>
+
+                                            Not available
+
+                                        <% } %>
+
+                                    </strong>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- =================================
+                                 MAIN LAYOUT
+                            ================================== -->
+
+                            <section
+                                class="w-full
+                                       grid
+                                       grid-cols-1
+                                       lg:grid-cols-3
+                                       gap-6
+                                       mb-8"
+                            >
+
+                                <!-- =================================
+                                     CUSTOMER INFORMATION
+                                ================================== -->
+
+                                <div
+                                    class="admin-panel
+                                           lg:col-span-2
+                                           min-w-0"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Customer Information
+                                        </h3>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-5
+                                               sm:p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-x-8
+                                               gap-y-6"
+                                    >
+
+                                        <!-- FIRST NAME -->
+
+                                        <% if (
+                                            record.firstName
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    First Name
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.firstName %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- MIDDLE NAME -->
+
+                                        <% if (
+                                            record.middleName
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Middle Name
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.middleName %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- LAST NAME -->
+
+                                        <% if (
+                                            record.lastName
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Last Name
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.lastName %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- USERNAME -->
+
+                                        <% if (
+                                            record.username
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Username
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.username %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- EMAIL -->
+
+                                        <% if (
+                                            record.email
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       min-w-0"
+                                            >
+
+                                                <span>
+                                                    Email Address
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-all"
+                                                >
+                                                    <%= record.email %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- PHONE -->
+
+                                        <% if (
+                                            record.phone
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Phone Number
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.phone %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- COUNTRY -->
+
+                                        <% if (
+                                            record.country
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Country
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.country %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- ACCOUNT TYPE -->
+
+                                        <% if (
+                                            record.requestedAccountType
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Requested Account Type
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-words"
+                                                >
+                                                    <%= record.requestedAccountType %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- CUSTOMER ID -->
+
+                                        <% if (
+                                            record.customerId
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Customer ID
+                                                </span>
+
+                                                <strong
+                                                    class="block
+                                                           break-all"
+                                                >
+                                                    <%= record.customerId %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- =================================
+                                     REVIEW
+                                ================================== -->
+
+                                <div
+                                    class="admin-panel
+                                           min-w-0"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <h3>
+                                            Review
+                                        </h3>
+
+                                    </div>
+
+
+                                    <div class="p-5 sm:p-6">
+
+
+                                        <!-- =================================
+                                             ACTIVE
+                                        ================================== -->
+
+                                        <% if (
+                                            record.status === "Active"
+                                        ) { %>
+
+                                            <div
+                                                class="px-4
+                                                       py-4
+                                                       bg-green-50
+                                                       border
+                                                       border-green-200
+                                                       rounded-lg"
+                                            >
+
+                                                <div
+                                                    class="flex
+                                                           items-start"
+                                                >
+
+                                                    <i
+                                                        data-lucide="circle-check"
+                                                        class="h-5
+                                                               w-5
+                                                               text-green-600
+                                                               mr-3
+                                                               mt-0.5
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-green-800"
+                                                        >
+                                                            Account Active
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-green-700
+                                                                   mt-1"
+                                                        >
+                                                            This customer
+                                                            registration
+                                                            has already
+                                                            been approved.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                        <!-- =================================
+                                             PENDING + VERIFIED
+                                        ================================== -->
+
+                                        <% } else if (
+                                            record.status === "Pending" &&
+                                            record.emailVerified === true
+                                        ) { %>
+
+                                            <div
+                                                class="px-4
+                                                       py-4
+                                                       bg-green-50
+                                                       border
+                                                       border-green-200
+                                                       rounded-lg
+                                                       mb-5"
+                                            >
+
+                                                <div
+                                                    class="flex
+                                                           items-start"
+                                                >
+
+                                                    <i
+                                                        data-lucide="badge-check"
+                                                        class="h-5
+                                                               w-5
+                                                               text-green-600
+                                                               mr-3
+                                                               mt-0.5
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-green-800"
+                                                        >
+                                                            Ready for Approval
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-green-700
+                                                                   mt-1"
+                                                        >
+                                                            The customer
+                                                            email address
+                                                            has been verified.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- APPROVE -->
+
+                                            <form
+                                                action="/admin/registrations/<%= record._id || record.id %>/approve"
+                                                method="POST"
+                                            >
+
+                                                <button
+                                                    type="submit"
+                                                    class="admin-primary-button
+                                                           w-full"
+                                                >
+
+                                                    <i
+                                                        data-lucide="user-check"
+                                                        class="h-4 w-4"
+                                                    ></i>
+
+                                                    Approve Registration
+
+                                                </button>
+
+                                            </form>
+
+
+                                        <!-- =================================
+                                             PENDING + UNVERIFIED
+                                        ================================== -->
+
+                                        <% } else if (
+                                            record.status === "Pending" &&
+                                            record.emailVerified !== true
+                                        ) { %>
+
+                                            <div
+                                                class="px-4
+                                                       py-4
+                                                       bg-yellow-50
+                                                       border
+                                                       border-yellow-200
+                                                       rounded-lg"
+                                            >
+
+                                                <div
+                                                    class="flex
+                                                           items-start"
+                                                >
+
+                                                    <i
+                                                        data-lucide="clock"
+                                                        class="h-5
+                                                               w-5
+                                                               text-yellow-600
+                                                               mr-3
+                                                               mt-0.5
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-yellow-800"
+                                                        >
+                                                            Verification Required
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-yellow-700
+                                                                   mt-1"
+                                                        >
+                                                            The customer must
+                                                            verify the email
+                                                            address before
+                                                            the registration
+                                                            can be approved.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                        <!-- =================================
+                                             SUSPENDED
+                                        ================================== -->
+
+                                        <% } else if (
+                                            record.status === "Suspended"
+                                        ) { %>
+
+                                            <div
+                                                class="px-4
+                                                       py-4
+                                                       bg-red-50
+                                                       border
+                                                       border-red-200
+                                                       rounded-lg"
+                                            >
+
+                                                <div
+                                                    class="flex
+                                                           items-start"
+                                                >
+
+                                                    <i
+                                                        data-lucide="circle-alert"
+                                                        class="h-5
+                                                               w-5
+                                                               text-red-600
+                                                               mr-3
+                                                               mt-0.5
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-red-800"
+                                                        >
+                                                            Account Suspended
+                                                        </p>
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-red-700
+                                                                   mt-1"
+                                                        >
+                                                            This customer
+                                                            account is currently
+                                                            suspended.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                        <!-- =================================
+                                             UNKNOWN STATE
+                                        ================================== -->
+
+                                        <% } else { %>
+
+                                            <div
+                                                class="px-4
+                                                       py-4
+                                                       bg-gray-50
+                                                       border
+                                                       border-gray-200
+                                                       rounded-lg"
+                                            >
+
+                                                <p
+                                                    class="text-sm
+                                                           font-medium
+                                                           text-gray-700"
+                                                >
+                                                    Registration status:
+                                                    <%= record.status ||
+                                                        "Unknown"
+                                                    %>
+                                                </p>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <!-- =================================
+                                             SECURITY NOTE
+                                        ================================== -->
+
+                                        <div
+                                            class="border-t
+                                                   border-gray-100
+                                                   mt-6
+                                                   pt-5"
+                                        >
+
+                                            <div
+                                                class="flex
+                                                       items-start"
+                                            >
+
+                                                <i
+                                                    data-lucide="shield-check"
+                                                    class="h-4
+                                                           w-4
+                                                           text-gray-400
+                                                           mr-2
+                                                           mt-0.5
+                                                           flex-shrink-0"
+                                                ></i>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500"
+                                                >
+                                                    Passwords and
+                                                    transaction PINs
+                                                    are not displayed
+                                                    in the administration
+                                                    interface.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

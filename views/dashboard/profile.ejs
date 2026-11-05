@@ -1,0 +1,806 @@
+<%
+    const profileCustomer =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const profileAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const profileKyc =
+        typeof kyc !== "undefined"
+            ? kyc
+            : null;
+
+    function profileStatusClasses(status) {
+        if (
+            status === "Active" ||
+            status === "Verified"
+        ) {
+            return "bg-green-100 text-green-700";
+        }
+
+        if (
+            status === "Pending" ||
+            status === "Under Review"
+        ) {
+            return "bg-yellow-100 text-yellow-700";
+        }
+
+        if (
+            status === "Suspended" ||
+            status === "Rejected"
+        ) {
+            return "bg-red-100 text-red-700";
+        }
+
+        if (status === "Needs Update") {
+            return "bg-orange-100 text-orange-700";
+        }
+
+        return "bg-gray-100 text-gray-700";
+    }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <% if (
+                            typeof updated !== "undefined" &&
+                            updated
+                        ) { %>
+
+                            <div
+                                class="mb-6 px-4 py-4
+                                       bg-green-50
+                                       border border-green-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-check"
+                                        class="h-5 w-5
+                                               text-green-600
+                                               mr-3 mt-0.5"
+                                    ></i>
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-green-800"
+                                        >
+                                            Profile updated
+                                        </p>
+
+                                        <p
+                                            class="text-sm
+                                                   text-green-700
+                                                   mt-1"
+                                        >
+                                            Your profile information
+                                            has been saved successfully.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- Header -->
+
+                        <div
+                            class="flex flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4 mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    My Profile
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review your profile and
+                                    account information.
+                                </p>
+
+                            </div>
+
+                            <% if (profileCustomer) { %>
+
+                                <a
+                                    href="/dashboard/profile/edit"
+                                    class="inline-flex items-center
+                                           px-4 py-2.5
+                                           bg-primary-600
+                                           hover:bg-primary-700
+                                           text-white
+                                           text-sm font-medium
+                                           rounded-lg"
+                                >
+
+                                    <i
+                                        data-lucide="pencil"
+                                        class="h-4 w-4 mr-2"
+                                    ></i>
+
+                                    Edit Profile
+
+                                </a>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <% if (!profileCustomer) { %>
+
+                            <section class="dashboard-card">
+
+                                <div class="py-16 px-6 text-center">
+
+                                    <div
+                                        class="h-16 w-16 mx-auto
+                                               rounded-full bg-gray-100
+                                               flex items-center
+                                               justify-center mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="user"
+                                            class="h-8 w-8
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Profile information unavailable
+                                    </h2>
+
+                                </div>
+
+                            </section>
+
+                        <% } else { %>
+
+
+                            <!-- Profile Summary -->
+
+                            <section
+                                class="dashboard-card
+                                       p-6 mb-6"
+                            >
+
+                                <div
+                                    class="flex flex-col
+                                           md:flex-row
+                                           md:items-center
+                                           md:justify-between
+                                           gap-5"
+                                >
+
+                                    <div class="flex items-center">
+
+                                        <div
+                                            class="h-20 w-20
+                                                   rounded-full
+                                                   bg-primary-50
+                                                   border
+                                                   border-primary-100
+                                                   flex items-center
+                                                   justify-center
+                                                   mr-5
+                                                   flex-shrink-0"
+                                        >
+
+                                            <i
+                                                data-lucide="user"
+                                                class="h-9 w-9
+                                                       text-primary-600"
+                                            ></i>
+
+                                        </div>
+
+                                        <div>
+
+                                            <h2
+                                                class="text-xl
+                                                       font-bold
+                                                       text-gray-900"
+                                            >
+                                                <%= profileCustomer.fullName ||
+                                                    [
+                                                        profileCustomer.firstName,
+                                                        profileCustomer.middleName,
+                                                        profileCustomer.lastName
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                %>
+                                            </h2>
+
+                                            <% if (
+                                                profileCustomer.username
+                                            ) { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    @<%= profileCustomer.username %>
+                                                </p>
+
+                                            <% } %>
+
+                                            <% if (
+                                                profileCustomer.customerId
+                                            ) { %>
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-400
+                                                           mt-1"
+                                                >
+                                                    Customer ID:
+                                                    <%= profileCustomer.customerId %>
+                                                </p>
+
+                                            <% } %>
+
+                                            <div
+                                                class="flex flex-wrap
+                                                       gap-2 mt-3"
+                                            >
+
+                                                <% if (
+                                                    profileAccount &&
+                                                    profileAccount.status
+                                                ) { %>
+
+                                                    <span
+                                                        class="inline-flex
+                                                               px-2.5 py-1
+                                                               rounded-full
+                                                               text-xs
+                                                               font-medium
+                                                               <%= profileStatusClasses(
+                                                                   profileAccount.status
+                                                               ) %>"
+                                                    >
+                                                        <%= profileAccount.status %>
+                                                    </span>
+
+                                                <% } %>
+
+                                                <% if (
+                                                    profileKyc &&
+                                                    profileKyc.status
+                                                ) { %>
+
+                                                    <a
+                                                        href="/dashboard/kyc"
+                                                        class="inline-flex
+                                                               px-2.5 py-1
+                                                               rounded-full
+                                                               text-xs
+                                                               font-medium
+                                                               <%= profileStatusClasses(
+                                                                   profileKyc.status
+                                                               ) %>"
+                                                    >
+                                                        KYC:
+                                                        <%= profileKyc.status %>
+                                                    </a>
+
+                                                <% } else { %>
+
+                                                    <a
+                                                        href="/dashboard/kyc"
+                                                        class="inline-flex
+                                                               px-2.5 py-1
+                                                               rounded-full
+                                                               bg-gray-100
+                                                               text-gray-600
+                                                               text-xs
+                                                               font-medium"
+                                                    >
+                                                        KYC: Not Submitted
+                                                    </a>
+
+                                                <% } %>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <% if (profileAccount) { %>
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   sm:grid-cols-2
+                                                   gap-4"
+                                        >
+
+                                            <div
+                                                class="px-4 py-3
+                                                       rounded-lg
+                                                       bg-gray-50"
+                                            >
+
+                                                <p class="text-xs text-gray-400">
+                                                    Account Type
+                                                </p>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-medium
+                                                           text-gray-800
+                                                           mt-1"
+                                                >
+                                                    <%= profileAccount.accountType || "" %>
+                                                </p>
+
+                                            </div>
+
+                                            <div
+                                                class="px-4 py-3
+                                                       rounded-lg
+                                                       bg-gray-50"
+                                            >
+
+                                                <p class="text-xs text-gray-400">
+                                                    Currency
+                                                </p>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-medium
+                                                           text-gray-800
+                                                           mt-1"
+                                                >
+                                                    <%= profileAccount.currency || "" %>
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </section>
+
+
+                            <div
+                                class="grid grid-cols-1
+                                       xl:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- Personal Information -->
+
+                                <section
+                                    class="dashboard-card
+                                           xl:col-span-2"
+                                >
+
+                                    <div class="dashboard-card-header">
+
+                                        <h2
+                                            class="text-lg
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Personal Information
+                                        </h2>
+
+                                        <a
+                                            href="/dashboard/profile/edit"
+                                            class="text-sm
+                                                   font-medium
+                                                   text-primary-700"
+                                        >
+                                            Edit
+                                        </a>
+
+                                    </div>
+
+                                    <div
+                                        class="p-6
+                                               grid grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <%
+                                            const personalItems = [
+                                                [
+                                                    "First Name",
+                                                    profileCustomer.firstName
+                                                ],
+                                                [
+                                                    "Middle Name",
+                                                    profileCustomer.middleName
+                                                ],
+                                                [
+                                                    "Last Name",
+                                                    profileCustomer.lastName
+                                                ],
+                                                [
+                                                    "Username",
+                                                    profileCustomer.username
+                                                ],
+                                                [
+                                                    "Email Address",
+                                                    profileCustomer.email
+                                                ],
+                                                [
+                                                    "Phone Number",
+                                                    profileCustomer.phone
+                                                ],
+                                                [
+                                                    "Country",
+                                                    profileCustomer.country
+                                                ],
+                                                [
+                                                    "Joined",
+                                                    profileCustomer.createdAt
+                                                        ? new Date(
+                                                            profileCustomer.createdAt
+                                                          ).toLocaleDateString()
+                                                        : ""
+                                                ]
+                                            ];
+                                        %>
+
+                                        <% personalItems.forEach(
+                                            function(item) {
+                                                if (
+                                                    item[1] !== undefined &&
+                                                    item[1] !== null &&
+                                                    item[1] !== ""
+                                                ) {
+                                        %>
+
+                                            <div>
+
+                                                <p class="text-xs text-gray-400">
+                                                    <%= item[0] %>
+                                                </p>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-medium
+                                                           text-gray-800
+                                                           mt-1"
+                                                >
+                                                    <%= item[1] %>
+                                                </p>
+
+                                            </div>
+
+                                        <% } }); %>
+
+                                    </div>
+
+                                </section>
+
+
+                                <!-- Account Information -->
+
+                                <% if (profileAccount) { %>
+
+                                    <section class="dashboard-card">
+
+                                        <div class="dashboard-card-header">
+
+                                            <h2
+                                                class="text-lg
+                                                       font-semibold
+                                                       text-gray-900"
+                                            >
+                                                Account Information
+                                            </h2>
+
+                                        </div>
+
+                                        <div class="p-6 space-y-5">
+
+                                            <div class="dashboard-detail">
+                                                <span>Account Number</span>
+                                                <strong>
+                                                    <%= profileAccount.accountNumber || "" %>
+                                                </strong>
+                                            </div>
+
+                                            <div class="dashboard-detail">
+                                                <span>Account Type</span>
+                                                <strong>
+                                                    <%= profileAccount.accountType || "" %>
+                                                </strong>
+                                            </div>
+
+                                            <div class="dashboard-detail">
+                                                <span>Currency</span>
+                                                <strong>
+                                                    <%= profileAccount.currency || "" %>
+                                                </strong>
+                                            </div>
+
+                                            <div class="dashboard-detail">
+                                                <span>Status</span>
+                                                <strong>
+                                                    <%= profileAccount.status || "" %>
+                                                </strong>
+                                            </div>
+
+                                            <div class="dashboard-detail">
+
+                                                <span>Verification</span>
+
+                                                <strong>
+
+                                                    <a
+                                                        href="/dashboard/kyc"
+                                                        class="text-primary-700"
+                                                    >
+                                                        <%= profileKyc &&
+                                                            profileKyc.status
+                                                                ? profileKyc.status
+                                                                : "Not Submitted"
+                                                        %>
+                                                    </a>
+
+                                                </strong>
+
+                                            </div>
+
+                                        </div>
+
+                                    </section>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <!-- Address -->
+
+                            <section class="dashboard-card mt-6">
+
+                                <div class="dashboard-card-header">
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Address Information
+                                    </h2>
+
+                                </div>
+
+                                <div
+                                    class="p-6
+                                           grid grid-cols-1
+                                           sm:grid-cols-2
+                                           lg:grid-cols-3
+                                           gap-6"
+                                >
+
+                                    <% [
+                                        [
+                                            "Address",
+                                            profileCustomer.address
+                                        ],
+                                        [
+                                            "City",
+                                            profileCustomer.city
+                                        ],
+                                        [
+                                            "State / Region",
+                                            profileCustomer.region
+                                        ],
+                                        [
+                                            "Postal Code",
+                                            profileCustomer.postalCode
+                                        ],
+                                        [
+                                            "Country",
+                                            profileCustomer.country
+                                        ]
+                                    ].forEach(function(item) { %>
+
+                                        <div>
+
+                                            <p class="text-xs text-gray-400">
+                                                <%= item[0] %>
+                                            </p>
+
+                                            <p
+                                                class="text-sm
+                                                       font-medium
+                                                       text-gray-800
+                                                       mt-1"
+                                            >
+                                                <%= item[1] || "Not provided" %>
+                                            </p>
+
+                                        </div>
+
+                                    <% }); %>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- Quick Actions -->
+
+                            <div
+                                class="grid grid-cols-2
+                                       lg:grid-cols-4
+                                       gap-4 mt-6"
+                            >
+
+                                <a
+                                    href="/dashboard/profile/edit"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-primary-100"
+                                    >
+                                        <i data-lucide="pencil"></i>
+                                    </div>
+
+                                    <span>Edit Profile</span>
+
+                                </a>
+
+                                <a
+                                    href="/dashboard/kyc"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-green-100"
+                                    >
+                                        <i
+                                            data-lucide="badge-check"
+                                            class="text-green-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Verification</span>
+
+                                </a>
+
+                                <a
+                                    href="/dashboard/settings"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-blue-100"
+                                    >
+                                        <i
+                                            data-lucide="settings"
+                                            class="text-blue-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Settings</span>
+
+                                </a>
+
+                                <a
+                                    href="/dashboard/support"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-purple-100"
+                                    >
+                                        <i
+                                            data-lucide="help-circle"
+                                            class="text-purple-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Support</span>
+
+                                </a>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

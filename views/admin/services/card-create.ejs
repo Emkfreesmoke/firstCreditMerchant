@@ -1,0 +1,645 @@
+<%
+    const customerRecords =
+        typeof customers !== "undefined" &&
+        Array.isArray(customers)
+            ? customers
+            : [];
+
+    const selectedId =
+        typeof selectedCustomerId !== "undefined"
+            ? selectedCustomerId
+            : null;
+
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/cards"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Cards
+                        </a>
+
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Create Card
+                            </h1>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Assign a display-safe card record
+                                to an active customer.
+                            </p>
+
+                        </div>
+
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-3
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-lg"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3 mt-0.5"
+                                    ></i>
+
+
+                                    <p class="text-sm text-red-800">
+                                        <%= error %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Card Information
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Store only display-safe card
+                                        information such as the last
+                                        four digits.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <form
+                                action="/admin/cards/create"
+                                method="POST"
+                                class="p-6"
+                            >
+
+                                <div
+                                    class="grid
+                                           grid-cols-1
+                                           md:grid-cols-2
+                                           gap-5"
+                                >
+
+                                    <!-- Customer -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="customerId"
+                                            class="admin-label"
+                                        >
+                                            Customer
+                                        </label>
+
+
+                                        <select
+                                            id="customerId"
+                                            name="customerId"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select customer
+                                            </option>
+
+
+                                            <% customerRecords.forEach(
+                                                function(customer) {
+
+                                                    const customerOptionId =
+                                                        customer.id ||
+                                                        customer._id;
+
+                                                    const optionLabel = [
+                                                        customer.fullName,
+                                                        customer.customerId
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" · ");
+                                            %>
+
+                                                <option
+                                                    value="<%= customerOptionId %>"
+                                                    <%= String(
+                                                        customerOptionId
+                                                    ) === String(
+                                                        oldForm.customerId ||
+                                                        selectedId ||
+                                                        ""
+                                                    )
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= optionLabel || customerOptionId %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Display Name -->
+
+                                    <div>
+
+                                        <label
+                                            for="displayName"
+                                            class="admin-label"
+                                        >
+                                            Display Name
+                                        </label>
+
+
+                                        <input
+                                            id="displayName"
+                                            name="displayName"
+                                            type="text"
+                                            value="<%= oldForm.displayName || "" %>"
+                                            class="admin-input"
+                                            placeholder="Example: Everyday Card"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Holder Name -->
+
+                                    <div>
+
+                                        <label
+                                            for="holderName"
+                                            class="admin-label"
+                                        >
+                                            Holder Name
+                                        </label>
+
+
+                                        <input
+                                            id="holderName"
+                                            name="holderName"
+                                            type="text"
+                                            value="<%= oldForm.holderName || "" %>"
+                                            class="admin-input"
+                                            placeholder="Leave blank to use customer name"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Issuer -->
+
+                                    <div>
+
+                                        <label
+                                            for="issuerName"
+                                            class="admin-label"
+                                        >
+                                            Issuer Name
+                                        </label>
+
+
+                                        <input
+                                            id="issuerName"
+                                            name="issuerName"
+                                            type="text"
+                                            value="<%= oldForm.issuerName || "First Credit Merchant" %>"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Type -->
+
+                                    <div>
+
+                                        <label
+                                            for="cardType"
+                                            class="admin-label"
+                                        >
+                                            Card Type
+                                        </label>
+
+
+                                        <select
+                                            id="cardType"
+                                            name="type"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select type
+                                            </option>
+
+
+                                            <% [
+                                                "Virtual Debit",
+                                                "Physical Debit",
+                                                "Virtual Credit",
+                                                "Physical Credit"
+                                            ].forEach(
+                                                function(type) {
+                                            %>
+
+                                                <option
+                                                    value="<%= type %>"
+                                                    <%= oldForm.type === type
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= type %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Last Four -->
+
+                                    <div>
+
+                                        <label
+                                            for="lastFour"
+                                            class="admin-label"
+                                        >
+                                            Last Four Digits
+                                        </label>
+
+
+                                        <input
+                                            id="lastFour"
+                                            name="lastFour"
+                                            type="text"
+                                            inputmode="numeric"
+                                            maxlength="4"
+                                            pattern="\d{4}"
+                                            value="<%= oldForm.lastFour || "" %>"
+                                            class="admin-input"
+                                            placeholder="1234"
+                                            required
+                                        >
+
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Enter exactly four numeric digits.
+                                        </p>
+
+                                    </div>
+
+
+                                    <!-- Expiry -->
+
+                                    <div>
+
+                                        <label
+                                            for="expiry"
+                                            class="admin-label"
+                                        >
+                                            Expiration
+                                        </label>
+
+
+                                        <input
+                                            id="expiry"
+                                            name="expiry"
+                                            type="text"
+                                            inputmode="numeric"
+                                            maxlength="5"
+                                            pattern="(0[1-9]|1[0-2])\/\d{2}"
+                                            value="<%= oldForm.expiry || "" %>"
+                                            class="admin-input"
+                                            placeholder="MM/YY"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Currency -->
+
+                                    <div>
+
+                                        <label
+                                            for="currency"
+                                            class="admin-label"
+                                        >
+                                            Currency
+                                        </label>
+
+
+                                        <select
+                                            id="currency"
+                                            name="currency"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select currency
+                                            </option>
+
+
+                                            <% [
+                                                "USD",
+                                                "GBP",
+                                                "EUR",
+                                                "NGN"
+                                            ].forEach(
+                                                function(currency) {
+                                            %>
+
+                                                <option
+                                                    value="<%= currency %>"
+                                                    <%= oldForm.currency === currency
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= currency %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Spending Limit -->
+
+                                    <div>
+
+                                        <label
+                                            for="spendingLimit"
+                                            class="admin-label"
+                                        >
+                                            Spending Limit
+                                        </label>
+
+
+                                        <input
+                                            id="spendingLimit"
+                                            name="spendingLimit"
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            value="<%= oldForm.spendingLimit || 0 %>"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Status -->
+
+                                    <div>
+
+                                        <label
+                                            for="status"
+                                            class="admin-label"
+                                        >
+                                            Status
+                                        </label>
+
+
+                                        <select
+                                            id="status"
+                                            name="status"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <% [
+                                                "Pending",
+                                                "Active",
+                                                "Frozen",
+                                                "Inactive",
+                                                "Expired"
+                                            ].forEach(
+                                                function(status) {
+                                            %>
+
+                                                <option
+                                                    value="<%= status %>"
+                                                    <%= (
+                                                        oldForm.status ||
+                                                        "Pending"
+                                                    ) === status
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= status %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="mt-6
+                                           p-4
+                                           bg-blue-50
+                                           border
+                                           border-blue-100
+                                           rounded-lg"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="shield-check"
+                                            class="h-5 w-5
+                                                   text-blue-600
+                                                   mr-3
+                                                   flex-shrink-0"
+                                        ></i>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-blue-800"
+                                        >
+                                            Do not enter a complete card
+                                            number, CVV, PIN, or other
+                                            sensitive card credentials.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="flex
+                                           flex-col-reverse
+                                           sm:flex-row
+                                           sm:justify-end
+                                           gap-3
+                                           mt-7"
+                                >
+
+                                    <a
+                                        href="/admin/cards"
+                                        class="admin-secondary-button"
+                                    >
+                                        Cancel
+                                    </a>
+
+
+                                    <button
+                                        type="submit"
+                                        class="admin-primary-button"
+                                    >
+
+                                        <i
+                                            data-lucide="credit-card"
+                                            class="h-4 w-4"
+                                        ></i>
+
+                                        Create Card
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

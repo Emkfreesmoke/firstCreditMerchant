@@ -1,0 +1,636 @@
+<%
+    const records =
+        typeof kycSubmissions !== "undefined" &&
+        Array.isArray(kycSubmissions)
+            ? kycSubmissions
+            : [];
+
+    const pendingRecords =
+        records.filter(
+            record =>
+                record &&
+                (
+                    record.status === "Pending" ||
+                    record.status === "Under Review"
+                )
+        );
+
+    const verifiedRecords =
+        records.filter(
+            record =>
+                record &&
+                record.status === "Verified"
+        );
+
+    const updateRecords =
+        records.filter(
+            record =>
+                record &&
+                record.status === "Needs Update"
+        );
+
+    const rejectedRecords =
+        records.filter(
+            record =>
+                record &&
+                record.status === "Rejected"
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            kycFilter: 'all'
+        }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- HEADER -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                KYC Verification
+                            </h1>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Review customer identity verification
+                                submissions.
+                            </p>
+
+                        </div>
+
+
+                        <!-- SUMMARY -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-5
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Submissions
+                                    </p>
+
+                                    <p class="admin-stat-value">
+                                        <%= records.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Pending Review
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Verified
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= verifiedRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Needs Update
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-orange-700"
+                                    >
+                                        <%= updateRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Rejected
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-red-700"
+                                    >
+                                        <%= rejectedRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- FILTERS -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="flex flex-wrap gap-2">
+
+                                <% [
+                                    ["all", "All"],
+                                    ["pending", "Pending"],
+                                    ["review", "Under Review"],
+                                    ["verified", "Verified"],
+                                    ["update", "Needs Update"],
+                                    ["rejected", "Rejected"]
+                                ].forEach(function(item) { %>
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            kycFilter =
+                                                '<%= item[0] %>'
+                                        "
+                                        :class="
+                                            kycFilter ===
+                                                '<%= item[0] %>'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        <%= item[1] %>
+                                    </button>
+
+                                <% }); %>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- SUBMISSIONS -->
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Verification Submissions
+                                    </h3>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Review identity information
+                                        and verification documents.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                records.length === 0
+                            ) { %>
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14 w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="badge-check"
+                                            class="h-7 w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No KYC submissions
+                                    </h3>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Customer verification
+                                        submissions will appear here.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Document Type
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Submitted
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% records.forEach(
+                                                function(record) {
+
+                                                    const recordCustomer =
+                                                        record.customer ||
+                                                        null;
+
+                                                    const customerName =
+                                                        recordCustomer
+                                                            ? [
+                                                                recordCustomer.firstName,
+                                                                recordCustomer.middleName,
+                                                                recordCustomer.lastName
+                                                              ]
+                                                                .filter(Boolean)
+                                                                .join(" ")
+                                                            : "";
+
+                                                    const recordId =
+                                                        record._id ||
+                                                        record.id;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        kycFilter ===
+                                                            'all' ||
+
+                                                        (
+                                                            kycFilter ===
+                                                                'pending' &&
+                                                            '<%= record.status || "" %>' ===
+                                                                'Pending'
+                                                        ) ||
+
+                                                        (
+                                                            kycFilter ===
+                                                                'review' &&
+                                                            '<%= record.status || "" %>' ===
+                                                                'Under Review'
+                                                        ) ||
+
+                                                        (
+                                                            kycFilter ===
+                                                                'verified' &&
+                                                            '<%= record.status || "" %>' ===
+                                                                'Verified'
+                                                        ) ||
+
+                                                        (
+                                                            kycFilter ===
+                                                                'update' &&
+                                                            '<%= record.status || "" %>' ===
+                                                                'Needs Update'
+                                                        ) ||
+
+                                                        (
+                                                            kycFilter ===
+                                                                'rejected' &&
+                                                            '<%= record.status || "" %>' ===
+                                                                'Rejected'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Customer -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <% if (
+                                                            recordCustomer
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900"
+                                                            >
+                                                                <%= customerName %>
+                                                            </p>
+
+
+                                                            <% if (
+                                                                recordCustomer.email
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-500
+                                                                           mt-1"
+                                                                >
+                                                                    <%= recordCustomer.email %>
+                                                                </p>
+
+                                                            <% } %>
+
+
+                                                            <% if (
+                                                                recordCustomer.customerId
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-400
+                                                                           mt-1"
+                                                                >
+                                                                    <%= recordCustomer.customerId %>
+                                                                </p>
+
+                                                            <% } %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Document -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.documentType || "" %>
+
+
+                                                        <% if (
+                                                            record.documentNumber
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+                                                                <%= record.documentNumber %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Status -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.status === "Verified"
+                                                                       ? "bg-green-50 text-green-700"
+                                                                       : record.status === "Rejected"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : record.status === "Needs Update"
+                                                                       ? "bg-orange-50 text-orange-700"
+                                                                       : record.status === "Under Review"
+                                                                       ? "bg-blue-50 text-blue-700"
+                                                                       : "bg-yellow-50 text-yellow-700"
+                                                                   %>"
+                                                        >
+                                                            <%= record.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Submitted -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.submittedAt
+                                                            ? new Date(
+                                                                record.submittedAt
+                                                              ).toLocaleString()
+                                                            : ""
+                                                        %>
+
+                                                    </td>
+
+
+                                                    <!-- Action -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (recordId) { %>
+
+                                                            <a
+                                                                href="/admin/kyc/<%= recordId %>"
+                                                                class="admin-small-button"
+                                                            >
+
+                                                                <% if (
+                                                                    record.status ===
+                                                                        "Pending" ||
+                                                                    record.status ===
+                                                                        "Under Review"
+                                                                ) { %>
+
+                                                                    Review
+
+                                                                <% } else { %>
+
+                                                                    Details
+
+                                                                <% } %>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

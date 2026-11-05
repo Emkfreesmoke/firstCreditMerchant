@@ -1,0 +1,392 @@
+<%
+    const kycRecord =
+        typeof kyc !== "undefined"
+            ? kyc
+            : null;
+
+    const documents =
+        kycRecord &&
+        Array.isArray(
+            kycRecord.documents
+        )
+            ? kycRecord.documents
+            : [];
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl
+                               mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <a
+                            href="/dashboard/kyc"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Verification
+                        </a>
+
+
+                        <div
+                            class="flex flex-col sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4 mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl font-bold
+                                           text-gray-900"
+                                >
+                                    Verification Documents
+                                </h1>
+
+                                <p
+                                    class="text-sm text-gray-500
+                                           mt-1"
+                                >
+                                    Review the documents associated
+                                    with your verification submission.
+                                </p>
+
+                            </div>
+
+
+                            <% if (
+                                !kycRecord ||
+                                kycRecord.status === "Rejected" ||
+                                kycRecord.status === "Needs Update"
+                            ) { %>
+
+                                <a
+                                    href="/dashboard/kyc/submit"
+                                    class="inline-flex items-center
+                                           px-4 py-2.5
+                                           bg-primary-600
+                                           text-white text-sm
+                                           font-medium rounded-lg"
+                                >
+                                    Update Documents
+                                </a>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <% if (kycRecord) { %>
+
+                            <div
+                                class="dashboard-card
+                                       p-5 mb-6"
+                            >
+
+                                <div
+                                    class="flex flex-col
+                                           sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between
+                                           gap-3"
+                                >
+
+                                    <div>
+
+                                        <p class="text-xs text-gray-500">
+                                            Verification Status
+                                        </p>
+
+                                        <p
+                                            class="text-sm font-semibold
+                                                   text-gray-900 mt-1"
+                                        >
+                                            <%= kycRecord.status || "" %>
+                                        </p>
+
+                                    </div>
+
+
+                                    <% if (
+                                        kycRecord.submittedAt
+                                    ) { %>
+
+                                        <div class="sm:text-right">
+
+                                            <p class="text-xs text-gray-500">
+                                                Submitted
+                                            </p>
+
+                                            <p
+                                                class="text-sm
+                                                       text-gray-700
+                                                       mt-1"
+                                            >
+                                                <%= new Date(
+                                                    kycRecord.submittedAt
+                                                ).toLocaleString() %>
+                                            </p>
+
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            !kycRecord ||
+                            documents.length === 0
+                        ) { %>
+
+                            <section class="dashboard-card">
+
+                                <div
+                                    class="py-14 px-6
+                                           text-center"
+                                >
+
+                                    <i
+                                        data-lucide="files"
+                                        class="h-10 w-10
+                                               mx-auto
+                                               text-gray-400
+                                               mb-4"
+                                    ></i>
+
+                                    <h2
+                                        class="text-lg font-semibold
+                                               text-gray-900"
+                                    >
+                                        No documents available
+                                    </h2>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <div
+                                class="grid grid-cols-1
+                                       md:grid-cols-2
+                                       gap-6"
+                            >
+
+                                <% documents.forEach(
+                                    function(document) {
+
+                                        const field =
+                                            document.field ||
+                                            "";
+
+                                        const documentUrl =
+                                            field
+                                                ? "/dashboard/kyc/documents/" +
+                                                  encodeURIComponent(
+                                                      field
+                                                  )
+                                                : "";
+                                %>
+
+                                    <article class="dashboard-card">
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= document.label ||
+                                                        "Verification Document"
+                                                    %>
+                                                </h2>
+
+                                                <% if (
+                                                    document.originalName
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-1
+                                                               break-all"
+                                                    >
+                                                        <%= document.originalName %>
+                                                    </p>
+
+                                                <% } %>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="min-h-[280px]
+                                                   flex items-center
+                                                   justify-center
+                                                   p-6"
+                                        >
+
+                                            <% if (
+                                                document.kind === "image" &&
+                                                documentUrl
+                                            ) { %>
+
+                                                <a
+                                                    href="<%= documentUrl %>"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+
+                                                    <img
+                                                        src="<%= documentUrl %>"
+                                                        alt="<%= document.label || "Verification document" %>"
+                                                        class="max-w-full
+                                                               max-h-[320px]
+                                                               object-contain
+                                                               rounded-lg"
+                                                    >
+
+                                                </a>
+
+                                            <% } else if (
+                                                documentUrl
+                                            ) { %>
+
+                                                <div class="text-center">
+
+                                                    <i
+                                                        data-lucide="file-text"
+                                                        class="h-12 w-12
+                                                               mx-auto
+                                                               text-red-500
+                                                               mb-4"
+                                                    ></i>
+
+                                                    <a
+                                                        href="<%= documentUrl %>"
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        class="text-primary-700
+                                                               font-medium"
+                                                    >
+                                                        Open Document
+                                                    </a>
+
+                                                </div>
+
+                                            <% } %>
+
+                                        </div>
+
+
+                                        <% if (
+                                            document.size
+                                        ) { %>
+
+                                            <div
+                                                class="px-6 py-3
+                                                       border-t
+                                                       border-gray-100"
+                                            >
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-400"
+                                                >
+                                                    File size:
+                                                    <%= (
+                                                        Number(
+                                                            document.size
+                                                        ) /
+                                                        1024 /
+                                                        1024
+                                                    ).toFixed(2) %>
+                                                    MB
+                                                </p>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </article>
+
+                                <% }); %>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

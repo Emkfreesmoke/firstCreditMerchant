@@ -1,0 +1,653 @@
+<%
+    const saved =
+        typeof systemSettings !== "undefined" &&
+        systemSettings
+            ? systemSettings
+            : null;
+
+    const wallets =
+        typeof cryptoWallets !== "undefined" &&
+        Array.isArray(cryptoWallets)
+            ? cryptoWallets
+            : [];
+
+    const wallet = (code) =>
+        wallets.find(
+            item =>
+                item &&
+                item.code === code
+        ) || null;
+
+    const btc = wallet("BTC");
+    const usdt = wallet("USDT");
+    const eth = wallet("ETH");
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =================================
+                             PAGE HEADER
+                        ================================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Settings
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Manage application and
+                                deposit configuration.
+                            </p>
+
+                        </div>
+
+
+                        <!-- =================================
+                             GENERAL SETTINGS
+                        ================================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-6"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        General Settings
+                                    </h3>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Configure general
+                                        application information.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <form>
+
+                                <div
+                                    class="p-5
+                                           sm:p-6"
+                                >
+
+                                    <div
+                                        class="grid
+                                               grid-cols-1
+                                               md:grid-cols-2
+                                               gap-5"
+                                    >
+
+                                        <!-- =================
+                                             APPLICATION NAME
+                                        ================== -->
+
+                                        <div>
+
+                                            <label
+                                                for="applicationName"
+                                                class="admin-label"
+                                            >
+                                                Application Name
+                                            </label>
+
+                                            <input
+                                                id="applicationName"
+                                                type="text"
+                                                name="applicationName"
+                                                value="<%= saved &&
+                                                    saved.applicationName
+                                                        ? saved.applicationName
+                                                        : ""
+                                                %>"
+                                                class="admin-input"
+                                                placeholder="First Credit Merchant"
+                                            >
+
+                                        </div>
+
+
+                                        <!-- =================
+                                             SUPPORT EMAIL
+                                        ================== -->
+
+                                        <div>
+
+                                            <label
+                                                for="supportEmail"
+                                                class="admin-label"
+                                            >
+                                                Support Email
+                                            </label>
+
+                                            <input
+                                                id="supportEmail"
+                                                type="email"
+                                                name="supportEmail"
+                                                value="<%= saved &&
+                                                    saved.supportEmail
+                                                        ? saved.supportEmail
+                                                        : ""
+                                                %>"
+                                                class="admin-input"
+                                                placeholder="support@example.com"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =====================
+                                         SAVE ACTION
+                                    ====================== -->
+
+                                    <div
+                                        class="flex
+                                               flex-col
+                                               sm:flex-row
+                                               sm:items-center
+                                               sm:justify-between
+                                               gap-3
+                                               mt-6
+                                               pt-5
+                                               border-t
+                                               border-gray-100"
+                                    >
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            General settings saving
+                                            has not been enabled yet.
+                                        </p>
+
+
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="admin-primary-button
+                                                   w-full
+                                                   sm:w-auto"
+                                        >
+
+                                            <i
+                                                data-lucide="save"
+                                                class="h-4 w-4"
+                                            ></i>
+
+                                            Save Settings
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+
+                        <!-- =================================
+                             CRYPTOCURRENCY WALLETS
+                        ================================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Cryptocurrency Deposit Wallets
+                                    </h3>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Configure wallet destinations
+                                        shown by supported customer
+                                        cryptocurrency deposit flows.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <form>
+
+                                <div
+                                    class="p-5
+                                           sm:p-6"
+                                >
+
+                                    <div class="space-y-6">
+
+
+                                        <!-- =================
+                                             BITCOIN
+                                        ================== -->
+
+                                        <div>
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-2
+                                                       mb-2"
+                                            >
+
+                                                <div
+                                                    class="h-8
+                                                           w-8
+                                                           rounded-full
+                                                           bg-orange-50
+                                                           flex
+                                                           items-center
+                                                           justify-center"
+                                                >
+
+                                                    <i
+                                                        data-lucide="bitcoin"
+                                                        class="h-4
+                                                               w-4
+                                                               text-orange-600"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        Bitcoin
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500"
+                                                    >
+                                                        BTC
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <label
+                                                for="btcWalletAddress"
+                                                class="admin-label"
+                                            >
+                                                Bitcoin Wallet Address
+                                            </label>
+
+                                            <input
+                                                id="btcWalletAddress"
+                                                type="text"
+                                                name="btcWalletAddress"
+                                                value="<%= btc &&
+                                                    btc.walletAddress
+                                                        ? btc.walletAddress
+                                                        : ""
+                                                %>"
+                                                class="admin-input"
+                                                placeholder="Bitcoin wallet address"
+                                            >
+
+                                        </div>
+
+
+                                        <div
+                                            class="border-t
+                                                   border-gray-100"
+                                        ></div>
+
+
+                                        <!-- =================
+                                             USDT
+                                        ================== -->
+
+                                        <div>
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-2
+                                                       mb-2"
+                                            >
+
+                                                <div
+                                                    class="h-8
+                                                           w-8
+                                                           rounded-full
+                                                           bg-green-50
+                                                           flex
+                                                           items-center
+                                                           justify-center"
+                                                >
+
+                                                    <i
+                                                        data-lucide="circle-dollar-sign"
+                                                        class="h-4
+                                                               w-4
+                                                               text-green-600"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        Tether
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500"
+                                                    >
+                                                        USDT
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div
+                                                class="grid
+                                                       grid-cols-1
+                                                       md:grid-cols-2
+                                                       gap-5"
+                                            >
+
+                                                <div>
+
+                                                    <label
+                                                        for="usdtWalletAddress"
+                                                        class="admin-label"
+                                                    >
+                                                        USDT Wallet Address
+                                                    </label>
+
+                                                    <input
+                                                        id="usdtWalletAddress"
+                                                        type="text"
+                                                        name="usdtWalletAddress"
+                                                        value="<%= usdt &&
+                                                            usdt.walletAddress
+                                                                ? usdt.walletAddress
+                                                                : ""
+                                                        %>"
+                                                        class="admin-input"
+                                                        placeholder="USDT wallet address"
+                                                    >
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <label
+                                                        for="usdtNetwork"
+                                                        class="admin-label"
+                                                    >
+                                                        USDT Network
+                                                    </label>
+
+                                                    <input
+                                                        id="usdtNetwork"
+                                                        type="text"
+                                                        name="usdtNetwork"
+                                                        value="<%= usdt &&
+                                                            usdt.network
+                                                                ? usdt.network
+                                                                : ""
+                                                        %>"
+                                                        class="admin-input"
+                                                        placeholder="Example: TRC20"
+                                                    >
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="border-t
+                                                   border-gray-100"
+                                        ></div>
+
+
+                                        <!-- =================
+                                             ETHEREUM
+                                        ================== -->
+
+                                        <div>
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-2
+                                                       mb-2"
+                                            >
+
+                                                <div
+                                                    class="h-8
+                                                           w-8
+                                                           rounded-full
+                                                           bg-blue-50
+                                                           flex
+                                                           items-center
+                                                           justify-center"
+                                                >
+
+                                                    <i
+                                                        data-lucide="wallet"
+                                                        class="h-4
+                                                               w-4
+                                                               text-blue-600"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        Ethereum
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500"
+                                                    >
+                                                        ETH
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <label
+                                                for="ethWalletAddress"
+                                                class="admin-label"
+                                            >
+                                                Ethereum Wallet Address
+                                            </label>
+
+                                            <input
+                                                id="ethWalletAddress"
+                                                type="text"
+                                                name="ethWalletAddress"
+                                                value="<%= eth &&
+                                                    eth.walletAddress
+                                                        ? eth.walletAddress
+                                                        : ""
+                                                %>"
+                                                class="admin-input"
+                                                placeholder="Ethereum wallet address"
+                                            >
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =====================
+                                         SAVE ACTION
+                                    ====================== -->
+
+                                    <div
+                                        class="flex
+                                               flex-col
+                                               sm:flex-row
+                                               sm:items-center
+                                               sm:justify-between
+                                               gap-3
+                                               mt-6
+                                               pt-5
+                                               border-t
+                                               border-gray-100"
+                                    >
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            Wallet configuration saving
+                                            has not been enabled yet.
+                                        </p>
+
+
+                                        <button
+                                            type="button"
+                                            disabled
+                                            class="admin-primary-button
+                                                   w-full
+                                                   sm:w-auto"
+                                        >
+
+                                            <i
+                                                data-lucide="save"
+                                                class="h-4 w-4"
+                                            ></i>
+
+                                            Save Wallet Configuration
+
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

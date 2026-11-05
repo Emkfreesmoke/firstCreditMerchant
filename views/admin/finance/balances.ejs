@@ -1,0 +1,603 @@
+<%
+    const balanceRecords =
+        typeof balances !== "undefined" &&
+        Array.isArray(balances)
+            ? balances
+            : [];
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            search: ''
+        }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =============================
+                             PAGE HEADER
+                        ============================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Balance Management
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Review customer dashboard
+                                financial values.
+                            </p>
+
+                        </div>
+
+
+                        <!-- =============================
+                             SEARCH
+                        ============================== -->
+
+                        <section
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="relative">
+
+                                <i
+                                    data-lucide="search"
+                                    class="absolute
+                                           left-3
+                                           top-1/2
+                                           -translate-y-1/2
+                                           h-4
+                                           w-4
+                                           text-gray-400"
+                                ></i>
+
+                                <input
+                                    type="search"
+                                    x-model="search"
+                                    class="admin-input pl-9"
+                                    placeholder="Search customers..."
+                                >
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- =============================
+                             FINANCIAL VALUES
+                        ============================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <h3>
+                                    Customer Financial Values
+                                </h3>
+
+                            </div>
+
+
+                            <% if (
+                                balanceRecords.length === 0
+                            ) { %>
+
+                                <!-- =====================
+                                     EMPTY STATE
+                                ====================== -->
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="wallet"
+                                    ></i>
+
+                                    <p>
+                                        No balance records
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <!-- =====================
+                                     TABLE
+                                ====================== -->
+
+                                <div
+                                    class="w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Customer
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Balance
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Income
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Outgoing
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Limit
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% balanceRecords.forEach(
+                                                function(record) {
+
+                                                    const customerName =
+                                                        record.customer
+                                                            ? (
+                                                                record.customer.fullName ||
+                                                                [
+                                                                    record.customer.firstName,
+                                                                    record.customer.middleName,
+                                                                    record.customer.lastName
+                                                                ]
+                                                                    .filter(Boolean)
+                                                                    .join(" ")
+                                                            )
+                                                            : "";
+
+                                                    const customerReference =
+                                                        record.customer
+                                                            ? (
+                                                                record.customer.customerId ||
+                                                                record.customer.accountNumber ||
+                                                                ""
+                                                            )
+                                                            : "";
+
+                                                    const searchableText =
+                                                        [
+                                                            customerName,
+                                                            customerReference,
+                                                            record.currency
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                            .toLowerCase();
+
+                                                    const customerId =
+                                                        record.customer
+                                                            ? (
+                                                                record.customer.id ||
+                                                                record.customer._id ||
+                                                                null
+                                                            )
+                                                            : null;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        !search.trim() ||
+                                                        <%- JSON.stringify(searchableText) %>
+                                                            .includes(
+                                                                search
+                                                                    .trim()
+                                                                    .toLowerCase()
+                                                            )
+                                                    "
+                                                >
+
+                                                    <!-- =================
+                                                         CUSTOMER
+                                                    ================== -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            record.customer
+                                                        ) { %>
+
+                                                            <div
+                                                                class="flex
+                                                                       items-center
+                                                                       min-w-0"
+                                                            >
+
+                                                                <div
+                                                                    class="h-10
+                                                                           w-10
+                                                                           rounded-full
+                                                                           bg-gray-100
+                                                                           flex
+                                                                           items-center
+                                                                           justify-center
+                                                                           mr-3
+                                                                           flex-shrink-0"
+                                                                >
+
+                                                                    <i
+                                                                        data-lucide="user"
+                                                                        class="h-5
+                                                                               w-5
+                                                                               text-gray-500"
+                                                                    ></i>
+
+                                                                </div>
+
+
+                                                                <div
+                                                                    class="min-w-0"
+                                                                >
+
+                                                                    <p
+                                                                        class="text-sm
+                                                                               font-medium
+                                                                               text-gray-900
+                                                                               whitespace-normal
+                                                                               break-words"
+                                                                    >
+                                                                        <%= customerName %>
+                                                                    </p>
+
+
+                                                                    <% if (
+                                                                        customerReference
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-xs
+                                                                                   text-gray-500
+                                                                                   mt-1
+                                                                                   break-all"
+                                                                        >
+                                                                            <%= customerReference %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         BALANCE
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-medium
+                                                               text-gray-900"
+                                                    >
+
+                                                        <% if (
+                                                            record.displayedBalance !==
+                                                                undefined &&
+                                                            record.displayedBalance !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.displayedBalance
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-gray-400"
+                                                            >
+                                                                —
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         INCOME
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            record.monthlyIncome !==
+                                                                undefined &&
+                                                            record.monthlyIncome !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.monthlyIncome
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-gray-400"
+                                                            >
+                                                                —
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         OUTGOING
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            record.monthlyOutgoing !==
+                                                                undefined &&
+                                                            record.monthlyOutgoing !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.monthlyOutgoing
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-gray-400"
+                                                            >
+                                                                —
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         LIMIT
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            record.transactionLimit !==
+                                                                undefined &&
+                                                            record.transactionLimit !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.transactionLimit
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-gray-400"
+                                                            >
+                                                                —
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         ACTION
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <% if (
+                                                            customerId
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/customers/<%= customerId %>/financial-values"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-800"
+                                                            >
+
+                                                                Manage
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

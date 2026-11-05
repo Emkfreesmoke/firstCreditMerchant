@@ -1,0 +1,971 @@
+<%
+    const notificationRecords =
+        typeof notifications !== "undefined" &&
+        Array.isArray(notifications)
+            ? notifications
+            : [];
+
+    const unreadRecords =
+        notificationRecords.filter(
+            notification =>
+                notification &&
+                notification.read !== true
+        );
+
+    const importantRecords =
+        notificationRecords.filter(
+            notification =>
+                notification &&
+                (
+                    notification.priority === "Important" ||
+                    notification.priority === "Urgent"
+                )
+        );
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data='{
+            mobileMenuOpen: false,
+            filter: "all",
+            search: ""
+        }'
+        class="dashboard-app-shell"
+    >
+
+        <!-- =========================================
+             DESKTOP SIDEBAR
+        ========================================== -->
+
+        <%- include("partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN DASHBOARD COLUMN
+        ========================================== -->
+
+        <div class="dashboard-main-column">
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+            <%- include("partials/mobile-nav") %>
+
+
+            <!-- =====================================
+                 MAIN CONTENT
+            ====================================== -->
+
+            <main class="dashboard-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =================================
+                             HEADER
+                        ================================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Notifications
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review account updates
+                                    and messages.
+                                </p>
+
+                            </div>
+
+
+                            <% if (
+                                unreadRecords.length > 0
+                            ) { %>
+
+                                <form
+                                    action="/dashboard/notifications/read-all"
+                                    method="POST"
+                                    class="w-full sm:w-auto"
+                                >
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex
+                                               items-center
+                                               justify-center
+                                               w-full
+                                               sm:w-auto
+                                               px-4
+                                               py-2.5
+                                               border
+                                               border-gray-200
+                                               bg-white
+                                               hover:bg-gray-50
+                                               text-gray-700
+                                               text-sm
+                                               font-medium
+                                               rounded-lg"
+                                    >
+
+                                        <i
+                                            data-lucide="check-check"
+                                            class="h-4
+                                                   w-4
+                                                   mr-2"
+                                        ></i>
+
+                                        Mark All Read
+
+                                    </button>
+
+                                </form>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SUMMARY
+                        ================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-3
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- All -->
+
+                            <button
+                                type="button"
+                                @click="filter = 'all'"
+                                class="dashboard-stat-card
+                                       text-left"
+                            >
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        All Notifications
+                                    </p>
+
+                                    <p class="dashboard-stat-value">
+                                        <%= notificationRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11
+                                           w-11
+                                           rounded-full
+                                           bg-gray-100
+                                           flex
+                                           items-center
+                                           justify-center
+                                           flex-shrink-0"
+                                >
+
+                                    <i
+                                        data-lucide="bell"
+                                        class="h-5
+                                               w-5
+                                               text-gray-600"
+                                    ></i>
+
+                                </div>
+
+                            </button>
+
+
+                            <!-- Unread -->
+
+                            <button
+                                type="button"
+                                @click="filter = 'unread'"
+                                class="dashboard-stat-card
+                                       text-left"
+                            >
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Unread
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-blue-700"
+                                    >
+                                        <%= unreadRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11
+                                           w-11
+                                           rounded-full
+                                           bg-blue-100
+                                           flex
+                                           items-center
+                                           justify-center
+                                           flex-shrink-0"
+                                >
+
+                                    <i
+                                        data-lucide="mail"
+                                        class="h-5
+                                               w-5
+                                               text-blue-600"
+                                    ></i>
+
+                                </div>
+
+                            </button>
+
+
+                            <!-- Important -->
+
+                            <button
+                                type="button"
+                                @click="filter = 'important'"
+                                class="dashboard-stat-card
+                                       text-left"
+                            >
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Important
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-red-700"
+                                    >
+                                        <%= importantRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11
+                                           w-11
+                                           rounded-full
+                                           bg-red-100
+                                           flex
+                                           items-center
+                                           justify-center
+                                           flex-shrink-0"
+                                >
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5
+                                               w-5
+                                               text-red-600"
+                                    ></i>
+
+                                </div>
+
+                            </button>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SEARCH AND FILTERS
+                        ================================== -->
+
+                        <div
+                            class="dashboard-card
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Search -->
+
+                                <div
+                                    class="relative
+                                           flex-1
+                                           min-w-0"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4
+                                               w-4
+                                               text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        class="dashboard-form-input
+                                               pl-9"
+                                        placeholder="Search notifications..."
+                                    >
+
+                                </div>
+
+
+                                <!-- Filters -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'all'"
+                                        :class="
+                                            filter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        All
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'unread'"
+                                        :class="
+                                            filter === 'unread'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Unread
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'account'"
+                                        :class="
+                                            filter === 'account'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Account
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'important'"
+                                        :class="
+                                            filter === 'important'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Important
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             NOTIFICATION LIST
+                        ================================== -->
+
+                        <section
+                            class="dashboard-card
+                                   overflow-hidden
+                                   mb-6"
+                        >
+
+                            <div
+                                class="px-5
+                                       sm:px-6
+                                       py-4
+                                       border-b
+                                       border-gray-200"
+                            >
+
+                                <h2
+                                    class="text-lg
+                                           font-semibold
+                                           text-gray-900"
+                                >
+                                    Notification Center
+                                </h2>
+
+                                <% if (
+                                    notificationRecords.length > 0
+                                ) { %>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        <%= notificationRecords.length %>
+
+                                        notification<%= notificationRecords.length === 1
+                                            ? ""
+                                            : "s"
+                                        %>
+                                    </p>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (
+                                notificationRecords.length === 0
+                            ) { %>
+
+                                <!-- Empty State -->
+
+                                <div
+                                    class="py-14
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-12
+                                               w-12
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="bell-off"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h2
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No notifications yet
+                                    </h2>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Account updates and messages
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <div
+                                    class="divide-y
+                                           divide-gray-100"
+                                >
+
+                                    <% notificationRecords.forEach(
+                                        function(notification) {
+
+                                            const notificationId =
+                                                notification._id ||
+                                                notification.id;
+
+                                            const notificationType =
+                                                String(
+                                                    notification.type || ""
+                                                );
+
+                                            const typeLower =
+                                                notificationType.toLowerCase();
+
+                                            const priority =
+                                                String(
+                                                    notification.priority ||
+                                                    "Normal"
+                                                );
+
+                                            const priorityLower =
+                                                priority.toLowerCase();
+
+                                            const isUnread =
+                                                notification.read !== true;
+
+                                            const isImportant =
+                                                priorityLower === "important" ||
+                                                priorityLower === "urgent";
+
+                                            const searchableText =
+                                                [
+                                                    notification.title,
+                                                    notification.message,
+                                                    notification.type,
+                                                    notification.priority
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" ")
+                                                    .toLowerCase();
+                                    %>
+
+                                        <article
+                                            x-show="
+                                                (
+                                                    filter === 'all' ||
+
+                                                    (
+                                                        filter === 'unread' &&
+                                                        <%= isUnread
+                                                            ? "true"
+                                                            : "false"
+                                                        %>
+                                                    ) ||
+
+                                                    (
+                                                        filter === 'account' &&
+                                                        <%- JSON.stringify(typeLower) %>
+                                                            === 'account'
+                                                    ) ||
+
+                                                    (
+                                                        filter === 'important' &&
+                                                        <%= isImportant
+                                                            ? "true"
+                                                            : "false"
+                                                        %>
+                                                    )
+                                                ) &&
+
+                                                (
+                                                    !search.trim() ||
+
+                                                    <%- JSON.stringify(searchableText) %>
+                                                        .includes(
+                                                            search
+                                                                .trim()
+                                                                .toLowerCase()
+                                                        )
+                                                )
+                                            "
+                                            class="relative
+                                                   p-4
+                                                   sm:p-5
+
+                                                   <%= isUnread
+                                                       ? "bg-blue-50/40"
+                                                       : "bg-white"
+                                                   %>"
+                                        >
+
+                                            <div
+                                                class="flex
+                                                       items-start
+                                                       gap-3
+                                                       sm:gap-4"
+                                            >
+
+                                                <!-- Icon -->
+
+                                                <div
+                                                    class="h-10
+                                                           w-10
+                                                           rounded-full
+                                                           flex
+                                                           items-center
+                                                           justify-center
+                                                           flex-shrink-0
+
+                                                           <%= priorityLower === "urgent"
+                                                               ? "bg-red-100"
+                                                               : priorityLower === "important"
+                                                               ? "bg-orange-100"
+                                                               : typeLower === "security"
+                                                               ? "bg-purple-100"
+                                                               : typeLower === "deposit"
+                                                               ? "bg-green-100"
+                                                               : typeLower === "transfer"
+                                                               ? "bg-blue-100"
+                                                               : "bg-gray-100"
+                                                           %>"
+                                                >
+
+                                                    <i
+                                                        data-lucide="<%= priorityLower === "urgent"
+                                                            ? "circle-alert"
+                                                            : typeLower === "security"
+                                                            ? "shield-check"
+                                                            : typeLower === "deposit"
+                                                            ? "download"
+                                                            : typeLower === "transfer"
+                                                            ? "send"
+                                                            : typeLower === "support"
+                                                            ? "messages-square"
+                                                            : "bell"
+                                                        %>"
+                                                        class="h-5
+                                                               w-5
+
+                                                               <%= priorityLower === "urgent"
+                                                                   ? "text-red-600"
+                                                                   : priorityLower === "important"
+                                                                   ? "text-orange-600"
+                                                                   : typeLower === "security"
+                                                                   ? "text-purple-600"
+                                                                   : typeLower === "deposit"
+                                                                   ? "text-green-600"
+                                                                   : typeLower === "transfer"
+                                                                   ? "text-blue-600"
+                                                                   : "text-gray-500"
+                                                               %>"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <!-- Content -->
+
+                                                <div
+                                                    class="flex-1
+                                                           min-w-0"
+                                                >
+
+                                                    <div
+                                                        class="flex
+                                                               flex-col
+                                                               sm:flex-row
+                                                               sm:items-start
+                                                               sm:justify-between
+                                                               gap-2"
+                                                    >
+
+                                                        <div class="min-w-0">
+
+                                                            <div
+                                                                class="flex
+                                                                       flex-wrap
+                                                                       items-center
+                                                                       gap-2"
+                                                            >
+
+                                                                <h3
+                                                                    class="text-sm
+                                                                           font-semibold
+                                                                           text-gray-900
+                                                                           break-words"
+                                                                >
+                                                                    <%= notification.title ||
+                                                                        "Notification"
+                                                                    %>
+                                                                </h3>
+
+
+                                                                <% if (
+                                                                    notificationType
+                                                                ) { %>
+
+                                                                    <span
+                                                                        class="inline-flex
+                                                                               px-2
+                                                                               py-0.5
+                                                                               rounded-full
+                                                                               bg-gray-100
+                                                                               text-gray-600
+                                                                               text-[11px]
+                                                                               font-medium"
+                                                                    >
+                                                                        <%= notificationType %>
+                                                                    </span>
+
+                                                                <% } %>
+
+
+                                                                <% if (
+                                                                    priorityLower === "important" ||
+                                                                    priorityLower === "urgent"
+                                                                ) { %>
+
+                                                                    <span
+                                                                        class="inline-flex
+                                                                               px-2
+                                                                               py-0.5
+                                                                               rounded-full
+                                                                               text-[11px]
+                                                                               font-medium
+
+                                                                               <%= priorityLower === "urgent"
+                                                                                   ? "bg-red-100 text-red-700"
+                                                                                   : "bg-orange-100 text-orange-700"
+                                                                               %>"
+                                                                    >
+                                                                        <%= priority %>
+                                                                    </span>
+
+                                                                <% } %>
+
+                                                            </div>
+
+
+                                                            <p
+                                                                class="text-sm
+                                                                       text-gray-600
+                                                                       mt-2
+                                                                       break-words"
+                                                            >
+                                                                <%= notification.message || "" %>
+                                                            </p>
+
+                                                        </div>
+
+
+                                                        <% if (
+                                                            notification.createdAt
+                                                        ) { %>
+
+                                                            <span
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       whitespace-nowrap"
+                                                            >
+                                                                <%= new Date(
+                                                                    notification.createdAt
+                                                                ).toLocaleString() %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </div>
+
+
+                                                    <!-- Actions -->
+
+                                                    <div
+                                                        class="flex
+                                                               flex-wrap
+                                                               items-center
+                                                               gap-3
+                                                               mt-4"
+                                                    >
+
+                                                        <a
+                                                            href="/dashboard/notifications/<%= notificationId %>"
+                                                            class="inline-flex
+                                                                   items-center
+                                                                   text-sm
+                                                                   font-medium
+                                                                   text-primary-700
+                                                                   hover:text-primary-800"
+                                                        >
+
+                                                            View Details
+
+                                                            <i
+                                                                data-lucide="arrow-right"
+                                                                class="h-4
+                                                                       w-4
+                                                                       ml-1"
+                                                            ></i>
+
+                                                        </a>
+
+
+                                                        <% if (isUnread) { %>
+
+                                                            <form
+                                                                action="/dashboard/notifications/<%= notificationId %>/read"
+                                                                method="POST"
+                                                            >
+
+                                                                <button
+                                                                    type="submit"
+                                                                    class="inline-flex
+                                                                           items-center
+                                                                           text-sm
+                                                                           font-medium
+                                                                           text-gray-500
+                                                                           hover:text-gray-700"
+                                                                >
+
+                                                                    <i
+                                                                        data-lucide="check"
+                                                                        class="h-4
+                                                                               w-4
+                                                                               mr-1"
+                                                                    ></i>
+
+                                                                    Mark Read
+
+                                                                </button>
+
+                                                            </form>
+
+                                                        <% } %>
+
+
+                                                        <% if (
+                                                            notification.actionUrl
+                                                        ) { %>
+
+                                                            <a
+                                                                href="<%= notification.actionUrl %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-gray-600
+                                                                       hover:text-gray-800"
+                                                            >
+                                                                <%= notification.actionLabel ||
+                                                                    "Open"
+                                                                %>
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Unread Indicator -->
+
+                                                <% if (isUnread) { %>
+
+                                                    <span
+                                                        class="h-2.5
+                                                               w-2.5
+                                                               rounded-full
+                                                               bg-blue-500
+                                                               mt-2
+                                                               flex-shrink-0"
+                                                        aria-label="Unread"
+                                                    ></span>
+
+                                                <% } %>
+
+                                            </div>
+
+                                        </article>
+
+                                    <% }); %>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Create your First Credit Merchant account."
+    />
+
+    <title><%= title || "Create an Account - First Credit Merchant" %></title>
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="https://i.postimg.cc/6qdzfgQL/favicon.png"
+    />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script src="/js/register-config.js"></script>
+
+    <!-- Register CSS -->
+
+    <link rel="stylesheet" href="/css/register.css" />
+
+    <!-- Alpine.js -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Lucide -->
+    <script src=" https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body class="font-sans bg-gray-50 text-gray-900 flex min-h-screen">
+    <!-- =============================================
+         PAGE LOADER
+    ============================================== -->
+    <%- include("sections/register/loader") %>
+
+    <!-- =============================================
+         REGISTER PAGE
+    ============================================== -->
+    <div class="w-full">
+      <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Left Branding Panel -->
+        <%- include("sections/register/branding") %>
+
+        <!-- Right Registration Form -->
+        <%- include("sections/register/form") %>
+      </div>
+    </div>
+
+    <!-- Register JavaScript -->
+    <script src="/js/register.js"></script>
+  </body>
+</html>

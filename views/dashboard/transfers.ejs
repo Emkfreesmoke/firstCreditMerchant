@@ -1,0 +1,883 @@
+<%
+    const transferRecords =
+        typeof transfers !== "undefined" &&
+        Array.isArray(transfers)
+            ? transfers
+            : [];
+
+    const localTransfers =
+        transferRecords.filter(
+            transfer =>
+                transfer &&
+                transfer.type === "Local"
+        );
+
+    const internationalTransfers =
+        transferRecords.filter(
+            transfer =>
+                transfer &&
+                transfer.type === "International"
+        );
+
+    const pendingTransfers =
+        transferRecords.filter(
+            transfer =>
+                transfer &&
+                (
+                    transfer.status === "Pending" ||
+                    transfer.status === "Processing"
+                )
+        );
+
+    function transferStatusClasses(status) {
+        if (status === "Completed") {
+            return "bg-green-100 text-green-700";
+        }
+
+        if (status === "Processing") {
+            return "bg-blue-100 text-blue-700";
+        }
+
+        if (status === "Pending") {
+            return "bg-yellow-100 text-yellow-700";
+        }
+
+        if (
+            status === "Rejected" ||
+            status === "Failed"
+        ) {
+            return "bg-red-100 text-red-700";
+        }
+
+        return "bg-gray-100 text-gray-700";
+    }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            transferFilter: 'all',
+            search: ''
+        }"
+        class="dashboard-app-shell
+               flex
+               h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div
+            class="dashboard-main-column
+                   flex
+                   flex-col
+                   flex-1
+                   min-w-0
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+            <main
+                class="dashboard-main-content
+                       flex-1
+                       min-w-0
+                       overflow-y-auto"
+            >
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =================================
+                             HEADER
+                        ================================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   lg:flex-row
+                                   lg:items-center
+                                   lg:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Transfers
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Send money and review
+                                    your transfer history.
+                                </p>
+
+                            </div>
+
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       gap-2"
+                            >
+
+                                <a
+                                    href="/dashboard/local-transfer"
+                                    class="inline-flex
+                                           items-center
+                                           justify-center
+                                           px-4 py-2.5
+                                           border
+                                           border-gray-200
+                                           bg-white
+                                           text-gray-700
+                                           text-sm
+                                           font-medium
+                                           rounded-lg
+                                           hover:bg-gray-50"
+                                >
+
+                                    <i
+                                        data-lucide="send"
+                                        class="h-4 w-4 mr-2"
+                                    ></i>
+
+                                    Local Transfer
+
+                                </a>
+
+
+                                <a
+                                    href="/dashboard/international-transfer"
+                                    class="inline-flex
+                                           items-center
+                                           justify-center
+                                           px-4 py-2.5
+                                           bg-primary-600
+                                           hover:bg-primary-700
+                                           text-white
+                                           text-sm
+                                           font-medium
+                                           rounded-lg"
+                                >
+
+                                    <i
+                                        data-lucide="globe"
+                                        class="h-4 w-4 mr-2"
+                                    ></i>
+
+                                    International Wire
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SUMMARY
+                        ================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Total Transfers
+                                    </p>
+
+                                    <p class="dashboard-stat-value">
+                                        <%= transferRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Local
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-blue-700"
+                                    >
+                                        <%= localTransfers.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        International
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-purple-700"
+                                    >
+                                        <%= internationalTransfers.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Pending / Processing
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingTransfers.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             TRANSFER TYPES
+                        ================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   lg:grid-cols-2
+                                   gap-5
+                                   mb-6"
+                        >
+
+                            <a
+                                href="/dashboard/local-transfer"
+                                class="dashboard-card
+                                       p-6
+                                       hover:shadow-md
+                                       transition-shadow"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <div
+                                        class="h-12 w-12
+                                               rounded-full
+                                               bg-primary-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mr-4
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="send"
+                                            class="h-6 w-6
+                                                   text-primary-700"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <h2
+                                            class="text-base
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Local Transfer
+                                        </h2>
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-500
+                                                   mt-2"
+                                        >
+                                            Send money to another
+                                            First Credit Merchant account.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+
+                            <a
+                                href="/dashboard/international-transfer"
+                                class="dashboard-card
+                                       p-6
+                                       hover:shadow-md
+                                       transition-shadow"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <div
+                                        class="h-12 w-12
+                                               rounded-full
+                                               bg-purple-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mr-4
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="globe"
+                                            class="h-6 w-6
+                                                   text-purple-600"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <div>
+
+                                        <h2
+                                            class="text-base
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            International Wire
+                                        </h2>
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-500
+                                                   mt-2"
+                                        >
+                                            Send an international
+                                            wire to an external account.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================
+                             FILTERS
+                        ================================== -->
+
+                        <section
+                            class="dashboard-card
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <div
+                                    class="relative
+                                           flex-1
+                                           min-w-0"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4 w-4
+                                               text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        placeholder="Search transfers..."
+                                        class="dashboard-form-input
+                                               pl-9"
+                                    >
+
+                                </div>
+
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <% [
+                                        ["all", "All"],
+                                        ["local", "Local"],
+                                        ["international", "International"],
+                                        ["pending", "Pending"]
+                                    ].forEach(function(item) { %>
+
+                                        <button
+                                            type="button"
+                                            @click="
+                                                transferFilter =
+                                                    '<%= item[0] %>'
+                                            "
+                                            :class="
+                                                transferFilter ===
+                                                    '<%= item[0] %>'
+                                                    ? 'bg-primary-600 text-white'
+                                                    : 'bg-gray-100 text-gray-600'
+                                            "
+                                            class="px-4 py-2
+                                                   rounded-lg
+                                                   text-sm
+                                                   font-medium"
+                                        >
+                                            <%= item[1] %>
+                                        </button>
+
+                                    <% }); %>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- =================================
+                             HISTORY
+                        ================================== -->
+
+                        <section class="dashboard-card">
+
+                            <div class="dashboard-card-header">
+
+                                <div>
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Transfer History
+                                    </h2>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Your local and international
+                                        transfer records.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                transferRecords.length === 0
+                            ) { %>
+
+                                <div
+                                    class="py-14
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-14 w-14
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="send"
+                                            class="h-7 w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No transfers yet
+                                    </h3>
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Completed and pending transfers
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="dashboard-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Recipient
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Type
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Amount
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Date
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% transferRecords.forEach(
+                                                function(transfer) {
+
+                                                    const transferId =
+                                                        transfer._id ||
+                                                        transfer.id;
+
+                                                    const searchableText = [
+                                                        transfer.reference,
+                                                        transfer.recipientName,
+                                                        transfer.type,
+                                                        transfer.status
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                        .replace(/'/g, "\\'")
+                                                        .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            transferFilter === 'all' ||
+
+                                                            (
+                                                                transferFilter === 'local' &&
+                                                                '<%= transfer.type || "" %>' === 'Local'
+                                                            ) ||
+
+                                                            (
+                                                                transferFilter === 'international' &&
+                                                                '<%= transfer.type || "" %>' === 'International'
+                                                            ) ||
+
+                                                            (
+                                                                transferFilter === 'pending' &&
+                                                                (
+                                                                    '<%= transfer.status || "" %>' === 'Pending' ||
+                                                                    '<%= transfer.status || "" %>' === 'Processing'
+                                                                )
+                                                            )
+                                                        ) &&
+
+                                                        (
+                                                            !search ||
+                                                            '<%= searchableText %>'.includes(
+                                                                search.toLowerCase()
+                                                            )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Reference -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <span
+                                                            class="font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            <%= transfer.reference || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Recipient -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <p
+                                                            class="font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            <%= transfer.recipientName || "" %>
+                                                        </p>
+
+                                                        <% if (
+                                                            transfer.recipientAccount
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+                                                                <%= transfer.recipientAccount %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Type -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <span
+                                                            class="inline-flex
+                                                                   px-2.5 py-1
+                                                                   rounded-full
+                                                                   text-xs
+                                                                   font-medium
+                                                                   <%= transfer.type === "International"
+                                                                       ? "bg-purple-100 text-purple-700"
+                                                                       : "bg-blue-100 text-blue-700"
+                                                                   %>"
+                                                        >
+                                                            <%= transfer.type || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Amount -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <% if (
+                                                            transfer.amount !== undefined &&
+                                                            transfer.amount !== null
+                                                        ) { %>
+
+                                                            <span
+                                                                class="font-semibold
+                                                                       text-gray-900"
+                                                            >
+                                                                <%= transfer.currency || "" %>
+
+                                                                <%= Number(
+                                                                    transfer.amount
+                                                                ).toLocaleString(
+                                                                    undefined,
+                                                                    {
+                                                                        minimumFractionDigits: 2,
+                                                                        maximumFractionDigits: 2
+                                                                    }
+                                                                ) %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Status -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <span
+                                                            class="inline-flex
+                                                                   px-2.5 py-1
+                                                                   rounded-full
+                                                                   text-xs
+                                                                   font-medium
+                                                                   <%= transferStatusClasses(
+                                                                       transfer.status
+                                                                   ) %>"
+                                                        >
+                                                            <%= transfer.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Date -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <%= transfer.createdAt
+                                                            ? new Date(
+                                                                transfer.createdAt
+                                                              ).toLocaleString()
+                                                            : ""
+                                                        %>
+
+                                                    </td>
+
+
+                                                    <!-- Action -->
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <% if (transferId) { %>
+
+                                                            <a
+                                                                href="/dashboard/transfers/<%= transferId %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-800"
+                                                            >
+                                                                Details
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4 w-4 ml-1"
+                                                                ></i>
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

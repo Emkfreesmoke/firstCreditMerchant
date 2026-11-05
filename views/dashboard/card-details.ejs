@@ -1,0 +1,1008 @@
+<%
+    const cardRecord =
+        typeof card !== "undefined"
+            ? card
+            : null;
+
+    const cardTransactions =
+        cardRecord &&
+        Array.isArray(cardRecord.transactions)
+            ? cardRecord.transactions
+            : [];
+
+    const cardId =
+        cardRecord
+            ? (
+                cardRecord._id ||
+                cardRecord.id ||
+                ""
+            )
+            : "";
+
+    function cardStatusClasses(status) {
+        if (status === "Active") {
+            return "bg-green-100 text-green-700";
+        }
+
+        if (status === "Frozen") {
+            return "bg-blue-100 text-blue-700";
+        }
+
+        if (status === "Pending") {
+            return "bg-yellow-100 text-yellow-700";
+        }
+
+        if (status === "Expired") {
+            return "bg-red-100 text-red-700";
+        }
+
+        return "bg-gray-100 text-gray-700";
+    }
+
+    function cardStatusDot(status) {
+        if (status === "Active") {
+            return "bg-green-500";
+        }
+
+        if (status === "Frozen") {
+            return "bg-blue-500";
+        }
+
+        if (status === "Pending") {
+            return "bg-yellow-500";
+        }
+
+        if (status === "Expired") {
+            return "bg-red-500";
+        }
+
+        return "bg-gray-500";
+    }
+
+    function cardStatusIcon(status) {
+        if (status === "Active") {
+            return "circle-check";
+        }
+
+        if (status === "Frozen") {
+            return "snowflake";
+        }
+
+        if (status === "Pending") {
+            return "clock";
+        }
+
+        if (status === "Expired") {
+            return "circle-x";
+        }
+
+        return "credit-card";
+    }
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col flex-1
+                   min-w-0 overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+
+            <main
+                class="dashboard-main-content
+                       flex-1 min-w-0
+                       overflow-y-auto"
+            >
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <!-- Back -->
+
+                        <a
+                            href="/dashboard/cards"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Cards
+                        </a>
+
+
+                        <!-- Card unavailable -->
+
+                        <% if (!cardRecord) { %>
+
+                            <section class="dashboard-card">
+
+                                <div class="py-16 px-6 text-center">
+
+                                    <div
+                                        class="h-16 w-16 mx-auto
+                                               rounded-full bg-gray-100
+                                               flex items-center
+                                               justify-center mb-4"
+                                    >
+                                        <i
+                                            data-lucide="credit-card"
+                                            class="h-8 w-8 text-gray-400"
+                                        ></i>
+                                    </div>
+
+                                    <h1
+                                        class="text-xl font-semibold
+                                               text-gray-900"
+                                    >
+                                        Card unavailable
+                                    </h1>
+
+                                    <p
+                                        class="text-sm text-gray-500
+                                               mt-2 max-w-md mx-auto"
+                                    >
+                                        This card is not currently
+                                        available on your account.
+                                    </p>
+
+                                    <div
+                                        class="flex flex-col
+                                               sm:flex-row
+                                               justify-center gap-3 mt-6"
+                                    >
+
+                                        <a
+                                            href="/dashboard/cards"
+                                            class="inline-flex items-center
+                                                   justify-center
+                                                   px-4 py-2.5
+                                                   bg-primary-600
+                                                   hover:bg-primary-700
+                                                   text-white text-sm
+                                                   font-medium rounded-lg"
+                                        >
+                                            <i
+                                                data-lucide="arrow-left"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Back to Cards
+                                        </a>
+
+                                        <a
+                                            href="/dashboard/support"
+                                            class="inline-flex items-center
+                                                   justify-center
+                                                   px-4 py-2.5
+                                                   border border-gray-200
+                                                   bg-white text-gray-700
+                                                   text-sm font-medium
+                                                   rounded-lg
+                                                   hover:bg-gray-50"
+                                        >
+                                            <i
+                                                data-lucide="help-circle"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Contact Support
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </section>
+
+                        <% } %>
+
+
+                        <% if (cardRecord) { %>
+
+                            <!-- Header -->
+
+                            <div
+                                class="flex flex-col sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-4 mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl font-bold
+                                               text-gray-900"
+                                    >
+                                        Card Details
+                                    </h1>
+
+                                    <% if (cardId) { %>
+
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            Card ID:
+                                            <%= cardId %>
+                                        </p>
+
+                                    <% } %>
+
+                                </div>
+
+                                <% if (cardRecord.status) { %>
+
+                                    <span
+                                        class="inline-flex items-center
+                                               self-start px-3 py-1.5
+                                               rounded-full text-xs
+                                               font-medium
+                                               <%= cardStatusClasses(
+                                                   cardRecord.status
+                                               ) %>"
+                                    >
+                                        <span
+                                            class="h-1.5 w-1.5
+                                                   rounded-full mr-2
+                                                   <%= cardStatusDot(
+                                                       cardRecord.status
+                                                   ) %>"
+                                        ></span>
+
+                                        <%= cardRecord.status %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <!-- Card visual and status -->
+
+                            <div
+                                class="grid grid-cols-1
+                                       xl:grid-cols-3
+                                       gap-6 mb-6"
+                            >
+
+                                <!-- Card visual -->
+
+                                <div class="xl:col-span-2 min-w-0">
+
+                                    <div
+                                        class="relative overflow-hidden
+                                               rounded-2xl
+                                               bg-gradient-to-br
+                                               from-primary-600
+                                               via-primary-700
+                                               to-primary-900
+                                               text-white shadow-xl
+                                               p-6 sm:p-7
+                                               min-h-[270px]"
+                                    >
+
+                                        <div
+                                            class="absolute -right-20
+                                                   -top-20 h-56 w-56
+                                                   rounded-full bg-white/5"
+                                        ></div>
+
+                                        <div
+                                            class="absolute -left-24
+                                                   -bottom-28 h-64 w-64
+                                                   rounded-full bg-white/5"
+                                        ></div>
+
+                                        <div
+                                            class="relative z-10
+                                                   flex flex-col
+                                                   justify-between
+                                                   min-h-[220px]"
+                                        >
+
+                                            <div
+                                                class="flex items-start
+                                                       justify-between gap-4"
+                                            >
+
+                                                <div class="min-w-0">
+
+                                                    <% if (
+                                                        cardRecord.issuerName
+                                                    ) { %>
+
+                                                        <p
+                                                            class="text-xs
+                                                                   uppercase
+                                                                   tracking-wider
+                                                                   text-white/60"
+                                                        >
+                                                            <%= cardRecord.issuerName %>
+                                                        </p>
+
+                                                    <% } %>
+
+                                                    <h2
+                                                        class="text-xl
+                                                               font-semibold
+                                                               mt-1"
+                                                    >
+                                                        <%= cardRecord.displayName ||
+                                                            cardRecord.type ||
+                                                            "Payment Card"
+                                                        %>
+                                                    </h2>
+
+                                                </div>
+
+                                                <div
+                                                    class="flex items-center
+                                                           gap-3 flex-shrink-0"
+                                                >
+                                                    <i
+                                                        data-lucide="wifi"
+                                                        class="h-6 w-6"
+                                                    ></i>
+
+                                                    <i
+                                                        data-lucide="credit-card"
+                                                        class="h-7 w-7"
+                                                    ></i>
+                                                </div>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <p
+                                                    class="text-lg sm:text-2xl
+                                                           tracking-[0.12em]
+                                                           sm:tracking-[0.18em]
+                                                           font-medium
+                                                           break-words"
+                                                >
+                                                    •••• •••• ••••
+                                                    <%= cardRecord.lastFour || "••••" %>
+                                                </p>
+
+                                            </div>
+
+
+                                            <div
+                                                class="grid grid-cols-3
+                                                       gap-4 items-end"
+                                            >
+
+                                                <div class="col-span-2 min-w-0">
+
+                                                    <p
+                                                        class="text-[10px]
+                                                               uppercase
+                                                               tracking-wide
+                                                               text-white/50"
+                                                    >
+                                                        Card Holder
+                                                    </p>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium mt-1
+                                                               truncate"
+                                                    >
+                                                        <%= cardRecord.holderName ||
+                                                            "Card Holder"
+                                                        %>
+                                                    </p>
+
+                                                </div>
+
+                                                <div class="text-right">
+
+                                                    <p
+                                                        class="text-[10px]
+                                                               uppercase
+                                                               tracking-wide
+                                                               text-white/50"
+                                                    >
+                                                        Expires
+                                                    </p>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium mt-1"
+                                                    >
+                                                        <%= cardRecord.expiry ||
+                                                            "--/--"
+                                                        %>
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- Card status -->
+
+                                <section class="dashboard-card min-w-0">
+
+                                    <div class="dashboard-card-header">
+
+                                        <h2
+                                            class="text-lg font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Card Status
+                                        </h2>
+
+                                    </div>
+
+                                    <div class="p-6">
+
+                                        <% if (cardRecord.status) { %>
+
+                                            <div
+                                                class="flex flex-col
+                                                       items-center text-center"
+                                            >
+
+                                                <div
+                                                    class="h-14 w-14
+                                                           rounded-full
+                                                           flex items-center
+                                                           justify-center mb-3
+                                                           <%= cardRecord.status === "Active"
+                                                               ? "bg-green-100"
+                                                               : cardRecord.status === "Frozen"
+                                                               ? "bg-blue-100"
+                                                               : cardRecord.status === "Pending"
+                                                               ? "bg-yellow-100"
+                                                               : cardRecord.status === "Expired"
+                                                               ? "bg-red-100"
+                                                               : "bg-gray-100"
+                                                           %>"
+                                                >
+                                                    <i
+                                                        data-lucide="<%= cardStatusIcon(
+                                                            cardRecord.status
+                                                        ) %>"
+                                                        class="h-7 w-7
+                                                               <%= cardRecord.status === "Active"
+                                                                   ? "text-green-600"
+                                                                   : cardRecord.status === "Frozen"
+                                                                   ? "text-blue-600"
+                                                                   : cardRecord.status === "Pending"
+                                                                   ? "text-yellow-600"
+                                                                   : cardRecord.status === "Expired"
+                                                                   ? "text-red-600"
+                                                                   : "text-gray-500"
+                                                               %>"
+                                                    ></i>
+                                                </div>
+
+                                                <h3
+                                                    class="font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= cardRecord.status %>
+                                                </h3>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <div
+                                            class="border-t border-gray-100
+                                                   mt-6 pt-5 space-y-4"
+                                        >
+
+                                            <div
+                                                class="flex items-start
+                                                       justify-between gap-3"
+                                            >
+                                                <span
+                                                    class="text-sm
+                                                           text-gray-500"
+                                                >
+                                                    Card Type
+                                                </span>
+
+                                                <strong
+                                                    class="text-sm
+                                                           text-gray-800
+                                                           text-right"
+                                                >
+                                                    <%= cardRecord.type ||
+                                                        "Not provided"
+                                                    %>
+                                                </strong>
+                                            </div>
+
+                                            <div
+                                                class="flex items-start
+                                                       justify-between gap-3"
+                                            >
+                                                <span
+                                                    class="text-sm
+                                                           text-gray-500"
+                                                >
+                                                    Currency
+                                                </span>
+
+                                                <strong
+                                                    class="text-sm
+                                                           text-gray-800"
+                                                >
+                                                    <%= cardRecord.currency ||
+                                                        "Not provided"
+                                                    %>
+                                                </strong>
+                                            </div>
+
+                                            <% if (
+                                                cardRecord.spendingLimit !==
+                                                undefined &&
+                                                cardRecord.spendingLimit !==
+                                                null
+                                            ) { %>
+
+                                                <div
+                                                    class="flex items-start
+                                                           justify-between
+                                                           gap-3"
+                                                >
+                                                    <span
+                                                        class="text-sm
+                                                               text-gray-500"
+                                                    >
+                                                        Spending Limit
+                                                    </span>
+
+                                                    <strong
+                                                        class="text-sm
+                                                               text-gray-800
+                                                               text-right"
+                                                    >
+                                                        <%= cardRecord.currency || "" %>
+
+                                                        <%= Number(
+                                                            cardRecord.spendingLimit
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+                                                    </strong>
+                                                </div>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </div>
+
+                                </section>
+
+                            </div>
+
+
+                            <!-- Card Information -->
+
+                            <section class="dashboard-card mb-6">
+
+                                <div class="dashboard-card-header">
+
+                                    <h2
+                                        class="text-lg font-semibold
+                                               text-gray-900"
+                                    >
+                                        Card Information
+                                    </h2>
+
+                                </div>
+
+                                <div
+                                    class="p-6 grid grid-cols-1
+                                           sm:grid-cols-2
+                                           lg:grid-cols-3 gap-6"
+                                >
+
+                                    <% [
+                                        ["Card ID", cardId],
+                                        ["Card Display Name", cardRecord.displayName],
+                                        ["Card Type", cardRecord.type],
+                                        ["Last Four Digits", cardRecord.lastFour],
+                                        ["Expiration", cardRecord.expiry],
+                                        ["Currency", cardRecord.currency],
+                                        [
+                                            "Created",
+                                            cardRecord.createdAt
+                                                ? new Date(
+                                                    cardRecord.createdAt
+                                                  ).toLocaleString()
+                                                : ""
+                                        ]
+                                    ].forEach(function(item) {
+                                        if (
+                                            item[1] !== undefined &&
+                                            item[1] !== null &&
+                                            item[1] !== ""
+                                        ) {
+                                    %>
+
+                                        <div class="min-w-0">
+
+                                            <p class="text-xs text-gray-400">
+                                                <%= item[0] %>
+                                            </p>
+
+                                            <p
+                                                class="text-sm font-medium
+                                                       text-gray-800 mt-1
+                                                       break-words"
+                                            >
+                                                <%= item[1] %>
+                                            </p>
+
+                                        </div>
+
+                                    <% } }); %>
+
+                                </div>
+
+                            </section>
+
+
+                            <!-- Card Actions -->
+
+                            <div
+                                class="grid grid-cols-1
+                                       sm:grid-cols-2
+                                       md:grid-cols-3
+                                       gap-4 mb-6"
+                            >
+
+                                <a
+                                    href="/dashboard/transactions"
+                                    class="dashboard-action"
+                                >
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-blue-100"
+                                    >
+                                        <i
+                                            data-lucide="activity"
+                                            class="h-6 w-6
+                                                   text-blue-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Transactions</span>
+                                </a>
+
+                                <a
+                                    href="/dashboard/settings"
+                                    class="dashboard-action"
+                                >
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-green-100"
+                                    >
+                                        <i
+                                            data-lucide="shield-check"
+                                            class="h-6 w-6
+                                                   text-green-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Security</span>
+                                </a>
+
+                                <a
+                                    href="/dashboard/support"
+                                    class="dashboard-action"
+                                >
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-purple-100"
+                                    >
+                                        <i
+                                            data-lucide="help-circle"
+                                            class="h-6 w-6
+                                                   text-purple-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>Card Support</span>
+                                </a>
+
+                            </div>
+
+
+                            <!-- Card Activity -->
+
+                            <section class="dashboard-card">
+
+                                <div class="dashboard-card-header">
+
+                                    <div>
+
+                                        <h2
+                                            class="text-lg font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Card Activity
+                                        </h2>
+
+                                        <p
+                                            class="text-xs text-gray-500
+                                                   mt-1"
+                                        >
+                                            Transactions associated
+                                            with this card.
+                                        </p>
+
+                                    </div>
+
+                                    <a
+                                        href="/dashboard/transactions"
+                                        class="text-sm font-medium
+                                               text-primary-700"
+                                    >
+                                        View All
+                                    </a>
+
+                                </div>
+
+
+                                <% if (!cardTransactions.length) { %>
+
+                                    <div class="py-12 px-6 text-center">
+
+                                        <div
+                                            class="h-12 w-12 mx-auto
+                                                   rounded-full bg-gray-100
+                                                   flex items-center
+                                                   justify-center mb-3"
+                                        >
+                                            <i
+                                                data-lucide="activity"
+                                                class="h-6 w-6
+                                                       text-gray-400"
+                                            ></i>
+                                        </div>
+
+                                        <p
+                                            class="text-sm font-medium
+                                                   text-gray-700"
+                                        >
+                                            No card activity yet
+                                        </p>
+
+                                    </div>
+
+                                <% } else { %>
+
+                                    <div class="overflow-x-auto">
+
+                                        <table
+                                            class="min-w-full
+                                                   divide-y
+                                                   divide-gray-200"
+                                        >
+
+                                            <thead class="bg-gray-50">
+
+                                                <tr>
+                                                    <th class="dashboard-table-heading">
+                                                        Reference
+                                                    </th>
+
+                                                    <th class="dashboard-table-heading">
+                                                        Type
+                                                    </th>
+
+                                                    <th class="dashboard-table-heading">
+                                                        Amount
+                                                    </th>
+
+                                                    <th class="dashboard-table-heading">
+                                                        Status
+                                                    </th>
+
+                                                    <th class="dashboard-table-heading">
+                                                        Date
+                                                    </th>
+                                                </tr>
+
+                                            </thead>
+
+                                            <tbody
+                                                class="bg-white
+                                                       divide-y
+                                                       divide-gray-100"
+                                            >
+
+                                                <% cardTransactions.forEach(
+                                                    function(transaction) {
+                                                %>
+
+                                                    <tr>
+
+                                                        <td class="dashboard-table-cell">
+                                                            <%= transaction.reference || "" %>
+                                                        </td>
+
+                                                        <td class="dashboard-table-cell">
+                                                            <%= transaction.type || "" %>
+                                                        </td>
+
+                                                        <td
+                                                            class="dashboard-table-cell
+                                                                   font-medium
+                                                                   text-gray-900"
+                                                        >
+                                                            <% if (
+                                                                transaction.amount !==
+                                                                undefined &&
+                                                                transaction.amount !==
+                                                                null
+                                                            ) { %>
+
+                                                                <%= transaction.currency ||
+                                                                    cardRecord.currency ||
+                                                                    ""
+                                                                %>
+
+                                                                <%= Number(
+                                                                    transaction.amount
+                                                                ).toLocaleString(
+                                                                    undefined,
+                                                                    {
+                                                                        minimumFractionDigits: 2,
+                                                                        maximumFractionDigits: 2
+                                                                    }
+                                                                ) %>
+
+                                                            <% } %>
+                                                        </td>
+
+                                                        <td class="dashboard-table-cell">
+                                                            <%= transaction.status || "" %>
+                                                        </td>
+
+                                                        <td class="dashboard-table-cell">
+                                                            <%= transaction.createdAt
+                                                                ? new Date(
+                                                                    transaction.createdAt
+                                                                  ).toLocaleString()
+                                                                : transaction.date || ""
+                                                            %>
+                                                        </td>
+
+                                                    </tr>
+
+                                                <% }); %>
+
+                                            </tbody>
+
+                                        </table>
+
+                                    </div>
+
+                                <% } %>
+
+                            </section>
+
+
+                            <!-- Security Notice -->
+
+                            <div
+                                class="mt-6
+                                       bg-primary-50
+                                       border border-primary-100
+                                       rounded-xl p-5"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="shield-check"
+                                        class="h-5 w-5 text-primary-600
+                                               mr-3 flex-shrink-0"
+                                    ></i>
+
+                                    <div>
+
+                                        <h2
+                                            class="text-sm font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Card Security
+                                        </h2>
+
+                                        <p
+                                            class="text-sm text-gray-600
+                                                   mt-1"
+                                        >
+                                            Only masked card details and
+                                            account-authorized information
+                                            are displayed on this page.
+                                        </p>
+
+                                        <a
+                                            href="/dashboard/support"
+                                            class="inline-flex items-center
+                                                   text-sm font-medium
+                                                   text-primary-700 mt-3"
+                                        >
+                                            Contact Card Support
+
+                                            <i
+                                                data-lucide="arrow-right"
+                                                class="h-4 w-4 ml-1"
+                                            ></i>
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

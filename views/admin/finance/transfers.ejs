@@ -1,0 +1,836 @@
+<%
+    const transferRecords =
+        typeof transfers !== "undefined" &&
+        Array.isArray(transfers)
+            ? transfers
+            : [];
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            search: '',
+            filter: 'all'
+        }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- ==========================
+                             PAGE HEADER
+                        =========================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Transfers
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Manage customer transfers.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/transfers/create"
+                                class="admin-primary-button
+                                       w-full
+                                       sm:w-auto"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Create Transfer
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- ==========================
+                             SEARCH / FILTER
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Search -->
+
+                                <div
+                                    class="relative
+                                           flex-1
+                                           min-w-0"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4
+                                               w-4
+                                               text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        class="admin-input pl-9"
+                                        placeholder="Search transfers..."
+                                    >
+
+                                </div>
+
+
+                                <!-- Filters -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'all'"
+                                        :class="
+                                            filter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        All
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'pending'"
+                                        :class="
+                                            filter === 'pending'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Pending
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'processing'"
+                                        :class="
+                                            filter === 'processing'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Processing
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="filter = 'completed'"
+                                        :class="
+                                            filter === 'completed'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Completed
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ==========================
+                             TRANSFER RECORDS
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <h3>
+                                    Transfer Records
+                                </h3>
+
+
+                                <% if (
+                                    transferRecords.length > 0
+                                ) { %>
+
+                                    <span
+                                        class="text-xs
+                                               text-gray-500"
+                                    >
+                                        <%= transferRecords.length %>
+                                        transfer<%= transferRecords.length === 1
+                                            ? ""
+                                            : "s"
+                                        %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (
+                                transferRecords.length === 0
+                            ) { %>
+
+                                <!-- =====================
+                                     EMPTY STATE
+                                ====================== -->
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="send"
+                                    ></i>
+
+                                    <p>
+                                        No transfer records
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <!-- =====================
+                                     TABLE
+                                ====================== -->
+
+                                <div
+                                    class="w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Customer
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Reference
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Recipient
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Type
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Amount
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Status
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% transferRecords.forEach(
+                                                function(transfer) {
+
+                                                    const customerName =
+                                                        transfer.customer
+                                                            ? (
+                                                                transfer.customer.fullName ||
+                                                                [
+                                                                    transfer.customer.firstName,
+                                                                    transfer.customer.middleName,
+                                                                    transfer.customer.lastName
+                                                                ]
+                                                                    .filter(Boolean)
+                                                                    .join(" ")
+                                                            )
+                                                            : "";
+
+                                                    const searchableText =
+                                                        [
+                                                            customerName,
+                                                            transfer.reference,
+                                                            transfer.recipientName,
+                                                            transfer.recipientAccount,
+                                                            transfer.recipientBank,
+                                                            transfer.type,
+                                                            transfer.transferChannel,
+                                                            transfer.currency,
+                                                            transfer.status,
+                                                            transfer.description,
+                                                            transfer.purpose
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                            .toLowerCase();
+
+                                                    const transferId =
+                                                        transfer.id ||
+                                                        transfer._id ||
+                                                        null;
+
+                                                    const transferStatus =
+                                                        String(
+                                                            transfer.status || ""
+                                                        ).toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            filter === 'all' ||
+                                                            (
+                                                                filter === 'pending' &&
+                                                                <%- JSON.stringify(transferStatus) %>
+                                                                    === 'pending'
+                                                            ) ||
+                                                            (
+                                                                filter === 'processing' &&
+                                                                <%- JSON.stringify(transferStatus) %>
+                                                                    === 'processing'
+                                                            ) ||
+                                                            (
+                                                                filter === 'completed' &&
+                                                                <%- JSON.stringify(transferStatus) %>
+                                                                    === 'completed'
+                                                            )
+                                                        ) &&
+                                                        (
+                                                            !search.trim() ||
+                                                            <%- JSON.stringify(searchableText) %>
+                                                                .includes(
+                                                                    search
+                                                                        .trim()
+                                                                        .toLowerCase()
+                                                                )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- =================
+                                                         CUSTOMER
+                                                    ================== -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            transfer.customer
+                                                        ) { %>
+
+                                                            <div
+                                                                class="flex
+                                                                       items-center
+                                                                       min-w-0"
+                                                            >
+
+                                                                <div
+                                                                    class="h-9
+                                                                           w-9
+                                                                           rounded-full
+                                                                           bg-gray-100
+                                                                           flex
+                                                                           items-center
+                                                                           justify-center
+                                                                           mr-3
+                                                                           flex-shrink-0"
+                                                                >
+
+                                                                    <i
+                                                                        data-lucide="user"
+                                                                        class="h-4
+                                                                               w-4
+                                                                               text-gray-500"
+                                                                    ></i>
+
+                                                                </div>
+
+
+                                                                <div
+                                                                    class="min-w-0"
+                                                                >
+
+                                                                    <p
+                                                                        class="text-sm
+                                                                               font-medium
+                                                                               text-gray-900
+                                                                               whitespace-normal
+                                                                               break-words"
+                                                                    >
+                                                                        <%= customerName ||
+                                                                            "Customer"
+                                                                        %>
+                                                                    </p>
+
+
+                                                                    <% if (
+                                                                        transfer.customer.customerId
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-xs
+                                                                                   text-gray-500
+                                                                                   mt-1"
+                                                                        >
+                                                                            <%= transfer.customer.customerId %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         REFERENCE
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-medium
+                                                               text-gray-700"
+                                                    >
+                                                        <%= transfer.reference ||
+                                                            "—"
+                                                        %>
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         RECIPIENT
+                                                    ================== -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-900
+                                                                   whitespace-normal
+                                                                   break-words"
+                                                        >
+                                                            <%= transfer.recipientName ||
+                                                                "—"
+                                                            %>
+                                                        </p>
+
+
+                                                        <% if (
+                                                            transfer.recipientAccount
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1
+                                                                       break-all"
+                                                            >
+                                                                <%= transfer.recipientAccount %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         TYPE
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <div
+                                                            class="flex
+                                                                   flex-col
+                                                                   gap-1"
+                                                        >
+
+                                                            <span>
+                                                                <%= transfer.type ||
+                                                                    "—"
+                                                                %>
+                                                            </span>
+
+
+                                                            <% if (
+                                                                transfer.transferChannel
+                                                            ) { %>
+
+                                                                <span
+                                                                    class="text-xs
+                                                                           text-gray-400"
+                                                                >
+                                                                    <%= transfer.transferChannel %>
+                                                                </span>
+
+                                                            <% } %>
+
+                                                        </div>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         AMOUNT
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+
+                                                        <% if (
+                                                            transfer.amount !==
+                                                                undefined &&
+                                                            transfer.amount !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= transfer.currency || "" %>
+
+                                                            <%= Number(
+                                                                transfer.amount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         STATUS
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            transfer.status ===
+                                                            "Completed"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-green-100
+                                                                       text-green-700"
+                                                            >
+                                                                Completed
+                                                            </span>
+
+
+                                                        <% } else if (
+                                                            transfer.status ===
+                                                            "Processing"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-blue-100
+                                                                       text-blue-700"
+                                                            >
+                                                                Processing
+                                                            </span>
+
+
+                                                        <% } else if (
+                                                            transfer.status ===
+                                                            "Pending"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-yellow-100
+                                                                       text-yellow-700"
+                                                            >
+                                                                Pending
+                                                            </span>
+
+
+                                                        <% } else if (
+                                                            transfer.status ===
+                                                                "Rejected" ||
+                                                            transfer.status ===
+                                                                "Failed"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-red-100
+                                                                       text-red-700"
+                                                            >
+                                                                <%= transfer.status %>
+                                                            </span>
+
+
+                                                        <% } else if (
+                                                            transfer.status ===
+                                                            "Cancelled"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-gray-100
+                                                                       text-gray-700"
+                                                            >
+                                                                Cancelled
+                                                            </span>
+
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-gray-100
+                                                                       text-gray-700"
+                                                            >
+                                                                <%= transfer.status ||
+                                                                    "Unknown"
+                                                                %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         ACTION
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            transferId
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/transfers/<%= transferId %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-800"
+                                                            >
+
+                                                                Details
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

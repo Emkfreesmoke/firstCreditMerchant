@@ -1,0 +1,856 @@
+<%
+    const customerRecords =
+        typeof customers !== "undefined" &&
+        Array.isArray(customers)
+            ? customers
+            : [];
+
+    const activeCustomers =
+        customerRecords.filter(
+            customer =>
+                customer &&
+                customer.status === "Active"
+        );
+
+    const pendingCustomers =
+        customerRecords.filter(
+            customer =>
+                customer &&
+                (
+                    customer.status === "Pending" ||
+                    customer.status === "Under Review"
+                )
+        );
+
+    const suspendedCustomers =
+        customerRecords.filter(
+            customer =>
+                customer &&
+                customer.status === "Suspended"
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <!-- =====================================================
+         ADMIN APPLICATION
+    ====================================================== -->
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            customerFilter: 'all'
+        }"
+        class="admin-app-shell flex h-screen overflow-hidden"
+    >
+
+        <!-- =================================================
+             DESKTOP SIDEBAR
+        ================================================== -->
+
+        <%- include("partials/sidebar") %>
+
+
+        <!-- =================================================
+             MAIN ADMIN AREA
+        ================================================== -->
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <!-- Admin Topbar -->
+
+            <%- include("partials/topbar") %>
+
+
+            <!-- Mobile Navigation -->
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <!-- =================================================
+                 MAIN CONTENT
+            ================================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =====================================
+                             PAGE HEADER
+                        ====================================== -->
+
+                        <div
+                            class="flex flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Customers
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review and manage customer accounts.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/registrations"
+                                class="admin-primary-button
+                                       sm:w-auto"
+                            >
+
+                                <i
+                                    data-lucide="user-plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Registrations
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             CUSTOMER SUMMARY
+                        ====================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- Total Customers -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Total Customers
+                                    </p>
+
+
+                                    <p class="admin-stat-value">
+                                        <%= customerRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-blue-50
+                                           text-blue-700"
+                                >
+
+                                    <i
+                                        data-lucide="users"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Active Customers -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Active
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= activeCustomers.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-green-50
+                                           text-green-700"
+                                >
+
+                                    <i
+                                        data-lucide="user-check"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Pending Customers -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Pending
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingCustomers.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-yellow-50
+                                           text-yellow-700"
+                                >
+
+                                    <i
+                                        data-lucide="clock"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Suspended Customers -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Suspended
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-red-700"
+                                    >
+                                        <%= suspendedCustomers.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-red-50
+                                           text-red-700"
+                                >
+
+                                    <i
+                                        data-lucide="user-x"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             FILTERS
+                        ====================================== -->
+
+                        <div
+                            class="bg-white
+                                   border
+                                   border-gray-100
+                                   rounded-xl
+                                   p-4
+                                   shadow-sm
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Customer Search -->
+
+                                <div class="relative flex-1">
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4 w-4
+                                               text-gray-400
+                                               pointer-events-none"
+                                    ></i>
+
+
+                                    <input
+                                        type="search"
+                                        placeholder="Search customers..."
+                                        class="admin-input pl-9"
+                                    >
+
+                                </div>
+
+
+                                <!-- Status Filters -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <% [
+                                        ["all", "All"],
+                                        ["active", "Active"],
+                                        ["pending", "Pending"],
+                                        ["suspended", "Suspended"]
+                                    ].forEach(function(item) { %>
+
+                                        <button
+                                            type="button"
+                                            @click="
+                                                customerFilter =
+                                                    '<%= item[0] %>'
+                                            "
+                                            :class="
+                                                customerFilter ===
+                                                    '<%= item[0] %>'
+                                                    ? 'bg-primary-600 text-white'
+                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            "
+                                            class="px-4
+                                                   py-2
+                                                   rounded-lg
+                                                   text-sm
+                                                   font-medium
+                                                   transition-colors"
+                                        >
+                                            <%= item[1] %>
+                                        </button>
+
+                                    <% }); %>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             CUSTOMER TABLE
+                        ====================================== -->
+
+                        <div class="admin-panel">
+
+                            <!-- Panel Header -->
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Customer Accounts
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Manage approved customer accounts.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                customerRecords.length === 0
+                            ) { %>
+
+                                <!-- =================================
+                                     EMPTY STATE
+                                ================================== -->
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14
+                                               w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="users"
+                                            class="h-7
+                                                   w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No customer records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Approved customer accounts
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <!-- =================================
+                                     TABLE
+                                ================================== -->
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    Customer ID
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    Account
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    KYC
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    Joined
+                                                </th>
+
+
+                                                <th class="admin-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% customerRecords.forEach(
+                                                function(customer) {
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        customerFilter ===
+                                                            'all' ||
+
+                                                        (
+                                                            customerFilter ===
+                                                                'active' &&
+                                                            '<%= customer.status || "" %>' ===
+                                                                'Active'
+                                                        ) ||
+
+                                                        (
+                                                            customerFilter ===
+                                                                'pending' &&
+                                                            (
+                                                                '<%= customer.status || "" %>' ===
+                                                                    'Pending' ||
+
+                                                                '<%= customer.status || "" %>' ===
+                                                                    'Under Review'
+                                                            )
+                                                        ) ||
+
+                                                        (
+                                                            customerFilter ===
+                                                                'suspended' &&
+                                                            '<%= customer.status || "" %>' ===
+                                                                'Suspended'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- ======================
+                                                         CUSTOMER
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="px-6
+                                                               py-4"
+                                                    >
+
+                                                        <div
+                                                            class="flex
+                                                                   items-center"
+                                                        >
+
+                                                            <div
+                                                                class="h-10
+                                                                       w-10
+                                                                       rounded-full
+                                                                       bg-gray-100
+                                                                       flex
+                                                                       items-center
+                                                                       justify-center
+                                                                       mr-3
+                                                                       flex-shrink-0"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="user"
+                                                                    class="h-5
+                                                                           w-5
+                                                                           text-gray-500"
+                                                                ></i>
+
+                                                            </div>
+
+
+                                                            <div class="min-w-0">
+
+                                                                <% if (
+                                                                    customer.fullName
+                                                                ) { %>
+
+                                                                    <p
+                                                                        class="text-sm
+                                                                               font-medium
+                                                                               text-gray-900
+                                                                               truncate"
+                                                                    >
+                                                                        <%= customer.fullName %>
+                                                                    </p>
+
+                                                                <% } %>
+
+
+                                                                <% if (
+                                                                    customer.email
+                                                                ) { %>
+
+                                                                    <p
+                                                                        class="text-xs
+                                                                               text-gray-500
+                                                                               mt-1
+                                                                               truncate
+                                                                               max-w-[220px]"
+                                                                    >
+                                                                        <%= customer.email %>
+                                                                    </p>
+
+                                                                <% } %>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         CUSTOMER ID
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+                                                        <%= customer.customerId || "" %>
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         ACCOUNT
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="px-6
+                                                               py-4
+                                                               text-sm
+                                                               text-gray-600"
+                                                    >
+
+                                                        <% if (
+                                                            customer.account
+                                                        ) { %>
+
+                                                            <% if (
+                                                                customer.account
+                                                                    .accountType
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="font-medium
+                                                                           text-gray-700"
+                                                                >
+                                                                    <%= customer.account.accountType %>
+                                                                </p>
+
+                                                            <% } %>
+
+
+                                                            <% if (
+                                                                customer.account
+                                                                    .accountNumber
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-500
+                                                                           mt-1"
+                                                                >
+                                                                    <%= customer.account.accountNumber %>
+                                                                </p>
+
+                                                            <% } %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         KYC
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="px-6
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            customer.kyc &&
+                                                            customer.kyc.status
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-gray-100
+                                                                       text-gray-700"
+                                                            >
+                                                                <%= customer.kyc.status %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         STATUS
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="px-6
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            customer.status
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       <%= customer.status === 'Active'
+                                                                           ? 'bg-green-100 text-green-700'
+                                                                           : customer.status === 'Suspended'
+                                                                           ? 'bg-red-100 text-red-700'
+                                                                           : customer.status === 'Pending'
+                                                                           ? 'bg-yellow-100 text-yellow-700'
+                                                                           : 'bg-gray-100 text-gray-700'
+                                                                       %>"
+                                                            >
+                                                                <%= customer.status %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         JOINED
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+                                                        <%= customer.createdAt || "" %>
+                                                    </td>
+
+
+                                                    <!-- ======================
+                                                         ACTION
+                                                    ======================= -->
+
+                                                    <td
+                                                        class="px-6
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            customer.id
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/customers/<%= customer.id %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-900"
+                                                            >
+                                                                View
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

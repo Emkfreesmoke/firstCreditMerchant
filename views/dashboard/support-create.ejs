@@ -1,0 +1,300 @@
+<%
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="dashboard-app-shell flex h-screen overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div class="dashboard-main-column flex flex-col flex-1 overflow-hidden">
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 md:px-8">
+
+                        <a
+                            href="/dashboard/support"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500 mb-6"
+                        >
+                            <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+                            Back to Support
+                        </a>
+
+                        <div class="mb-6">
+
+                            <h1 class="text-2xl font-bold text-gray-900">
+                                Create Support Ticket
+                            </h1>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Describe the issue requiring assistance.
+                            </p>
+
+                        </div>
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6 p-4
+                                       bg-red-50 border
+                                       border-red-200 rounded-xl"
+                            >
+                                <p class="text-sm text-red-800">
+                                    <%= error %>
+                                </p>
+                            </div>
+
+                        <% } %>
+
+                        <section class="dashboard-card">
+
+                            <form
+                                action="/dashboard/support/create"
+                                method="POST"
+                                class="p-6"
+                            >
+
+                                <div
+                                    class="grid grid-cols-1
+                                           md:grid-cols-2 gap-5"
+                                >
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="supportSubject"
+                                            class="dashboard-form-label"
+                                        >
+                                            Subject
+                                        </label>
+
+                                        <input
+                                            id="supportSubject"
+                                            type="text"
+                                            name="subject"
+                                            maxlength="200"
+                                            value="<%= oldForm.subject || "" %>"
+                                            class="dashboard-form-input"
+                                            placeholder="Brief description of the issue"
+                                            required
+                                        >
+
+                                    </div>
+
+                                    <div>
+
+                                        <label
+                                            for="supportCategory"
+                                            class="dashboard-form-label"
+                                        >
+                                            Category
+                                        </label>
+
+                                        <select
+                                            id="supportCategory"
+                                            name="category"
+                                            class="dashboard-form-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select category
+                                            </option>
+
+                                            <% [
+                                                "Account",
+                                                "Transaction",
+                                                "Transfer",
+                                                "Deposit",
+                                                "Card",
+                                                "Loan",
+                                                "Investment",
+                                                "Verification",
+                                                "Other"
+                                            ].forEach(function(category) { %>
+
+                                                <option
+                                                    value="<%= category %>"
+                                                    <%= oldForm.category === category
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= category %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div>
+
+                                        <label
+                                            for="supportPriority"
+                                            class="dashboard-form-label"
+                                        >
+                                            Priority
+                                        </label>
+
+                                        <select
+                                            id="supportPriority"
+                                            name="priority"
+                                            class="dashboard-form-input"
+                                            required
+                                        >
+
+                                            <% [
+                                                "Low",
+                                                "Normal",
+                                                "High",
+                                                "Urgent"
+                                            ].forEach(function(priority) { %>
+
+                                                <option
+                                                    value="<%= priority %>"
+                                                    <%= (
+                                                        oldForm.priority ||
+                                                        "Normal"
+                                                    ) === priority
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= priority %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="supportMessage"
+                                            class="dashboard-form-label"
+                                        >
+                                            Message
+                                        </label>
+
+                                        <textarea
+                                            id="supportMessage"
+                                            name="message"
+                                            rows="7"
+                                            maxlength="5000"
+                                            class="dashboard-form-input resize-none"
+                                            placeholder="Provide enough detail for the support team to investigate"
+                                            required
+                                        ><%= oldForm.message || "" %></textarea>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="mt-6 p-4
+                                           bg-blue-50 border
+                                           border-blue-100 rounded-lg"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="info"
+                                            class="h-5 w-5 text-blue-600
+                                                   mr-3 mt-0.5"
+                                        ></i>
+
+                                        <p class="text-sm text-blue-800">
+                                            A reference number will be generated
+                                            after the ticket is submitted. You can
+                                            continue the conversation from the
+                                            ticket details page.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                                <div
+                                    class="flex flex-col-reverse
+                                           sm:flex-row sm:justify-end
+                                           gap-3 mt-7"
+                                >
+
+                                    <a
+                                        href="/dashboard/support"
+                                        class="inline-flex justify-center
+                                               px-5 py-3 border
+                                               border-gray-200 rounded-lg
+                                               bg-white text-gray-700"
+                                    >
+                                        Cancel
+                                    </a>
+
+                                    <button
+                                        type="submit"
+                                        class="inline-flex items-center
+                                               justify-center px-6 py-3
+                                               bg-primary-600
+                                               hover:bg-primary-700
+                                               text-white font-medium
+                                               rounded-lg"
+                                    >
+                                        <i data-lucide="send" class="h-4 w-4 mr-2"></i>
+                                        Submit Ticket
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

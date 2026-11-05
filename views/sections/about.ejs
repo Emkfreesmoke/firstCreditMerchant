@@ -1,0 +1,236 @@
+<!-- =====================================================
+     ABOUT US SECTION START
+====================================================== -->
+
+<div class="about-us bg-section">
+  <div class="container">
+    <!-- =========================================
+             ABOUT INTRODUCTION
+        ========================================== -->
+
+    <div class="row section-row align-items-center">
+      <div class="col-lg-7">
+        <div class="section-title">
+          <h3 class="wow fadeInUp">About Us</h3>
+
+          <h2 class="text-anime-style-3" data-cursor="-opaque">
+            Empowering businesses and individuals with expertise they can rely
+            on
+          </h2>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="section-title-content wow fadeInUp" data-wow-delay="0.25s">
+          <p>
+            First Credit Merchant is a licensed and regulated financial and
+            security firm that specializes in secure asset custody and the
+            facilitation of high-value, fully compliant financial transactions.
+          </p>
+
+          <p>
+            We provide individuals, institutions, and global entities with
+            discreet and legal solutions for protecting and transferring wealth.
+          </p>
+
+          <p>
+            Our team is composed of licensed legal professionals, banking
+            experts, and asset security specialists with decades of experience
+            in financial security, legal compliance, and international
+            transaction processing.
+          </p>
+
+          <p>
+            We operate under a zero-data-leakage policy, helping ensure client
+            identities, assets, and activities remain protected.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- =========================================
+             ABOUT COMPANY FEATURES
+        ========================================== -->
+
+    <div class="row">
+      <!-- Expertise You Can Trust -->
+
+      <div class="col-md-4">
+        <div class="about-company-item wow fadeInUp">
+          <div class="icon-box">
+            <img
+              src="/images/icon-about-company-1.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+
+          <div class="about-company-content">
+            <h3>Expertise You Can Trust</h3>
+
+            <p>
+              Our experienced team delivers reliable insights and strategies,
+              helping ensure financial decisions are well-informed and secure.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personalized Solutions -->
+
+      <div class="col-md-4">
+        <div class="about-company-item wow fadeInUp" data-wow-delay="0.25s">
+          <div class="icon-box">
+            <img
+              src="/images/icon-about-company-2.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+
+          <div class="about-company-content">
+            <h3>Personalized Solutions</h3>
+
+            <p>
+              Our personalized solutions are crafted around unique financial
+              needs, helping clients work toward specific goals and aspirations.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proven Track Record -->
+
+      <div class="col-md-4">
+        <div class="about-company-item wow fadeInUp" data-wow-delay="0.5s">
+          <div class="icon-box">
+            <img
+              src="/images/icon-about-company-3.svg"
+              alt=""
+              aria-hidden="true"
+            />
+          </div>
+
+          <div class="about-company-content">
+            <h3>Proven Track Record</h3>
+
+            <p>
+              Our track record reflects successful outcomes and client
+              satisfaction through effective financial solutions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================
+         ABOUT VIDEO
+    ================================================== -->
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="about-video-image local-about-video">
+          <div class="about-us-video">
+            <video
+              id="aboutLocalVideo"
+              class="about-local-video"
+              src="/video/leadz-video.mp4"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="auto"
+            ></video>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- =====================================================
+     ABOUT US SECTION END
+====================================================== -->
+
+<!-- =====================================================
+     LOCAL ABOUT VIDEO AUTOPLAY FALLBACK
+====================================================== -->
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const video = document.getElementById("aboutLocalVideo");
+
+    if (!video) {
+      console.error("About video element was not found.");
+
+      return;
+    }
+
+    /*
+     * Set these properties before
+     * requesting playback.
+     */
+    video.muted = true;
+    video.defaultMuted = true;
+    video.loop = true;
+    video.playsInline = true;
+
+    function startAboutVideo() {
+      video.muted = true;
+
+      const playPromise = video.play();
+
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise
+          .then(function () {
+            console.log("About video is playing.");
+          })
+          .catch(function (error) {
+            console.error(
+              "About video autoplay failed:",
+              error.name,
+              error.message,
+            );
+          });
+      }
+    }
+
+    video.addEventListener(
+      "loadeddata",
+      function () {
+        console.log("About video loaded.");
+
+        startAboutVideo();
+      },
+      {
+        once: true,
+      },
+    );
+
+    video.addEventListener(
+      "canplay",
+      function () {
+        if (video.paused) {
+          startAboutVideo();
+        }
+      },
+      {
+        once: true,
+      },
+    );
+
+    video.addEventListener("error", function () {
+      console.error("About video media error:", video.error);
+    });
+
+    /*
+     * Start immediately if the
+     * browser already loaded enough.
+     */
+    if (video.readyState >= 2) {
+      startAboutVideo();
+    }
+  });
+</script>

@@ -1,0 +1,735 @@
+<%
+    const investmentRecords =
+        typeof investments !== "undefined" &&
+        Array.isArray(investments)
+            ? investments
+            : [];
+
+    const pendingInvestments =
+        investmentRecords.filter(
+            investment =>
+                investment &&
+                (
+                    investment.status === "Pending" ||
+                    investment.status === "Under Review"
+                )
+        );
+
+    const approvedInvestments =
+        investmentRecords.filter(
+            investment =>
+                investment &&
+                investment.status === "Approved"
+        );
+
+    const activeInvestments =
+        investmentRecords.filter(
+            investment =>
+                investment &&
+                investment.status === "Active"
+        );
+
+    const maturedInvestments =
+        investmentRecords.filter(
+            investment =>
+                investment &&
+                (
+                    investment.status === "Matured" ||
+                    investment.status === "Closed"
+                )
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            investmentFilter: 'all'
+        }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =================================
+                             HEADER
+                        ================================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Investments
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review and manage customer
+                                    investment records.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/investments/create"
+                                class="admin-primary-button"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Create Investment
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SUMMARY
+                        ================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-5
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- Total -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Total
+                                    </p>
+
+                                    <p class="admin-stat-value">
+                                        <%= investmentRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Pending -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Pending
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingInvestments.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Approved -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Approved
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-blue-700"
+                                    >
+                                        <%= approvedInvestments.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Active -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Active
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= activeInvestments.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Matured -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Matured / Closed
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-purple-700"
+                                    >
+                                        <%= maturedInvestments.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             FILTERS
+                        ================================== -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="flex flex-wrap gap-2">
+
+                                <% [
+                                    ["all", "All"],
+                                    ["pending", "Pending"],
+                                    ["approved", "Approved"],
+                                    ["active", "Active"],
+                                    ["matured", "Matured"],
+                                    ["closed", "Closed"],
+                                    ["rejected", "Rejected"]
+                                ].forEach(function(item) { %>
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            investmentFilter =
+                                                '<%= item[0] %>'
+                                        "
+                                        :class="
+                                            investmentFilter ===
+                                                '<%= item[0] %>'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        <%= item[1] %>
+                                    </button>
+
+                                <% }); %>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =================================
+                             INVESTMENT RECORDS
+                        ================================== -->
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Investment Records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Customer requests, active
+                                        investments, and completed
+                                        investment records.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                investmentRecords.length === 0
+                            ) { %>
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14 w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="trending-up"
+                                            class="h-7 w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No investment records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Customer investment requests
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Investment
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Principal
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Current Value
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% investmentRecords.forEach(
+                                                function(record) {
+
+                                                    const recordCustomer =
+                                                        record.customer ||
+                                                        null;
+
+                                                    const customerName =
+                                                        recordCustomer
+                                                            ? [
+                                                                recordCustomer.firstName,
+                                                                recordCustomer.middleName,
+                                                                recordCustomer.lastName
+                                                              ]
+                                                                .filter(Boolean)
+                                                                .join(" ")
+                                                            : "";
+
+                                                    const investmentId =
+                                                        record._id ||
+                                                        record.id;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        investmentFilter ===
+                                                            'all' ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'pending' &&
+                                                            (
+                                                                '<%= record.status || "" %>' === 'Pending' ||
+                                                                '<%= record.status || "" %>' === 'Under Review'
+                                                            )
+                                                        ) ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'approved' &&
+                                                            '<%= record.status || "" %>' === 'Approved'
+                                                        ) ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'active' &&
+                                                            '<%= record.status || "" %>' === 'Active'
+                                                        ) ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'matured' &&
+                                                            '<%= record.status || "" %>' === 'Matured'
+                                                        ) ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'closed' &&
+                                                            '<%= record.status || "" %>' === 'Closed'
+                                                        ) ||
+
+                                                        (
+                                                            investmentFilter ===
+                                                                'rejected' &&
+                                                            '<%= record.status || "" %>' === 'Rejected'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Customer -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <% if (
+                                                            recordCustomer
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900"
+                                                            >
+                                                                <%= customerName %>
+                                                            </p>
+
+
+                                                            <% if (
+                                                                recordCustomer.email
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-500
+                                                                           mt-1"
+                                                                >
+                                                                    <%= recordCustomer.email %>
+                                                                </p>
+
+                                                            <% } %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Reference -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.reference || "" %>
+
+                                                    </td>
+
+
+                                                    <!-- Investment -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <p
+                                                            class="font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            <%= record.name ||
+                                                                record.type ||
+                                                                ""
+                                                            %>
+                                                        </p>
+
+
+                                                        <% if (
+                                                            record.type
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+                                                                <%= record.type %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Principal -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.currency || "" %>
+
+                                                        <%= Number(
+                                                            record.principal ||
+                                                            0
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+
+                                                    </td>
+
+
+                                                    <!-- Current Value -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            record.currentValue !==
+                                                                undefined &&
+                                                            record.currentValue !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.currentValue
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Status -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.status === "Active"
+                                                                       ? "bg-green-50 text-green-700"
+                                                                       : record.status === "Approved"
+                                                                       ? "bg-blue-50 text-blue-700"
+                                                                       : record.status === "Matured"
+                                                                       ? "bg-purple-50 text-purple-700"
+                                                                       : record.status === "Closed"
+                                                                       ? "bg-gray-100 text-gray-700"
+                                                                       : record.status === "Rejected"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : record.status === "Cancelled"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : "bg-yellow-50 text-yellow-700"
+                                                                   %>"
+                                                        >
+                                                            <%= record.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Action -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <a
+                                                            href="/admin/investments/<%= investmentId %>"
+                                                            class="admin-small-button"
+                                                        >
+
+                                                            <% if (
+                                                                record.status ===
+                                                                    "Pending" ||
+                                                                record.status ===
+                                                                    "Under Review"
+                                                            ) { %>
+
+                                                                Review
+
+                                                            <% } else { %>
+
+                                                                Manage
+
+                                                            <% } %>
+
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

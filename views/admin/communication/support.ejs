@@ -1,0 +1,430 @@
+<%
+    const records =
+        typeof supportTickets !== "undefined" &&
+        Array.isArray(supportTickets)
+            ? supportTickets
+            : [];
+
+    const openRecords =
+        records.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "Open"
+        );
+
+    const progressRecords =
+        records.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "In Progress"
+        );
+
+    const resolvedRecords =
+        records.filter(
+            ticket =>
+                ticket &&
+                ticket.status === "Resolved"
+        );
+
+    const urgentRecords =
+        records.filter(
+            ticket =>
+                ticket &&
+                ticket.priority === "Urgent"
+        );
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            ticketFilter: 'all',
+            search: ''
+        }"
+        class="admin-app-shell flex h-screen overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+        <div class="admin-main-column flex flex-col flex-1 overflow-hidden">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+                        <div class="mb-6">
+
+                            <h1 class="text-2xl font-bold text-gray-900">
+                                Support Tickets
+                            </h1>
+
+                            <p class="text-sm text-gray-500 mt-1">
+                                Review and manage customer support requests.
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="grid grid-cols-1 sm:grid-cols-2
+                                   xl:grid-cols-5 gap-4 mb-6"
+                        >
+
+                            <div class="admin-stat-card">
+                                <div>
+                                    <p class="admin-stat-label">Total</p>
+                                    <p class="admin-stat-value">
+                                        <%= records.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="admin-stat-card">
+                                <div>
+                                    <p class="admin-stat-label">Open</p>
+                                    <p class="admin-stat-value text-blue-700">
+                                        <%= openRecords.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="admin-stat-card">
+                                <div>
+                                    <p class="admin-stat-label">In Progress</p>
+                                    <p class="admin-stat-value text-yellow-700">
+                                        <%= progressRecords.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="admin-stat-card">
+                                <div>
+                                    <p class="admin-stat-label">Resolved</p>
+                                    <p class="admin-stat-value text-green-700">
+                                        <%= resolvedRecords.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="admin-stat-card">
+                                <div>
+                                    <p class="admin-stat-label">Urgent</p>
+                                    <p class="admin-stat-value text-red-700">
+                                        <%= urgentRecords.length %>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="admin-panel p-4 mb-6">
+
+                            <div
+                                class="flex flex-col lg:flex-row
+                                       lg:items-center gap-4"
+                            >
+
+                                <div class="relative flex-1">
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute left-3 top-1/2
+                                               -translate-y-1/2
+                                               h-4 w-4 text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        class="admin-input pl-9"
+                                        placeholder="Search support tickets..."
+                                    >
+
+                                </div>
+
+                                <div class="flex flex-wrap gap-2">
+
+                                    <% [
+                                        ["all", "All"],
+                                        ["open", "Open"],
+                                        ["progress", "In Progress"],
+                                        ["resolved", "Resolved"],
+                                        ["closed", "Closed"],
+                                        ["urgent", "Urgent"]
+                                    ].forEach(function(item) { %>
+
+                                        <button
+                                            type="button"
+                                            @click="ticketFilter = '<%= item[0] %>'"
+                                            :class="
+                                                ticketFilter === '<%= item[0] %>'
+                                                    ? 'bg-primary-600 text-white'
+                                                    : 'bg-gray-100 text-gray-600'
+                                            "
+                                            class="px-4 py-2 rounded-lg
+                                                   text-sm font-medium"
+                                        >
+                                            <%= item[1] %>
+                                        </button>
+
+                                    <% }); %>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+                                    <h3>Customer Support Requests</h3>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        Open tickets and active customer conversations.
+                                    </p>
+                                </div>
+
+                            </div>
+
+                            <% if (!records.length) { %>
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="messages-square"
+                                        class="h-10 w-10 text-gray-400 mb-4"
+                                    ></i>
+
+                                    <p class="text-sm text-gray-500">
+                                        No support tickets
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table class="min-w-full divide-y divide-gray-200">
+
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="admin-table-heading">Customer</th>
+                                                <th class="admin-table-heading">Ticket</th>
+                                                <th class="admin-table-heading">Category</th>
+                                                <th class="admin-table-heading">Priority</th>
+                                                <th class="admin-table-heading">Status</th>
+                                                <th class="admin-table-heading">Last Activity</th>
+                                                <th class="admin-table-heading">Action</th>
+                                            </tr>
+                                        </thead>
+
+                                        <tbody class="divide-y divide-gray-100">
+
+                                            <% records.forEach(function(record) {
+                                                const ticketId =
+                                                    record._id ||
+                                                    record.id;
+
+                                                const customerRecord =
+                                                    record.customer ||
+                                                    null;
+
+                                                const customerName =
+                                                    customerRecord
+                                                        ? [
+                                                            customerRecord.firstName,
+                                                            customerRecord.middleName,
+                                                            customerRecord.lastName
+                                                          ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                        : "";
+
+                                                const searchableText = [
+                                                    customerName,
+                                                    customerRecord
+                                                        ? customerRecord.email
+                                                        : "",
+                                                    record.reference,
+                                                    record.subject,
+                                                    record.category
+                                                ]
+                                                    .filter(Boolean)
+                                                    .join(" ")
+                                                    .replace(/'/g, "\\'")
+                                                    .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            ticketFilter === 'all' ||
+
+                                                            (
+                                                                ticketFilter === 'open' &&
+                                                                '<%= record.status || "" %>' === 'Open'
+                                                            ) ||
+
+                                                            (
+                                                                ticketFilter === 'progress' &&
+                                                                '<%= record.status || "" %>' === 'In Progress'
+                                                            ) ||
+
+                                                            (
+                                                                ticketFilter === 'resolved' &&
+                                                                '<%= record.status || "" %>' === 'Resolved'
+                                                            ) ||
+
+                                                            (
+                                                                ticketFilter === 'closed' &&
+                                                                '<%= record.status || "" %>' === 'Closed'
+                                                            ) ||
+
+                                                            (
+                                                                ticketFilter === 'urgent' &&
+                                                                '<%= record.priority || "" %>' === 'Urgent'
+                                                            )
+                                                        ) &&
+
+                                                        (
+                                                            !search ||
+                                                            '<%= searchableText %>'.includes(
+                                                                search.toLowerCase()
+                                                            )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <td class="px-6 py-4">
+
+                                                        <p class="text-sm font-medium text-gray-900">
+                                                            <%= customerName || "Customer unavailable" %>
+                                                        </p>
+
+                                                        <% if (
+                                                            customerRecord &&
+                                                            customerRecord.email
+                                                        ) { %>
+                                                            <p class="text-xs text-gray-500 mt-1">
+                                                                <%= customerRecord.email %>
+                                                            </p>
+                                                        <% } %>
+
+                                                    </td>
+
+                                                    <td class="px-6 py-4">
+
+                                                        <p class="text-sm font-medium text-gray-900">
+                                                            <%= record.subject || "" %>
+                                                        </p>
+
+                                                        <p class="text-xs text-gray-500 mt-1">
+                                                            <%= record.reference || "" %>
+                                                        </p>
+
+                                                    </td>
+
+                                                    <td class="admin-table-cell">
+                                                        <%= record.category || "" %>
+                                                    </td>
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.priority === "Urgent"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : record.priority === "High"
+                                                                       ? "bg-orange-50 text-orange-700"
+                                                                       : "bg-gray-100 text-gray-600"
+                                                                   %>"
+                                                        >
+                                                            <%= record.priority || "" %>
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.status === "Open"
+                                                                       ? "bg-blue-50 text-blue-700"
+                                                                       : record.status === "In Progress"
+                                                                       ? "bg-yellow-50 text-yellow-700"
+                                                                       : record.status === "Resolved"
+                                                                       ? "bg-green-50 text-green-700"
+                                                                       : "bg-gray-100 text-gray-700"
+                                                                   %>"
+                                                        >
+                                                            <%= record.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+                                                    <td class="admin-table-cell">
+                                                        <%= record.lastMessageAt
+                                                            ? new Date(
+                                                                record.lastMessageAt
+                                                              ).toLocaleString()
+                                                            : ""
+                                                        %>
+                                                    </td>
+
+                                                    <td class="admin-table-cell">
+
+                                                        <a
+                                                            href="/admin/support/<%= ticketId %>"
+                                                            class="admin-small-button"
+                                                        >
+                                                            Review
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

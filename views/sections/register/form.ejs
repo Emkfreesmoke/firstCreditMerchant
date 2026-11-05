@@ -1,0 +1,875 @@
+<!-- Register Form Panel Start -->
+<div
+  class="w-full lg:w-1/2 flex flex-col justify-center items-center p-6 lg:p-12"
+>
+  <div class="w-full max-w-2xl">
+    <!-- Mobile Logo -->
+    <div class="lg:hidden text-center mb-8">
+      <a href="/">
+        <img src="/images/logo.png" alt="First Credit Merchant" />
+      </a>
+    </div>
+
+    <!-- Registration Card -->
+    <div
+      x-data="{
+        step: 1,
+        totalSteps: 4,
+
+        formData: {
+          name: '',
+          middlename: '',
+          lastname: '',
+          username: '',
+          email: '',
+          phone: '',
+          country: '',
+          accounttype: '',
+          pin: '',
+          password: '',
+          password_confirmation: '',
+          terms: false
+        },
+
+        showPassword: false,
+        showConfirmation: false,
+
+        nextStep() {
+          if (
+            this.validateCurrentStep() &&
+            this.step < this.totalSteps
+          ) {
+            this.step++;
+
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        },
+
+        prevStep() {
+          if (this.step > 1) {
+            this.step--;
+
+            window.scrollTo({
+              top: 0,
+              behavior: 'smooth'
+            });
+          }
+        },
+
+        validateCurrentStep() {
+
+          if (this.step === 1) {
+            return Boolean(
+              this.formData.name.trim() &&
+              this.formData.lastname.trim() &&
+              this.formData.username.trim()
+            );
+          }
+
+          if (this.step === 2) {
+            return Boolean(
+              this.formData.email.trim() &&
+              this.formData.phone.trim() &&
+              this.formData.country
+            );
+          }
+
+          if (this.step === 3) {
+            return Boolean(
+              this.formData.accounttype &&
+              /^[0-9]{4}$/.test(
+                this.formData.pin
+              )
+            );
+          }
+
+          if (this.step === 4) {
+            return Boolean(
+              this.passwordHasLength &&
+              this.passwordHasUppercase &&
+              this.passwordHasNumber &&
+              this.passwordHasSpecial &&
+              this.passwordsMatch &&
+              this.formData.terms
+            );
+          }
+
+          return true;
+        },
+
+        get progress() {
+          return (
+            this.step /
+            this.totalSteps
+          ) * 100;
+        },
+
+        get passwordHasLength() {
+          return (
+            this.formData.password.length >= 8
+          );
+        },
+
+        get passwordHasUppercase() {
+          return /[A-Z]/.test(
+            this.formData.password
+          );
+        },
+
+        get passwordHasNumber() {
+          return /[0-9]/.test(
+            this.formData.password
+          );
+        },
+
+        get passwordHasSpecial() {
+          return /[^A-Za-z0-9]/.test(
+            this.formData.password
+          );
+        },
+
+        get passwordsMatch() {
+          return Boolean(
+            this.formData.password_confirmation &&
+            this.formData.password ===
+              this.formData.password_confirmation
+          );
+        }
+      }"
+      class="bg-white rounded-2xl shadow-xl overflow-hidden"
+    >
+      <!-- =====================================
+           PROGRESS HEADER
+      ====================================== -->
+
+      <div class="bg-gray-50 px-8 py-6 border-b border-gray-200">
+        <div class="flex justify-between items-center gap-4 mb-3">
+          <h2 class="text-2xl font-bold text-gray-900">Create Your Account</h2>
+
+          <span class="text-sm font-medium text-gray-500 whitespace-nowrap">
+            Step
+            <span x-text="step"></span>
+
+            of
+
+            <span x-text="totalSteps"></span>
+          </span>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-primary-600 rounded-full transition-all duration-300 ease-in-out"
+            :style="'width: ' + progress + '%'"
+          ></div>
+        </div>
+
+        <!-- Step Labels -->
+        <div class="grid grid-cols-4 gap-2 mt-3 text-xs text-gray-500">
+          <div
+            :class="{
+              'text-primary-600 font-semibold':
+                step >= 1
+            }"
+          >
+            Personal Info
+          </div>
+
+          <div
+            class="text-center"
+            :class="{
+              'text-primary-600 font-semibold':
+                step >= 2
+            }"
+          >
+            Contact Details
+          </div>
+
+          <div
+            class="text-center"
+            :class="{
+              'text-primary-600 font-semibold':
+                step >= 3
+            }"
+          >
+            Account Setup
+          </div>
+
+          <div
+            class="text-right"
+            :class="{
+              'text-primary-600 font-semibold':
+                step >= 4
+            }"
+          >
+            Security
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================
+           REGISTRATION FORM
+      ====================================== -->
+
+      <div class="px-8 py-7">
+        <form action="/register" method="POST" id="customer-register-form">
+          <!-- ==================================
+               STEP 1: PERSONAL INFORMATION
+          =================================== -->
+
+          <div x-show="step === 1">
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-gray-900">
+                Personal Information
+              </h3>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Enter your legal name and choose a username.
+              </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <!-- First Name -->
+              <div>
+                <label
+                  for="name"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Legal First Name
+                </label>
+
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  x-model="formData.name"
+                  placeholder="Enter first name"
+                  autocomplete="given-name"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <!-- Middle Name -->
+              <div>
+                <label
+                  for="middlename"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Middle Name
+                </label>
+
+                <input
+                  id="middlename"
+                  name="middlename"
+                  type="text"
+                  x-model="formData.middlename"
+                  placeholder="Enter middle name"
+                  autocomplete="additional-name"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                />
+              </div>
+
+              <!-- Last Name -->
+              <div>
+                <label
+                  for="lastname"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Legal Last Name
+                </label>
+
+                <input
+                  id="lastname"
+                  name="lastname"
+                  type="text"
+                  x-model="formData.lastname"
+                  placeholder="Enter last name"
+                  autocomplete="family-name"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <!-- Username -->
+              <div>
+                <label
+                  for="username"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Username
+                </label>
+
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  x-model="formData.username"
+                  placeholder="Choose username"
+                  autocomplete="username"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+              </div>
+            </div>
+
+            <div class="flex justify-end mt-8">
+              <button
+                type="button"
+                @click="nextStep()"
+                :disabled="!validateCurrentStep()"
+                :class="{
+                  'opacity-50 cursor-not-allowed':
+                    !validateCurrentStep()
+                }"
+                class="inline-flex items-center justify-center px-7 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition"
+              >
+                Next
+
+                <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================================
+               STEP 2: CONTACT INFORMATION
+          =================================== -->
+
+          <div x-show="step === 2" x-cloak>
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-gray-900">
+                Contact Information
+              </h3>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Tell us how we can contact you.
+              </p>
+            </div>
+
+            <div class="space-y-5">
+              <!-- Email -->
+              <div>
+                <label
+                  for="register-email"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Email Address
+                </label>
+
+                <input
+                  id="register-email"
+                  name="email"
+                  type="email"
+                  x-model="formData.email"
+                  placeholder="Enter email address"
+                  autocomplete="email"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <!-- Phone -->
+              <div>
+                <label
+                  for="phone"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Phone Number
+                </label>
+
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  x-model="formData.phone"
+                  placeholder="Enter phone number"
+                  autocomplete="tel"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+              </div>
+
+              <!-- Country -->
+              <div>
+                <label
+                  for="country"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Country
+                </label>
+
+                <select
+                  id="country"
+                  name="country"
+                  x-model="formData.country"
+                  autocomplete="country-name"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                >
+                  <option value="">Select country</option>
+
+                  <option value="Afghanistan">Afghanistan</option>
+
+                  <option value="Albania">Albania</option>
+
+                  <option value="Algeria">Algeria</option>
+
+                  <option value="Argentina">Argentina</option>
+
+                  <option value="Australia">Australia</option>
+
+                  <option value="Austria">Austria</option>
+
+                  <option value="Bangladesh">Bangladesh</option>
+
+                  <option value="Belgium">Belgium</option>
+
+                  <option value="Brazil">Brazil</option>
+
+                  <option value="Cameroon">Cameroon</option>
+
+                  <option value="Canada">Canada</option>
+
+                  <option value="China">China</option>
+
+                  <option value="Denmark">Denmark</option>
+
+                  <option value="Egypt">Egypt</option>
+
+                  <option value="France">France</option>
+
+                  <option value="Germany">Germany</option>
+
+                  <option value="Ghana">Ghana</option>
+
+                  <option value="India">India</option>
+
+                  <option value="Indonesia">Indonesia</option>
+
+                  <option value="Ireland">Ireland</option>
+
+                  <option value="Italy">Italy</option>
+
+                  <option value="Japan">Japan</option>
+
+                  <option value="Kenya">Kenya</option>
+
+                  <option value="Malaysia">Malaysia</option>
+
+                  <option value="Mexico">Mexico</option>
+
+                  <option value="Netherlands">Netherlands</option>
+
+                  <option value="New Zealand">New Zealand</option>
+
+                  <option value="Nigeria">Nigeria</option>
+
+                  <option value="Norway">Norway</option>
+
+                  <option value="Pakistan">Pakistan</option>
+
+                  <option value="Philippines">Philippines</option>
+
+                  <option value="Portugal">Portugal</option>
+
+                  <option value="Saudi Arabia">Saudi Arabia</option>
+
+                  <option value="Singapore">Singapore</option>
+
+                  <option value="South Africa">South Africa</option>
+
+                  <option value="South Korea">South Korea</option>
+
+                  <option value="Spain">Spain</option>
+
+                  <option value="Sweden">Sweden</option>
+
+                  <option value="Switzerland">Switzerland</option>
+
+                  <option value="Turkey">Turkey</option>
+
+                  <option value="Ukraine">Ukraine</option>
+
+                  <option value="United Arab Emirates">
+                    United Arab Emirates
+                  </option>
+
+                  <option value="United Kingdom">United Kingdom</option>
+
+                  <option value="United States">United States</option>
+
+                  <option value="Zimbabwe">Zimbabwe</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-8">
+              <button
+                type="button"
+                @click="prevStep()"
+                class="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+
+                Previous
+              </button>
+
+              <button
+                type="button"
+                @click="nextStep()"
+                :disabled="!validateCurrentStep()"
+                :class="{
+                  'opacity-50 cursor-not-allowed':
+                    !validateCurrentStep()
+                }"
+                class="inline-flex items-center justify-center px-7 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition"
+              >
+                Next
+
+                <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================================
+               STEP 3: ACCOUNT SETUP
+          =================================== -->
+
+          <div x-show="step === 3" x-cloak>
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-gray-900">Account Setup</h3>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Choose an account type and create a transaction PIN.
+              </p>
+            </div>
+
+            <div class="space-y-5">
+              <!-- Account Type -->
+              <div>
+                <label
+                  for="accounttype"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Account Type
+                </label>
+
+                <select
+                  id="accounttype"
+                  name="accounttype"
+                  x-model="formData.accounttype"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                >
+                  <option value="">Select account type</option>
+
+                  <option value="Checking Account">Checking Account</option>
+
+                  <option value="Savings Account">Savings Account</option>
+
+                  <option value="Fixed Deposit Account">
+                    Fixed Deposit Account
+                  </option>
+
+                  <option value="Current Account">Current Account</option>
+
+                  <option value="Crypto Currency Account">
+                    Crypto Currency Account
+                  </option>
+
+                  <option value="Business Account">Business Account</option>
+
+                  <option value="Non Resident Account">
+                    Non Resident Account
+                  </option>
+
+                  <option value="Cooperate Business Account">
+                    Cooperate Business Account
+                  </option>
+
+                  <option value="Investment Account">Investment Account</option>
+                </select>
+              </div>
+
+              <!-- PIN -->
+              <div>
+                <label
+                  for="pin"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Transaction PIN
+                </label>
+
+                <input
+                  id="pin"
+                  name="pin"
+                  type="password"
+                  inputmode="numeric"
+                  maxlength="4"
+                  pattern="[0-9]{4}"
+                  x-model="formData.pin"
+                  placeholder="Enter a 4-digit PIN"
+                  autocomplete="new-password"
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  required
+                />
+
+                <p class="mt-2 text-xs text-gray-500">
+                  The PIN must contain exactly four numbers.
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-8">
+              <button
+                type="button"
+                @click="prevStep()"
+                class="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+
+                Previous
+              </button>
+
+              <button
+                type="button"
+                @click="nextStep()"
+                :disabled="!validateCurrentStep()"
+                :class="{
+                  'opacity-50 cursor-not-allowed':
+                    !validateCurrentStep()
+                }"
+                class="inline-flex items-center justify-center px-7 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition"
+              >
+                Next
+
+                <i data-lucide="arrow-right" class="w-4 h-4 ml-2"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================================
+               STEP 4: SECURITY
+          =================================== -->
+
+          <div x-show="step === 4" x-cloak>
+            <div class="mb-6">
+              <h3 class="text-xl font-semibold text-gray-900">Security</h3>
+
+              <p class="mt-1 text-sm text-gray-500">
+                Create a password to secure the account.
+              </p>
+            </div>
+
+            <div class="space-y-5">
+              <!-- Password -->
+              <div>
+                <label
+                  for="register-password"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Password
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="register-password"
+                    name="password"
+                    :type="showPassword ? 'text' : 'password'"
+                    x-model="formData.password"
+                    placeholder="Create password"
+                    autocomplete="new-password"
+                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    @click="
+                      showPassword =
+                        !showPassword
+                    "
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400"
+                    aria-label="Show or hide password"
+                  >
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                  </button>
+                </div>
+
+                <!-- Password Requirements -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-4 text-xs">
+                  <div
+                    :class="
+                      passwordHasLength
+                        ? 'text-green-600'
+                        : 'text-gray-500'
+                    "
+                  >
+                    ✓ At least 8 characters
+                  </div>
+
+                  <div
+                    :class="
+                      passwordHasUppercase
+                        ? 'text-green-600'
+                        : 'text-gray-500'
+                    "
+                  >
+                    ✓ One uppercase character
+                  </div>
+
+                  <div
+                    :class="
+                      passwordHasNumber
+                        ? 'text-green-600'
+                        : 'text-gray-500'
+                    "
+                  >
+                    ✓ One number
+                  </div>
+
+                  <div
+                    :class="
+                      passwordHasSpecial
+                        ? 'text-green-600'
+                        : 'text-gray-500'
+                    "
+                  >
+                    ✓ One special character
+                  </div>
+                </div>
+              </div>
+
+              <!-- Confirm Password -->
+              <div>
+                <label
+                  for="password_confirmation"
+                  class="block text-sm font-medium text-gray-700 mb-2"
+                >
+                  Confirm Password
+                </label>
+
+                <div class="relative">
+                  <input
+                    id="password_confirmation"
+                    name="password_confirmation"
+                    :type="showConfirmation ? 'text' : 'password'"
+                    x-model="formData.password_confirmation"
+                    placeholder="Confirm password"
+                    autocomplete="new-password"
+                    class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    @click="
+                      showConfirmation =
+                        !showConfirmation
+                    "
+                    class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400"
+                    aria-label="Show or hide password confirmation"
+                  >
+                    <i data-lucide="eye" class="w-5 h-5"></i>
+                  </button>
+                </div>
+
+                <p
+                  x-show="formData.password_confirmation"
+                  class="mt-2 text-xs"
+                  :class="
+                    passwordsMatch
+                      ? 'text-green-600'
+                      : 'text-red-600'
+                  "
+                  x-text="
+                    passwordsMatch
+                      ? 'Passwords match'
+                      : 'Passwords do not match'
+                  "
+                ></p>
+              </div>
+
+              <!-- Terms -->
+              <div>
+                <label class="flex items-start">
+                  <input
+                    type="checkbox"
+                    name="terms"
+                    x-model="formData.terms"
+                    class="mt-1 rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    required
+                  />
+
+                  <span class="ml-3 text-sm text-gray-600">
+                    I agree to the
+
+                    <a
+                      href="/terms"
+                      target="_blank"
+                      class="text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                      Terms of Service
+                    </a>
+
+                    and
+
+                    <a
+                      href="/privacy"
+                      target="_blank"
+                      class="text-primary-600 hover:text-primary-700 font-medium"
+                    >
+                      Privacy Policy </a
+                    >.
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between mt-8">
+              <button
+                type="button"
+                @click="prevStep()"
+                class="inline-flex items-center justify-center px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-lg transition"
+              >
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-2"></i>
+
+                Previous
+              </button>
+
+              <button
+                type="submit"
+                :disabled="!validateCurrentStep()"
+                :class="{
+                  'opacity-50 cursor-not-allowed':
+                    !validateCurrentStep()
+                }"
+                class="inline-flex items-center justify-center px-7 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-lg transition"
+              >
+                <i data-lucide="user-plus" class="w-4 h-4 mr-2"></i>
+
+                Create Account
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Sign In Link -->
+        <p class="mt-7 text-center text-sm text-gray-600">
+          Already have an account?
+
+          <a
+            href="/login"
+            class="text-primary-600 hover:text-primary-700 font-medium"
+          >
+            Sign in instead
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Register Form Panel End -->

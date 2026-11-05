@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("partials/head") %>
+</head>
+
+
+<body class="font-sans bg-gray-100 text-gray-900">
+
+  <%- include("partials/loader") %>
+
+
+  <main
+    class="min-h-screen flex items-center justify-center px-4 py-12"
+  >
+
+    <div class="w-full max-w-md">
+
+
+      <!-- =====================================
+           BRANDING
+      ====================================== -->
+
+      <div class="text-center mb-8">
+
+        <a href="/">
+          <img
+            src="/images/logo.png"
+            alt="First Credit Merchant"
+            class="h-14 w-auto mx-auto mb-5"
+          >
+        </a>
+
+
+        <span
+          class="inline-flex items-center px-3 py-1
+                 rounded-full bg-primary-50
+                 text-primary-700 text-xs
+                 font-semibold uppercase tracking-wider"
+        >
+          Administration
+        </span>
+
+      </div>
+
+
+
+      <!-- =====================================
+           LOGIN CARD
+      ====================================== -->
+
+      <div
+        class="bg-white rounded-2xl shadow-xl
+               border border-gray-100 overflow-hidden"
+      >
+
+        <!-- Header -->
+
+        <div
+          class="bg-gradient-to-br
+                 from-primary-600
+                 to-primary-800
+                 px-8 py-8 text-white"
+        >
+
+          <div
+            class="h-14 w-14 rounded-xl bg-white/10
+                   flex items-center justify-center mb-5"
+          >
+            <i
+              data-lucide="shield-check"
+              class="h-7 w-7"
+            ></i>
+          </div>
+
+
+          <h1 class="text-2xl font-bold">
+            Admin Sign In
+          </h1>
+
+
+          <p class="text-white/70 text-sm mt-2">
+            Access the administration console.
+          </p>
+
+        </div>
+
+
+
+        <!-- =====================================
+             LOGIN FORM
+        ====================================== -->
+
+        <div class="px-8 py-8">
+
+          <form
+            action="/admin/login"
+            method="POST"
+            id="admin-login-form"
+          >
+
+
+            <!-- Error -->
+
+            <% if (
+              typeof error !== "undefined" &&
+              error
+            ) { %>
+
+              <div
+                class="mb-5 px-4 py-3
+                       bg-red-50
+                       border border-red-200
+                       rounded-lg"
+              >
+
+                <p class="text-sm text-red-700">
+                  <%= error %>
+                </p>
+
+              </div>
+
+            <% } %>
+
+
+
+            <!-- Email -->
+
+            <div class="mb-5">
+
+              <label
+                for="admin-email"
+                class="block text-sm
+                       font-medium
+                       text-gray-700 mb-2"
+              >
+                Administrator Email
+              </label>
+
+
+              <div class="relative">
+
+                <i
+                  data-lucide="mail"
+                  class="absolute left-3 top-1/2
+                         -translate-y-1/2
+                         h-5 w-5
+                         text-gray-400"
+                ></i>
+
+
+                <input
+                  id="admin-email"
+                  type="email"
+                  name="email"
+                  class="w-full pl-10 pr-4 py-3
+                         border border-gray-300
+                         rounded-lg
+                         focus:outline-none
+                         focus:ring-2
+                         focus:ring-primary-500"
+                  placeholder="Enter administrator email"
+                  autocomplete="username"
+                  required
+                >
+
+              </div>
+
+            </div>
+
+
+
+            <!-- Password -->
+
+            <div class="mb-6">
+
+              <label
+                for="admin-password"
+                class="block text-sm
+                       font-medium
+                       text-gray-700 mb-2"
+              >
+                Password
+              </label>
+
+
+              <div class="relative">
+
+                <i
+                  data-lucide="lock"
+                  class="absolute left-3 top-1/2
+                         -translate-y-1/2
+                         h-5 w-5
+                         text-gray-400"
+                ></i>
+
+
+                <input
+                  id="admin-password"
+                  type="password"
+                  name="password"
+                  class="w-full pl-10 pr-4 py-3
+                         border border-gray-300
+                         rounded-lg
+                         focus:outline-none
+                         focus:ring-2
+                         focus:ring-primary-500"
+                  placeholder="••••••••"
+                  autocomplete="current-password"
+                  required
+                >
+
+              </div>
+
+            </div>
+
+
+
+            <!-- Submit -->
+
+            <button
+              type="submit"
+              class="w-full py-3 px-4
+                     bg-primary-600
+                     hover:bg-primary-700
+                     text-white font-medium
+                     rounded-lg
+                     flex items-center
+                     justify-center"
+            >
+
+              <i
+                data-lucide="log-in"
+                class="h-5 w-5 mr-2"
+              ></i>
+
+              Sign In
+
+            </button>
+
+          </form>
+
+        </div>
+
+      </div>
+
+
+
+      <p
+        class="mt-6 text-center
+               text-xs text-gray-500"
+      >
+        First Credit Merchant Administration
+      </p>
+
+    </div>
+
+  </main>
+
+
+  <script src="/js/admin.js"></script>
+
+</body>
+
+</html>

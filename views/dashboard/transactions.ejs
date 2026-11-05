@@ -1,0 +1,1543 @@
+<%
+    const transactionRecords =
+        typeof transactions !== "undefined" &&
+        Array.isArray(transactions)
+            ? transactions
+            : [];
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+
+    const accountRecord =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const currency =
+        values && values.currency
+            ? values.currency
+            : accountRecord &&
+              accountRecord.currency
+            ? accountRecord.currency
+            : "";
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data='{
+            mobileMenuOpen: false,
+            transactionFilter: "all",
+            search: ""
+        }'
+        class="dashboard-app-shell"
+    >
+
+        <!-- Desktop Sidebar -->
+
+        <%- include("partials/sidebar") %>
+
+
+        <!-- Main Dashboard Column -->
+
+        <div class="dashboard-main-column">
+
+            <!-- Topbar -->
+
+            <%- include("partials/topbar") %>
+
+            <!-- Mobile Menu -->
+
+            <%- include("partials/mobile-menu") %>
+
+            <!-- Mobile Navigation -->
+
+            <%- include("partials/mobile-nav") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =====================================
+                             PAGE HEADER
+                        ====================================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Transactions
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Review your complete
+                                account activity.
+                            </p>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             TRANSACTION SUMMARY
+                        ====================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- Total Transactions -->
+
+                            <div
+                                class="dashboard-card
+                                       p-5"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-center
+                                           justify-between
+                                           gap-4"
+                                >
+
+                                    <div>
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            Total Transactions
+                                        </p>
+
+                                        <p
+                                            class="text-xl
+                                                   font-bold
+                                                   text-gray-900
+                                                   mt-2"
+                                        >
+                                            <%= transactionRecords.length %>
+                                        </p>
+
+                                    </div>
+
+                                    <div
+                                        class="h-11
+                                               w-11
+                                               rounded-full
+                                               bg-primary-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="activity"
+                                            class="h-5 w-5"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Monthly Income -->
+
+                            <div
+                                class="dashboard-card
+                                       p-5"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-center
+                                           justify-between
+                                           gap-4"
+                                >
+
+                                    <div class="min-w-0">
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            Monthly Income
+                                        </p>
+
+                                        <p
+                                            class="text-xl
+                                                   font-bold
+                                                   text-green-700
+                                                   mt-2
+                                                   break-words"
+                                        >
+
+                                            <%= currency %>
+
+                                            <%= Number(
+                                                values &&
+                                                values.monthlyIncome !== undefined &&
+                                                values.monthlyIncome !== null
+                                                    ? values.monthlyIncome
+                                                    : 0
+                                            ).toLocaleString(
+                                                undefined,
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            ) %>
+
+                                        </p>
+
+                                    </div>
+
+                                    <div
+                                        class="h-11
+                                               w-11
+                                               rounded-full
+                                               bg-green-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="arrow-down-left"
+                                            class="h-5
+                                                   w-5
+                                                   text-green-600"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Monthly Outgoing -->
+
+                            <div
+                                class="dashboard-card
+                                       p-5"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-center
+                                           justify-between
+                                           gap-4"
+                                >
+
+                                    <div class="min-w-0">
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            Monthly Outgoing
+                                        </p>
+
+                                        <p
+                                            class="text-xl
+                                                   font-bold
+                                                   text-red-700
+                                                   mt-2
+                                                   break-words"
+                                        >
+
+                                            <%= currency %>
+
+                                            <%= Number(
+                                                values &&
+                                                values.monthlyOutgoing !== undefined &&
+                                                values.monthlyOutgoing !== null
+                                                    ? values.monthlyOutgoing
+                                                    : 0
+                                            ).toLocaleString(
+                                                undefined,
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            ) %>
+
+                                        </p>
+
+                                    </div>
+
+                                    <div
+                                        class="h-11
+                                               w-11
+                                               rounded-full
+                                               bg-red-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="arrow-up-right"
+                                            class="h-5
+                                                   w-5
+                                                   text-red-600"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Pending Transactions -->
+
+                            <div
+                                class="dashboard-card
+                                       p-5"
+                            >
+
+                                <div
+                                    class="flex
+                                           items-center
+                                           justify-between
+                                           gap-4"
+                                >
+
+                                    <div class="min-w-0">
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500"
+                                        >
+                                            Pending Transactions
+                                        </p>
+
+                                        <p
+                                            class="text-xl
+                                                   font-bold
+                                                   text-yellow-700
+                                                   mt-2
+                                                   break-words"
+                                        >
+
+                                            <%= currency %>
+
+                                            <%= Number(
+                                                values &&
+                                                values.pendingTransactions !== undefined &&
+                                                values.pendingTransactions !== null
+                                                    ? values.pendingTransactions
+                                                    : 0
+                                            ).toLocaleString(
+                                                undefined,
+                                                {
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
+                                                }
+                                            ) %>
+
+                                        </p>
+
+                                    </div>
+
+                                    <div
+                                        class="h-11
+                                               w-11
+                                               rounded-full
+                                               bg-yellow-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="clock"
+                                            class="h-5
+                                                   w-5
+                                                   text-yellow-600"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             SEARCH AND FILTERS
+                        ====================================== -->
+
+                        <div
+                            class="dashboard-card
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Search -->
+
+                                <div
+                                    class="relative
+                                           flex-1
+                                           min-w-0"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4
+                                               w-4
+                                               text-gray-400"
+                                    ></i>
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        placeholder="Search transactions..."
+                                        class="dashboard-form-input
+                                               pl-9"
+                                    >
+
+                                </div>
+
+
+                                <!-- Filters -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="transactionFilter = 'all'"
+                                        :class="
+                                            transactionFilter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        All
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="transactionFilter = 'incoming'"
+                                        :class="
+                                            transactionFilter === 'incoming'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Incoming
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="transactionFilter = 'outgoing'"
+                                        :class="
+                                            transactionFilter === 'outgoing'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Outgoing
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="transactionFilter = 'pending'"
+                                        :class="
+                                            transactionFilter === 'pending'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        Pending
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             TRANSACTION HISTORY
+                        ====================================== -->
+
+                        <section
+                            class="dashboard-card
+                                   overflow-hidden
+                                   mb-6"
+                        >
+
+                            <div
+                                class="px-5
+                                       sm:px-6
+                                       py-4
+                                       border-b
+                                       border-gray-200"
+                            >
+
+                                <h2
+                                    class="text-lg
+                                           font-semibold
+                                           text-gray-900"
+                                >
+                                    Transaction History
+                                </h2>
+
+                                <% if (
+                                    transactionRecords.length > 0
+                                ) { %>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        <%= transactionRecords.length %>
+
+                                        transaction<%= transactionRecords.length === 1
+                                            ? ""
+                                            : "s"
+                                        %>
+                                    </p>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (
+                                transactionRecords.length === 0
+                            ) { %>
+
+                                <!-- Empty State -->
+
+                                <div
+                                    class="py-14
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-12
+                                               w-12
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-3"
+                                    >
+
+                                        <i
+                                            data-lucide="activity"
+                                            class="h-6
+                                                   w-6
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+                                    <p
+                                        class="text-sm
+                                               font-medium
+                                               text-gray-700"
+                                    >
+                                        No transactions yet
+                                    </p>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Deposits, transfers,
+                                        balance adjustments and
+                                        other account activity
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+
+                                <!-- =================================
+                                     DESKTOP / TABLET TABLE
+                                ================================== -->
+
+                                <div
+                                    class="hidden
+                                           sm:block
+                                           w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Transaction
+                                                </th>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Reference
+                                                </th>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Type
+                                                </th>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Amount
+                                                </th>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Status
+                                                </th>
+
+                                                <th
+                                                    class="dashboard-table-heading"
+                                                >
+                                                    Date
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% transactionRecords.forEach(
+                                                function(transaction) {
+
+                                                    const direction =
+                                                        String(
+                                                            transaction.direction || ""
+                                                        ).toLowerCase();
+
+                                                    const status =
+                                                        String(
+                                                            transaction.status || ""
+                                                        );
+
+                                                    const statusLower =
+                                                        status.toLowerCase();
+
+                                                    const searchableText =
+                                                        [
+                                                            transaction.description,
+                                                            transaction.counterparty,
+                                                            transaction.reference,
+                                                            transaction.type,
+                                                            transaction.direction,
+                                                            transaction.status,
+                                                            transaction.currency,
+                                                            transaction.amount
+                                                        ]
+                                                            .filter(
+                                                                value =>
+                                                                    value !== undefined &&
+                                                                    value !== null
+                                                            )
+                                                            .join(" ")
+                                                            .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            transactionFilter === 'all' ||
+                                                            (
+                                                                transactionFilter === 'incoming' &&
+                                                                <%- JSON.stringify(direction) %>
+                                                                    === 'incoming'
+                                                            ) ||
+                                                            (
+                                                                transactionFilter === 'outgoing' &&
+                                                                <%- JSON.stringify(direction) %>
+                                                                    === 'outgoing'
+                                                            ) ||
+                                                            (
+                                                                transactionFilter === 'pending' &&
+                                                                <%- JSON.stringify(statusLower) %>
+                                                                    === 'pending'
+                                                            )
+                                                        ) &&
+                                                        (
+                                                            !search.trim() ||
+                                                            <%- JSON.stringify(searchableText) %>
+                                                                .includes(
+                                                                    search
+                                                                        .trim()
+                                                                        .toLowerCase()
+                                                                )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Transaction -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4"
+                                                    >
+
+                                                        <div
+                                                            class="flex
+                                                                   items-center
+                                                                   min-w-0"
+                                                        >
+
+                                                            <div
+                                                                class="h-9
+                                                                       w-9
+                                                                       rounded-full
+                                                                       flex
+                                                                       items-center
+                                                                       justify-center
+                                                                       mr-3
+                                                                       flex-shrink-0
+
+                                                                       <%= direction === "incoming"
+                                                                           ? "bg-green-100"
+                                                                           : direction === "outgoing"
+                                                                           ? "bg-red-100"
+                                                                           : "bg-gray-100"
+                                                                       %>"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="<%= direction === "incoming"
+                                                                        ? "arrow-down-left"
+                                                                        : direction === "outgoing"
+                                                                        ? "arrow-up-right"
+                                                                        : "activity"
+                                                                    %>"
+                                                                    class="h-4
+                                                                           w-4
+
+                                                                           <%= direction === "incoming"
+                                                                               ? "text-green-600"
+                                                                               : direction === "outgoing"
+                                                                               ? "text-red-600"
+                                                                               : "text-gray-500"
+                                                                           %>"
+                                                                ></i>
+
+                                                            </div>
+
+
+                                                            <div class="min-w-0">
+
+                                                                <p
+                                                                    class="text-sm
+                                                                           font-medium
+                                                                           text-gray-900
+                                                                           whitespace-normal
+                                                                           break-words"
+                                                                >
+                                                                    <%= transaction.description ||
+                                                                        transaction.type ||
+                                                                        "Transaction"
+                                                                    %>
+                                                                </p>
+
+                                                                <% if (
+                                                                    transaction.counterparty
+                                                                ) { %>
+
+                                                                    <p
+                                                                        class="text-xs
+                                                                               text-gray-500
+                                                                               mt-1
+                                                                               whitespace-normal
+                                                                               break-words"
+                                                                    >
+                                                                        <%= transaction.counterparty %>
+                                                                    </p>
+
+                                                                <% } %>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </td>
+                                                    <!-- Reference -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4
+                                                               text-sm
+                                                               text-gray-600"
+                                                    >
+                                                        <%= transaction.reference ||
+                                                            "—"
+                                                        %>
+                                                    </td>
+
+
+                                                    <!-- Type -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4
+                                                               text-sm
+                                                               text-gray-600"
+                                                    >
+                                                        <%= transaction.type ||
+                                                            "—"
+                                                        %>
+                                                    </td>
+
+
+                                                    <!-- Amount -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4
+                                                               text-sm
+                                                               font-semibold
+
+                                                               <%= direction === "incoming"
+                                                                   ? "text-green-700"
+                                                                   : direction === "outgoing"
+                                                                   ? "text-red-700"
+                                                                   : "text-gray-900"
+                                                               %>"
+                                                    >
+
+                                                        <% if (
+                                                            transaction.amount !== undefined &&
+                                                            transaction.amount !== null
+                                                        ) { %>
+
+                                                            <% if (
+                                                                direction ===
+                                                                "incoming"
+                                                            ) { %>
+                                                                +
+                                                            <% } else if (
+                                                                direction ===
+                                                                "outgoing"
+                                                            ) { %>
+                                                                -
+                                                            <% } %>
+
+                                                            <%= transaction.currency ||
+                                                                currency
+                                                            %>
+
+                                                            <%= Number(
+                                                                transaction.amount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Status -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4"
+                                                    >
+
+                                                        <span
+                                                            class="inline-flex
+                                                                   items-center
+                                                                   px-2.5
+                                                                   py-1
+                                                                   rounded-full
+                                                                   text-xs
+                                                                   font-medium
+
+                                                                   <%= statusLower === "completed"
+                                                                       ? "bg-green-100 text-green-700"
+                                                                       : statusLower === "pending" ||
+                                                                         statusLower === "processing"
+                                                                       ? "bg-yellow-100 text-yellow-700"
+                                                                       : statusLower === "failed" ||
+                                                                         statusLower === "rejected"
+                                                                       ? "bg-red-100 text-red-700"
+                                                                       : "bg-gray-100 text-gray-700"
+                                                                   %>"
+                                                        >
+                                                            <%= status ||
+                                                                "Unknown"
+                                                            %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Date -->
+
+                                                    <td
+                                                        class="px-5
+                                                               sm:px-6
+                                                               py-4
+                                                               text-sm
+                                                               text-gray-500
+                                                               whitespace-nowrap"
+                                                    >
+
+                                                        <% if (
+                                                            transaction.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                transaction.createdAt
+                                                            ).toLocaleString() %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+
+                                <!-- =================================
+                                     MOBILE TRANSACTION CARDS
+                                ================================== -->
+
+                                <div
+                                    class="sm:hidden
+                                           divide-y
+                                           divide-gray-100"
+                                >
+
+                                    <% transactionRecords.forEach(
+                                        function(transaction) {
+
+                                            const direction =
+                                                String(
+                                                    transaction.direction || ""
+                                                ).toLowerCase();
+
+                                            const status =
+                                                String(
+                                                    transaction.status || ""
+                                                );
+
+                                            const statusLower =
+                                                status.toLowerCase();
+
+                                            const searchableText =
+                                                [
+                                                    transaction.description,
+                                                    transaction.counterparty,
+                                                    transaction.reference,
+                                                    transaction.type,
+                                                    transaction.direction,
+                                                    transaction.status,
+                                                    transaction.currency,
+                                                    transaction.amount
+                                                ]
+                                                    .filter(
+                                                        value =>
+                                                            value !== undefined &&
+                                                            value !== null
+                                                    )
+                                                    .join(" ")
+                                                    .toLowerCase();
+                                    %>
+
+                                        <article
+                                            x-show="
+                                                (
+                                                    transactionFilter === 'all' ||
+                                                    (
+                                                        transactionFilter === 'incoming' &&
+                                                        <%- JSON.stringify(direction) %>
+                                                            === 'incoming'
+                                                    ) ||
+                                                    (
+                                                        transactionFilter === 'outgoing' &&
+                                                        <%- JSON.stringify(direction) %>
+                                                            === 'outgoing'
+                                                    ) ||
+                                                    (
+                                                        transactionFilter === 'pending' &&
+                                                        <%- JSON.stringify(statusLower) %>
+                                                            === 'pending'
+                                                    )
+                                                ) &&
+                                                (
+                                                    !search.trim() ||
+                                                    <%- JSON.stringify(searchableText) %>
+                                                        .includes(
+                                                            search
+                                                                .trim()
+                                                                .toLowerCase()
+                                                        )
+                                                )
+                                            "
+                                            class="p-4"
+                                        >
+
+                                            <div
+                                                class="flex
+                                                       items-start
+                                                       justify-between
+                                                       gap-3"
+                                            >
+
+                                                <!-- Description -->
+
+                                                <div
+                                                    class="flex
+                                                           items-start
+                                                           min-w-0"
+                                                >
+
+                                                    <div
+                                                        class="h-10
+                                                               w-10
+                                                               rounded-full
+                                                               flex
+                                                               items-center
+                                                               justify-center
+                                                               mr-3
+                                                               flex-shrink-0
+
+                                                               <%= direction === "incoming"
+                                                                   ? "bg-green-100"
+                                                                   : direction === "outgoing"
+                                                                   ? "bg-red-100"
+                                                                   : "bg-gray-100"
+                                                               %>"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="<%= direction === "incoming"
+                                                                ? "arrow-down-left"
+                                                                : direction === "outgoing"
+                                                                ? "arrow-up-right"
+                                                                : "activity"
+                                                            %>"
+                                                            class="h-4
+                                                                   w-4
+
+                                                                   <%= direction === "incoming"
+                                                                       ? "text-green-600"
+                                                                       : direction === "outgoing"
+                                                                       ? "text-red-600"
+                                                                       : "text-gray-500"
+                                                                   %>"
+                                                        ></i>
+
+                                                    </div>
+
+
+                                                    <div class="min-w-0">
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-900
+                                                                   break-words"
+                                                        >
+                                                            <%= transaction.description ||
+                                                                transaction.type ||
+                                                                "Transaction"
+                                                            %>
+                                                        </p>
+
+
+                                                        <% if (
+                                                            transaction.counterparty
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1
+                                                                       break-words"
+                                                            >
+                                                                <%= transaction.counterparty %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Amount -->
+
+                                                <p
+                                                    class="text-sm
+                                                           font-bold
+                                                           whitespace-nowrap
+
+                                                           <%= direction === "incoming"
+                                                               ? "text-green-700"
+                                                               : direction === "outgoing"
+                                                               ? "text-red-700"
+                                                               : "text-gray-900"
+                                                           %>"
+                                                >
+
+                                                    <% if (
+                                                        direction ===
+                                                        "incoming"
+                                                    ) { %>
+                                                        +
+                                                    <% } else if (
+                                                        direction ===
+                                                        "outgoing"
+                                                    ) { %>
+                                                        -
+                                                    <% } %>
+
+                                                    <%= transaction.currency ||
+                                                        currency
+                                                    %>
+
+                                                    <%= transaction.amount !== undefined &&
+                                                        transaction.amount !== null
+                                                        ? Number(
+                                                            transaction.amount
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        )
+                                                        : "0.00"
+                                                    %>
+
+                                                </p>
+
+                                            </div>
+
+
+                                            <!-- Mobile Details -->
+
+                                            <div
+                                                class="grid
+                                                       grid-cols-2
+                                                       gap-3
+                                                       mt-4"
+                                            >
+
+                                                <!-- Type -->
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400"
+                                                    >
+                                                        Type
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               font-medium
+                                                               text-gray-700
+                                                               mt-1"
+                                                    >
+                                                        <%= transaction.type ||
+                                                            "—"
+                                                        %>
+                                                    </p>
+
+                                                </div>
+
+
+                                                <!-- Status -->
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400"
+                                                    >
+                                                        Status
+                                                    </p>
+
+                                                    <span
+                                                        class="inline-flex
+                                                               mt-1
+                                                               px-2
+                                                               py-0.5
+                                                               rounded-full
+                                                               text-xs
+                                                               font-medium
+
+                                                               <%= statusLower === "completed"
+                                                                   ? "bg-green-100 text-green-700"
+                                                                   : statusLower === "pending" ||
+                                                                     statusLower === "processing"
+                                                                   ? "bg-yellow-100 text-yellow-700"
+                                                                   : statusLower === "failed" ||
+                                                                     statusLower === "rejected"
+                                                                   ? "bg-red-100 text-red-700"
+                                                                   : "bg-gray-100 text-gray-700"
+                                                               %>"
+                                                    >
+                                                        <%= status ||
+                                                            "Unknown"
+                                                        %>
+                                                    </span>
+
+                                                </div>
+
+
+                                                <!-- Reference -->
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400"
+                                                    >
+                                                        Reference
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               font-medium
+                                                               text-gray-700
+                                                               mt-1
+                                                               break-all"
+                                                    >
+                                                        <%= transaction.reference ||
+                                                            "—"
+                                                        %>
+                                                    </p>
+
+                                                </div>
+
+
+                                                <!-- Date -->
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400"
+                                                    >
+                                                        Date
+                                                    </p>
+
+                                                    <p
+                                                        class="text-xs
+                                                               font-medium
+                                                               text-gray-700
+                                                               mt-1"
+                                                    >
+
+                                                        <% if (
+                                                            transaction.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                transaction.createdAt
+                                                            ).toLocaleDateString() %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </article>
+
+                                    <% }); %>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+
+                        <!-- =====================================
+                             QUICK LINKS
+                        ====================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-2
+                                   md:grid-cols-4
+                                   gap-4
+                                   mt-6
+                                   mb-6"
+                        >
+
+                            <!-- Deposits -->
+
+                            <a
+                                href="/dashboard/deposits"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-green-100"
+                                >
+
+                                    <i
+                                        data-lucide="download"
+                                        class="h-6
+                                               w-6
+                                               text-green-600"
+                                    ></i>
+
+                                </div>
+
+                                <span>
+                                    Deposits
+                                </span>
+
+                            </a>
+
+
+                            <!-- Transfers -->
+
+                            <a
+                                href="/dashboard/transfers"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-primary-100"
+                                >
+
+                                    <i
+                                        data-lucide="send"
+                                        class="h-6 w-6"
+                                    ></i>
+
+                                </div>
+
+                                <span>
+                                    Transfers
+                                </span>
+
+                            </a>
+
+
+                            <!-- Cards -->
+
+                            <a
+                                href="/dashboard/cards"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-blue-100"
+                                >
+
+                                    <i
+                                        data-lucide="credit-card"
+                                        class="h-6
+                                               w-6
+                                               text-blue-600"
+                                    ></i>
+
+                                </div>
+
+                                <span>
+                                    Cards
+                                </span>
+
+                            </a>
+
+
+                            <!-- Support -->
+
+                            <a
+                                href="/dashboard/support"
+                                class="dashboard-action"
+                            >
+
+                                <div
+                                    class="dashboard-action-icon
+                                           bg-purple-100"
+                                >
+
+                                    <i
+                                        data-lucide="circle-help"
+                                        class="h-6
+                                               w-6
+                                               text-purple-600"
+                                    ></i>
+
+                                </div>
+
+                                <span>
+                                    Support
+                                </span>
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <!-- Footer -->
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

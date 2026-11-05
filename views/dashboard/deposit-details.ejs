@@ -1,0 +1,799 @@
+<%
+    const record =
+        typeof card !== "undefined"
+            ? card
+            : null;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false
+        }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- Back -->
+
+                        <a
+                            href="/dashboard/cards"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to My Cards
+
+                        </a>
+
+
+                        <% if (!record) { %>
+
+                            <!-- =============================
+                                 CARD UNAVAILABLE
+                            ============================== -->
+
+                            <section class="dashboard-card">
+
+                                <div
+                                    class="py-16
+                                           px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-16 w-16
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="credit-card"
+                                            class="h-8 w-8
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Card unavailable
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        The requested card could
+                                        not be found.
+                                    </p>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- =============================
+                                 HEADER
+                            ============================== -->
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       sm:items-center
+                                       sm:justify-between
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        Card Details
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Review this card and its
+                                        current account settings.
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="inline-flex
+                                           self-start
+                                           items-center
+                                           px-3 py-1.5
+                                           rounded-full
+                                           text-xs
+                                           font-medium
+                                           <%= record.status === "Active"
+                                               ? "bg-green-100 text-green-700"
+                                               : record.status === "Frozen"
+                                               ? "bg-blue-100 text-blue-700"
+                                               : record.status === "Pending"
+                                               ? "bg-yellow-100 text-yellow-700"
+                                               : record.status === "Expired"
+                                               ? "bg-red-100 text-red-700"
+                                               : "bg-gray-100 text-gray-700"
+                                           %>"
+                                >
+                                    <%= record.status || "" %>
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       lg:grid-cols-5
+                                       gap-6"
+                            >
+
+                                <!-- =============================
+                                     CARD VISUAL
+                                ============================== -->
+
+                                <div class="lg:col-span-3">
+
+                                    <div
+                                        class="relative
+                                               overflow-hidden
+                                               rounded-2xl
+                                               bg-gradient-to-br
+                                               from-primary-600
+                                               via-primary-700
+                                               to-primary-900
+                                               text-white
+                                               shadow-xl
+                                               p-6
+                                               min-h-[280px]"
+                                    >
+
+                                        <div
+                                            class="absolute
+                                                   -right-20
+                                                   -top-20
+                                                   h-64 w-64
+                                                   rounded-full
+                                                   bg-white/5"
+                                        ></div>
+
+
+                                        <div
+                                            class="absolute
+                                                   -left-20
+                                                   -bottom-28
+                                                   h-72 w-72
+                                                   rounded-full
+                                                   bg-white/5"
+                                        ></div>
+
+
+                                        <div
+                                            class="relative
+                                                   z-10
+                                                   min-h-[232px]
+                                                   flex
+                                                   flex-col
+                                                   justify-between"
+                                        >
+
+                                            <!-- Top -->
+
+                                            <div
+                                                class="flex
+                                                       items-start
+                                                       justify-between
+                                                       gap-4"
+                                            >
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-xs
+                                                               uppercase
+                                                               tracking-wider
+                                                               text-white/60"
+                                                    >
+                                                        <%= record.issuerName || "First Credit Merchant" %>
+                                                    </p>
+
+
+                                                    <h2
+                                                        class="text-xl
+                                                               font-semibold
+                                                               mt-1"
+                                                    >
+                                                        <%= record.displayName || record.type || "Customer Card" %>
+                                                    </h2>
+
+                                                </div>
+
+
+                                                <div
+                                                    class="flex
+                                                           items-center
+                                                           gap-3"
+                                                >
+
+                                                    <i
+                                                        data-lucide="wifi"
+                                                        class="h-6 w-6"
+                                                    ></i>
+
+
+                                                    <i
+                                                        data-lucide="credit-card"
+                                                        class="h-8 w-8"
+                                                    ></i>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Number -->
+
+                                            <div>
+
+                                                <p
+                                                    class="text-2xl
+                                                           sm:text-3xl
+                                                           tracking-[0.18em]
+                                                           font-medium"
+                                                >
+                                                    •••• •••• ••••
+                                                    <%= record.lastFour || "" %>
+                                                </p>
+
+                                            </div>
+
+
+                                            <!-- Holder / Expiry -->
+
+                                            <div
+                                                class="grid
+                                                       grid-cols-3
+                                                       gap-4
+                                                       items-end"
+                                            >
+
+                                                <div class="col-span-2">
+
+                                                    <p
+                                                        class="text-[10px]
+                                                               uppercase
+                                                               tracking-wide
+                                                               text-white/50"
+                                                    >
+                                                        Card Holder
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium
+                                                               mt-1"
+                                                    >
+                                                        <%= record.holderName || "" %>
+                                                    </p>
+
+                                                </div>
+
+
+                                                <div class="text-right">
+
+                                                    <p
+                                                        class="text-[10px]
+                                                               uppercase
+                                                               tracking-wide
+                                                               text-white/50"
+                                                    >
+                                                        Expires
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium
+                                                               mt-1"
+                                                    >
+                                                        <%= record.expiry || "" %>
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                <!-- =============================
+                                     DETAILS
+                                ============================== -->
+
+                                <section
+                                    class="dashboard-card
+                                           lg:col-span-2"
+                                >
+
+                                    <div class="dashboard-card-header">
+
+                                        <h2
+                                            class="text-lg
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Card Information
+                                        </h2>
+
+                                    </div>
+
+
+                                    <div class="p-6 space-y-5">
+
+                                        <!-- Display Name -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Display Name
+                                            </span>
+
+                                            <strong>
+                                                <%= record.displayName || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Type -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Card Type
+                                            </span>
+
+                                            <strong>
+                                                <%= record.type || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Last Four -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Card Number
+                                            </span>
+
+                                            <strong>
+                                                •••• •••• ••••
+                                                <%= record.lastFour || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Currency -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Currency
+                                            </span>
+
+                                            <strong>
+                                                <%= record.currency || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Spending Limit -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Spending Limit
+                                            </span>
+
+                                            <strong>
+                                                <%= record.currency || "" %>
+
+                                                <%= Number(
+                                                    record.spendingLimit ||
+                                                    0
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Expiry -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Expiration
+                                            </span>
+
+                                            <strong>
+                                                <%= record.expiry || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <!-- Status -->
+
+                                        <div class="dashboard-detail">
+
+                                            <span>
+                                                Status
+                                            </span>
+
+                                            <strong>
+                                                <%= record.status || "" %>
+                                            </strong>
+
+                                        </div>
+
+                                    </div>
+
+                                </section>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 STATUS MESSAGE
+                            ============================== -->
+
+                            <% if (
+                                record.status === "Frozen"
+                            ) { %>
+
+                                <div
+                                    class="mt-6
+                                           px-4 py-4
+                                           bg-blue-50
+                                           border
+                                           border-blue-200
+                                           rounded-xl"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="snowflake"
+                                            class="h-5 w-5
+                                                   text-blue-600
+                                                   mr-3 mt-0.5
+                                                   flex-shrink-0"
+                                        ></i>
+
+
+                                        <div>
+
+                                            <p
+                                                class="text-sm
+                                                       font-semibold
+                                                       text-blue-900"
+                                            >
+                                                Card Frozen
+                                            </p>
+
+
+                                            <p
+                                                class="text-sm
+                                                       text-blue-700
+                                                       mt-1"
+                                            >
+                                                This card is currently
+                                                frozen. Contact support if
+                                                assistance is required.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            <% } %>
+
+
+                            <% if (
+                                record.status === "Pending"
+                            ) { %>
+
+                                <div
+                                    class="mt-6
+                                           px-4 py-4
+                                           bg-yellow-50
+                                           border
+                                           border-yellow-200
+                                           rounded-xl"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="clock"
+                                            class="h-5 w-5
+                                                   text-yellow-600
+                                                   mr-3 mt-0.5
+                                                   flex-shrink-0"
+                                        ></i>
+
+
+                                        <div>
+
+                                            <p
+                                                class="text-sm
+                                                       font-semibold
+                                                       text-yellow-900"
+                                            >
+                                                Card Pending
+                                            </p>
+
+
+                                            <p
+                                                class="text-sm
+                                                       text-yellow-700
+                                                       mt-1"
+                                            >
+                                                This card has not yet been
+                                                activated.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            <% } %>
+
+
+                            <!-- =============================
+                                 SECURITY
+                            ============================== -->
+
+                            <div
+                                class="mt-6
+                                       bg-primary-50
+                                       border
+                                       border-primary-100
+                                       rounded-xl
+                                       p-5"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="shield-check"
+                                        class="h-5 w-5
+                                               text-primary-600
+                                               mr-3
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <div>
+
+                                        <h2
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Card Security
+                                        </h2>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-gray-600
+                                                   mt-1"
+                                        >
+                                            Only masked card details are
+                                            available from the dashboard.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =============================
+                                 ACTIONS
+                            ============================== -->
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       sm:grid-cols-3
+                                       gap-4
+                                       mt-6"
+                            >
+
+                                <a
+                                    href="/dashboard/transactions"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-blue-100"
+                                    >
+                                        <i
+                                            data-lucide="activity"
+                                            class="text-blue-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>
+                                        Transactions
+                                    </span>
+
+                                </a>
+
+
+                                <a
+                                    href="/dashboard/settings"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-green-100"
+                                    >
+                                        <i
+                                            data-lucide="settings"
+                                            class="text-green-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>
+                                        Settings
+                                    </span>
+
+                                </a>
+
+
+                                <a
+                                    href="/dashboard/support"
+                                    class="dashboard-action"
+                                >
+
+                                    <div
+                                        class="dashboard-action-icon
+                                               bg-purple-100"
+                                    >
+                                        <i
+                                            data-lucide="help-circle"
+                                            class="text-purple-600"
+                                        ></i>
+                                    </div>
+
+                                    <span>
+                                        Card Support
+                                    </span>
+
+                                </a>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+<script>
+  /* =====================================================
+     LUCIDE ICONS
+  ====================================================== */
+
+  function initializeDashboardIcons() {
+    if (typeof window.lucide !== "undefined") {
+      window.lucide.createIcons();
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", initializeDashboardIcons);
+
+  document.addEventListener("alpine:initialized", initializeDashboardIcons);
+
+  /* =====================================================
+     DASHBOARD DATE
+  ====================================================== */
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const dateElements = document.querySelectorAll("[data-dashboard-date]");
+
+    if (dateElements.length === 0) {
+      return;
+    }
+
+    const currentDate = new Intl.DateTimeFormat(undefined, {
+      weekday: "short",
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(new Date());
+
+    dateElements.forEach(function (element) {
+      element.textContent = currentDate;
+    });
+  });
+</script>
+
+<!-- Deposit Page Interaction -->
+<script src="/js/deposits.js"></script>

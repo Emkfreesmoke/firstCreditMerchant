@@ -1,0 +1,391 @@
+<%
+    const records =
+        typeof activities !== "undefined" &&
+        Array.isArray(activities)
+            ? activities
+            : [];
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            search: ''
+        }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- ==========================
+                             PAGE HEADER
+                        =========================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Activity Log
+                            </h1>
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Review recorded
+                                administrative activity.
+                            </p>
+
+                        </div>
+
+
+                        <!-- ==========================
+                             SEARCH
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="relative">
+
+                                <i
+                                    data-lucide="search"
+                                    class="absolute
+                                           left-3
+                                           top-1/2
+                                           -translate-y-1/2
+                                           h-4
+                                           w-4
+                                           text-gray-400"
+                                ></i>
+
+                                <input
+                                    type="search"
+                                    x-model="search"
+                                    class="admin-input pl-9"
+                                    placeholder="Search activity..."
+                                >
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ==========================
+                             ACTIVITY RECORDS
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <h3>
+                                    Administrative Activity
+                                </h3>
+
+
+                                <% if (
+                                    records.length > 0
+                                ) { %>
+
+                                    <span
+                                        class="text-xs
+                                               text-gray-500"
+                                    >
+                                        <%= records.length %>
+                                        record<%= records.length === 1
+                                            ? ""
+                                            : "s"
+                                        %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (
+                                records.length === 0
+                            ) { %>
+
+                                <!-- =====================
+                                     EMPTY STATE
+                                ====================== -->
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="history"
+                                    ></i>
+
+                                    <p>
+                                        No activity records
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <!-- =====================
+                                     TABLE
+                                ====================== -->
+
+                                <div
+                                    class="w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Actor
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Action
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Target
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Date
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% records.forEach(
+                                                function(record) {
+
+                                                    const searchableText =
+                                                        [
+                                                            record.actorLabel,
+                                                            record.action,
+                                                            record.targetLabel,
+                                                            record.createdAt
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                            .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        !search.trim() ||
+                                                        <%- JSON.stringify(searchableText) %>
+                                                            .includes(
+                                                                search
+                                                                    .trim()
+                                                                    .toLowerCase()
+                                                            )
+                                                    "
+                                                >
+
+                                                    <!-- ACTOR -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <div
+                                                            class="flex
+                                                                   items-center
+                                                                   min-w-0"
+                                                        >
+
+                                                            <div
+                                                                class="h-9
+                                                                       w-9
+                                                                       rounded-full
+                                                                       bg-gray-100
+                                                                       flex
+                                                                       items-center
+                                                                       justify-center
+                                                                       mr-3
+                                                                       flex-shrink-0"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="shield"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           text-gray-500"
+                                                                ></i>
+
+                                                            </div>
+
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900
+                                                                       whitespace-normal
+                                                                       break-words"
+                                                            >
+                                                                <%= record.actorLabel ||
+                                                                    "Administrator"
+                                                                %>
+                                                            </p>
+
+                                                        </div>
+
+                                                    </td>
+
+
+                                                    <!-- ACTION -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <%= record.action ||
+                                                            "—"
+                                                        %>
+
+                                                    </td>
+
+
+                                                    <!-- TARGET -->
+
+                                                    <td
+                                                        class="admin-table-cell"
+                                                    >
+
+                                                        <%= record.targetLabel ||
+                                                            "—"
+                                                        %>
+
+                                                    </td>
+
+
+                                                    <!-- DATE -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               text-gray-500"
+                                                    >
+
+                                                        <% if (
+                                                            record.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                record.createdAt
+                                                            ).toLocaleString() %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

@@ -1,0 +1,2409 @@
+<%
+    const customerSettings =
+        typeof settings !== "undefined" &&
+        settings
+            ? settings
+            : null;
+
+    const savedLanguage =
+        customerSettings &&
+        customerSettings.language
+            ? customerSettings.language
+            : "en";
+
+    const savedCurrency =
+        customerSettings &&
+        customerSettings.displayCurrency
+            ? customerSettings.displayCurrency
+            : "";
+
+    const savedTimezone =
+        customerSettings &&
+        customerSettings.timezone
+            ? customerSettings.timezone
+            : "";
+
+    const transactionPinConfigured =
+        typeof hasTransactionPin !== "undefined"
+            ? hasTransactionPin
+            : false;
+
+    const savedMessage =
+        typeof saved !== "undefined"
+            ? saved
+            : "";
+
+    const errorCode =
+        typeof error !== "undefined"
+            ? error
+            : "";
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+
+            activeSection:
+                <%- JSON.stringify(
+                    typeof activeSection !== 'undefined' &&
+                    activeSection
+                        ? activeSection
+                        : 'preferences'
+                ) %>,
+
+            compactMode:
+                <%= customerSettings &&
+                    customerSettings.compactMode === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            emailNotifications:
+                <%= customerSettings &&
+                    customerSettings.emailNotifications === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            accountNotifications:
+                <%= customerSettings &&
+                    customerSettings.accountNotifications === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            transactionNotifications:
+                <%= customerSettings &&
+                    customerSettings.transactionNotifications === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            securityNotifications:
+                <%= customerSettings &&
+                    customerSettings.securityNotifications === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            announcementNotifications:
+                <%= customerSettings &&
+                    customerSettings.announcementNotifications === true
+                        ? "true"
+                        : "false"
+                %>,
+
+            showCurrentPassword: false,
+            showNewPassword: false,
+            showConfirmPassword: false,
+
+            showAccountPassword: false,
+            showCurrentPin: false,
+            showNewPin: false,
+            showConfirmPin: false
+        }"
+        class="dashboard-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+                        <!-- =================================
+                             HEADER
+                        ================================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Settings
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Manage your preferences,
+                                    notifications and security settings.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/dashboard/profile"
+                                class="inline-flex
+                                       items-center
+                                       justify-center
+                                       px-4 py-2.5
+                                       border
+                                       border-gray-200
+                                       bg-white
+                                       text-gray-700
+                                       text-sm
+                                       font-medium
+                                       rounded-lg
+                                       hover:bg-gray-50"
+                            >
+
+                                <i
+                                    data-lucide="user"
+                                    class="h-4 w-4 mr-2"
+                                ></i>
+
+                                View Profile
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- =================================
+                             SUCCESS MESSAGES
+                        ================================== -->
+
+                        <% if (
+                            savedMessage ===
+                            "preferences"
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-xl"
+                            >
+
+                                <p
+                                    class="text-sm
+                                           text-green-800"
+                                >
+                                    Preferences updated successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            savedMessage ===
+                            "notifications"
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-xl"
+                            >
+
+                                <p
+                                    class="text-sm
+                                           text-green-800"
+                                >
+                                    Notification preferences updated successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            savedMessage ===
+                            "password"
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-xl"
+                            >
+
+                                <p
+                                    class="text-sm
+                                           text-green-800"
+                                >
+                                    Password updated successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            savedMessage ===
+                            "pin"
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-xl"
+                            >
+
+                                <p
+                                    class="text-sm
+                                           text-green-800"
+                                >
+                                    Transaction PIN updated successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- =================================
+                             ERROR MESSAGES
+                        ================================== -->
+
+                        <% if (errorCode) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3
+                                               mt-0.5"
+                                    ></i>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-red-800"
+                                    >
+
+                                        <% if (
+                                            errorCode ===
+                                            "password-fields"
+                                        ) { %>
+                                            Complete all password fields.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "password-match"
+                                        ) { %>
+                                            The new passwords do not match.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "password-length"
+                                        ) { %>
+                                            Your new password must contain at least 8 characters.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "password-same"
+                                        ) { %>
+                                            Choose a new password that is different from your current password.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "password-current"
+                                        ) { %>
+                                            Your current password is incorrect.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "password-account"
+                                        ) { %>
+                                            Your password information could not be loaded.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-password"
+                                        ) { %>
+                                            Enter your account password before changing your transaction PIN.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-password-invalid"
+                                        ) { %>
+                                            Your account password is incorrect.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-format"
+                                        ) { %>
+                                            Your transaction PIN must contain exactly 4 digits.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-match"
+                                        ) { %>
+                                            The new transaction PINs do not match.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-current"
+                                        ) { %>
+                                            Your current transaction PIN is incorrect.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-same"
+                                        ) { %>
+                                            Choose a transaction PIN that is different from your current PIN.
+
+                                        <% } else if (
+                                            errorCode ===
+                                            "pin-account"
+                                        ) { %>
+                                            Your account security information could not be loaded.
+
+                                        <% } else { %>
+                                            The requested settings change could not be completed.
+                                        <% } %>
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- =================================
+                             SETTINGS LAYOUT
+                        ================================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   lg:grid-cols-4
+                                   gap-6"
+                        >
+
+                            <!-- =================================
+                                 SETTINGS NAVIGATION
+                            ================================== -->
+
+                            <aside class="lg:col-span-1">
+
+                                <div
+                                    class="dashboard-card
+                                           p-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            activeSection =
+                                                'preferences'
+                                        "
+                                        :class="
+                                            activeSection ===
+                                                'preferences'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-600 hover:bg-gray-50'
+                                        "
+                                        class="w-full
+                                               flex
+                                               items-center
+                                               px-4 py-3
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               text-left"
+                                    >
+
+                                        <i
+                                            data-lucide="sliders-horizontal"
+                                            class="h-4 w-4 mr-3"
+                                        ></i>
+
+                                        Preferences
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            activeSection =
+                                                'notifications'
+                                        "
+                                        :class="
+                                            activeSection ===
+                                                'notifications'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-600 hover:bg-gray-50'
+                                        "
+                                        class="w-full
+                                               flex
+                                               items-center
+                                               px-4 py-3
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               text-left"
+                                    >
+
+                                        <i
+                                            data-lucide="bell"
+                                            class="h-4 w-4 mr-3"
+                                        ></i>
+
+                                        Notifications
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            activeSection =
+                                                'security'
+                                        "
+                                        :class="
+                                            activeSection ===
+                                                'security'
+                                                ? 'bg-primary-50 text-primary-700'
+                                                : 'text-gray-600 hover:bg-gray-50'
+                                        "
+                                        class="w-full
+                                               flex
+                                               items-center
+                                               px-4 py-3
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               text-left"
+                                    >
+
+                                        <i
+                                            data-lucide="shield-check"
+                                            class="h-4 w-4 mr-3"
+                                        ></i>
+
+                                        Security
+
+                                    </button>
+
+
+                                    <div
+                                        class="my-2
+                                               border-t
+                                               border-gray-100"
+                                    ></div>
+
+
+                                    <a
+                                        href="/dashboard/kyc"
+                                        class="w-full
+                                               flex
+                                               items-center
+                                               px-4 py-3
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               text-gray-600
+                                               hover:bg-gray-50"
+                                    >
+
+                                        <i
+                                            data-lucide="badge-check"
+                                            class="h-4 w-4 mr-3"
+                                        ></i>
+
+                                        Verification
+
+                                    </a>
+
+
+                                    <a
+                                        href="/dashboard/support"
+                                        class="w-full
+                                               flex
+                                               items-center
+                                               px-4 py-3
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               text-gray-600
+                                               hover:bg-gray-50"
+                                    >
+
+                                        <i
+                                            data-lucide="help-circle"
+                                            class="h-4 w-4 mr-3"
+                                        ></i>
+
+                                        Support
+
+                                    </a>
+
+                                </div>
+
+                            </aside>
+
+
+                            <!-- =================================
+                                 SETTINGS CONTENT
+                            ================================== -->
+
+                            <div class="lg:col-span-3">
+
+
+                                <!-- =================================
+                                     PREFERENCES
+                                ================================== -->
+
+                                <section
+                                    x-show="
+                                        activeSection ===
+                                            'preferences'
+                                    "
+                                >
+
+                                    <section class="dashboard-card">
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-lg
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    Account Preferences
+                                                </h2>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Customize how your
+                                                    dashboard is displayed.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <form
+                                            action="/dashboard/settings/preferences"
+                                            method="POST"
+                                            class="p-6 space-y-6"
+                                        >
+
+                                            <!-- Language -->
+
+                                            <div>
+
+                                                <label
+                                                    for="language"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Language
+                                                </label>
+
+
+                                                <select
+                                                    id="language"
+                                                    name="language"
+                                                    class="dashboard-form-input"
+                                                    required
+                                                >
+
+                                                    <option
+                                                        value="en"
+                                                        <%= savedLanguage === "en"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        English
+                                                    </option>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <!-- Currency -->
+
+                                            <div>
+
+                                                <label
+                                                    for="displayCurrency"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Display Currency
+                                                </label>
+
+
+                                                <select
+                                                    id="displayCurrency"
+                                                    name="displayCurrency"
+                                                    class="dashboard-form-input"
+                                                >
+
+                                                    <option value="">
+                                                        Use account currency
+                                                    </option>
+
+
+                                                    <% [
+                                                        "USD",
+                                                        "GBP",
+                                                        "EUR"
+                                                    ].forEach(
+                                                        function(currency) {
+                                                    %>
+
+                                                        <option
+                                                            value="<%= currency %>"
+                                                            <%= savedCurrency === currency
+                                                                ? "selected"
+                                                                : ""
+                                                            %>
+                                                        >
+                                                            <%= currency %>
+                                                        </option>
+
+                                                    <% }); %>
+
+                                                </select>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-2"
+                                                >
+                                                    This affects display
+                                                    preferences only. It does
+                                                    not change the currency
+                                                    assigned to your account.
+                                                </p>
+
+                                            </div>
+
+
+                                            <!-- Timezone -->
+
+                                            <div>
+
+                                                <label
+                                                    for="timezone"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Timezone
+                                                </label>
+
+
+                                                <input
+                                                    id="timezone"
+                                                    type="text"
+                                                    name="timezone"
+                                                    value="<%= savedTimezone %>"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Example: Africa/Lagos"
+                                                >
+
+                                            </div>
+
+
+                                            <!-- Compact Mode -->
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       justify-between
+                                                       gap-5
+                                                       p-4
+                                                       rounded-lg
+                                                       bg-gray-50"
+                                            >
+
+                                                <div>
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-medium
+                                                               text-gray-800"
+                                                    >
+                                                        Compact Dashboard
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-1"
+                                                    >
+                                                        Use reduced spacing
+                                                        in dashboard panels.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <input
+                                                        type="hidden"
+                                                        name="compactMode"
+                                                        :value="
+                                                            compactMode
+                                                                ? 'true'
+                                                                : 'false'
+                                                        "
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            compactMode =
+                                                                !compactMode
+                                                        "
+                                                        class="settings-toggle"
+                                                        :class="
+                                                            compactMode
+                                                                ? 'bg-primary-600'
+                                                                : 'bg-gray-300'
+                                                        "
+                                                        aria-label="Toggle compact dashboard"
+                                                    >
+
+                                                        <span
+                                                            :class="
+                                                                compactMode
+                                                                    ? 'translate-x-6'
+                                                                    : 'translate-x-1'
+                                                            "
+                                                        ></span>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div class="flex justify-end">
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           px-5 py-2.5
+                                                           bg-primary-600
+                                                           hover:bg-primary-700
+                                                           text-white
+                                                           font-medium
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="save"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Save Preferences
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </section>
+
+                                </section>
+                                <!-- =================================
+                                     NOTIFICATION PREFERENCES
+                                ================================== -->
+
+                                <section
+                                    x-show="
+                                        activeSection ===
+                                            'notifications'
+                                    "
+                                    x-cloak
+                                >
+
+                                    <section class="dashboard-card">
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-lg
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    Notification Preferences
+                                                </h2>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Choose which types of
+                                                    account notifications
+                                                    you want to receive.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <form
+                                            action="/dashboard/settings/notifications"
+                                            method="POST"
+                                        >
+
+                                            <div
+                                                class="divide-y
+                                                       divide-gray-100"
+                                            >
+
+                                                <!-- Email -->
+
+                                                <div
+                                                    class="p-6
+                                                           flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-5"
+                                                >
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            Email Notifications
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Receive account
+                                                            updates by email.
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="emailNotifications"
+                                                            :value="
+                                                                emailNotifications
+                                                                    ? 'true'
+                                                                    : 'false'
+                                                            "
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                emailNotifications =
+                                                                    !emailNotifications
+                                                            "
+                                                            class="settings-toggle"
+                                                            :class="
+                                                                emailNotifications
+                                                                    ? 'bg-primary-600'
+                                                                    : 'bg-gray-300'
+                                                            "
+                                                            aria-label="Toggle email notifications"
+                                                        >
+
+                                                            <span
+                                                                :class="
+                                                                    emailNotifications
+                                                                        ? 'translate-x-6'
+                                                                        : 'translate-x-1'
+                                                                "
+                                                            ></span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Account -->
+
+                                                <div
+                                                    class="p-6
+                                                           flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-5"
+                                                >
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            Account Updates
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Receive account
+                                                            and profile updates.
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="accountNotifications"
+                                                            :value="
+                                                                accountNotifications
+                                                                    ? 'true'
+                                                                    : 'false'
+                                                            "
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                accountNotifications =
+                                                                    !accountNotifications
+                                                            "
+                                                            class="settings-toggle"
+                                                            :class="
+                                                                accountNotifications
+                                                                    ? 'bg-primary-600'
+                                                                    : 'bg-gray-300'
+                                                            "
+                                                            aria-label="Toggle account notifications"
+                                                        >
+
+                                                            <span
+                                                                :class="
+                                                                    accountNotifications
+                                                                        ? 'translate-x-6'
+                                                                        : 'translate-x-1'
+                                                                "
+                                                            ></span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Transactions -->
+
+                                                <div
+                                                    class="p-6
+                                                           flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-5"
+                                                >
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            Transaction Updates
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Receive deposit,
+                                                            transaction and
+                                                            transfer updates.
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="transactionNotifications"
+                                                            :value="
+                                                                transactionNotifications
+                                                                    ? 'true'
+                                                                    : 'false'
+                                                            "
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                transactionNotifications =
+                                                                    !transactionNotifications
+                                                            "
+                                                            class="settings-toggle"
+                                                            :class="
+                                                                transactionNotifications
+                                                                    ? 'bg-primary-600'
+                                                                    : 'bg-gray-300'
+                                                            "
+                                                            aria-label="Toggle transaction notifications"
+                                                        >
+
+                                                            <span
+                                                                :class="
+                                                                    transactionNotifications
+                                                                        ? 'translate-x-6'
+                                                                        : 'translate-x-1'
+                                                                "
+                                                            ></span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Security -->
+
+                                                <div
+                                                    class="p-6
+                                                           flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-5"
+                                                >
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            Security Alerts
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Receive sign-in
+                                                            and security-related
+                                                            account alerts.
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="securityNotifications"
+                                                            :value="
+                                                                securityNotifications
+                                                                    ? 'true'
+                                                                    : 'false'
+                                                            "
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                securityNotifications =
+                                                                    !securityNotifications
+                                                            "
+                                                            class="settings-toggle"
+                                                            :class="
+                                                                securityNotifications
+                                                                    ? 'bg-primary-600'
+                                                                    : 'bg-gray-300'
+                                                            "
+                                                            aria-label="Toggle security notifications"
+                                                        >
+
+                                                            <span
+                                                                :class="
+                                                                    securityNotifications
+                                                                        ? 'translate-x-6'
+                                                                        : 'translate-x-1'
+                                                                "
+                                                            ></span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- Announcements -->
+
+                                                <div
+                                                    class="p-6
+                                                           flex
+                                                           items-center
+                                                           justify-between
+                                                           gap-5"
+                                                >
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-800"
+                                                        >
+                                                            General Announcements
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Receive general
+                                                            messages and
+                                                            announcements.
+                                                        </p>
+
+                                                    </div>
+
+
+                                                    <div>
+
+                                                        <input
+                                                            type="hidden"
+                                                            name="announcementNotifications"
+                                                            :value="
+                                                                announcementNotifications
+                                                                    ? 'true'
+                                                                    : 'false'
+                                                            "
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                announcementNotifications =
+                                                                    !announcementNotifications
+                                                            "
+                                                            class="settings-toggle"
+                                                            :class="
+                                                                announcementNotifications
+                                                                    ? 'bg-primary-600'
+                                                                    : 'bg-gray-300'
+                                                            "
+                                                            aria-label="Toggle announcement notifications"
+                                                        >
+
+                                                            <span
+                                                                :class="
+                                                                    announcementNotifications
+                                                                        ? 'translate-x-6'
+                                                                        : 'translate-x-1'
+                                                                "
+                                                            ></span>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div
+                                                class="px-6 py-5
+                                                       border-t
+                                                       border-gray-100
+                                                       flex
+                                                       justify-end"
+                                            >
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           px-5 py-2.5
+                                                           bg-primary-600
+                                                           hover:bg-primary-700
+                                                           text-white
+                                                           font-medium
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="save"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Save Notification Settings
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </section>
+
+                                </section>
+                                <!-- =================================
+                                     SECURITY
+                                ================================== -->
+
+                                <section
+                                    x-show="
+                                        activeSection ===
+                                            'security'
+                                    "
+                                    x-cloak
+                                >
+
+                                    <!-- =================================
+                                         CHANGE PASSWORD
+                                    ================================== -->
+
+                                    <section class="dashboard-card">
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-lg
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    Change Password
+                                                </h2>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Update the password
+                                                    used to sign in to
+                                                    your account.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <form
+                                            action="/dashboard/settings/password"
+                                            method="POST"
+                                            class="p-6"
+                                        >
+
+                                            <!-- Current Password -->
+
+                                            <div>
+
+                                                <label
+                                                    for="currentPassword"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Current Password
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="currentPassword"
+                                                        :type="
+                                                            showCurrentPassword
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="currentPassword"
+                                                        autocomplete="current-password"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showCurrentPassword =
+                                                                !showCurrentPassword
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle current password visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showCurrentPassword
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showCurrentPassword
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- New Password -->
+
+                                            <div class="mt-5">
+
+                                                <label
+                                                    for="newPassword"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    New Password
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="newPassword"
+                                                        :type="
+                                                            showNewPassword
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="newPassword"
+                                                        autocomplete="new-password"
+                                                        minlength="8"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showNewPassword =
+                                                                !showNewPassword
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle new password visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showNewPassword
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showNewPassword
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Confirm Password -->
+
+                                            <div class="mt-5">
+
+                                                <label
+                                                    for="confirmPassword"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Confirm New Password
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="confirmPassword"
+                                                        :type="
+                                                            showConfirmPassword
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="confirmPassword"
+                                                        autocomplete="new-password"
+                                                        minlength="8"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showConfirmPassword =
+                                                                !showConfirmPassword
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle confirmation password visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showConfirmPassword
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showConfirmPassword
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Password Security -->
+
+                                            <div
+                                                class="mt-5
+                                                       p-4
+                                                       rounded-lg
+                                                       bg-gray-50"
+                                            >
+
+                                                <div class="flex items-start">
+
+                                                    <i
+                                                        data-lucide="shield-check"
+                                                        class="h-5 w-5
+                                                               text-gray-500
+                                                               mr-3
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-700"
+                                                        >
+                                                            Password Security
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            Use at least
+                                                            8 characters.
+                                                            Your new password
+                                                            must be different
+                                                            from your current
+                                                            password.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div
+                                                class="flex
+                                                       justify-end
+                                                       mt-6"
+                                            >
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           px-5 py-2.5
+                                                           bg-primary-600
+                                                           hover:bg-primary-700
+                                                           text-white
+                                                           font-medium
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="key-round"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    Update Password
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </section>
+
+
+                                    <!-- =================================
+                                         TRANSACTION PIN
+                                    ================================== -->
+
+                                    <section
+                                        class="dashboard-card
+                                               mt-6"
+                                    >
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-lg
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    Transaction PIN
+                                                </h2>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    <%= transactionPinConfigured
+                                                        ? "Change the PIN used to authorize transactions."
+                                                        : "Set the PIN used to authorize transactions."
+                                                    %>
+                                                </p>
+
+                                            </div>
+
+
+                                            <span
+                                                class="inline-flex
+                                                       px-2.5 py-1
+                                                       rounded-full
+                                                       text-xs
+                                                       font-medium
+                                                       <%= transactionPinConfigured
+                                                           ? "bg-green-100 text-green-700"
+                                                           : "bg-yellow-100 text-yellow-700"
+                                                       %>"
+                                            >
+                                                <%= transactionPinConfigured
+                                                    ? "Configured"
+                                                    : "Not Set"
+                                                %>
+                                            </span>
+
+                                        </div>
+
+
+                                        <form
+                                            action="/dashboard/settings/transaction-pin"
+                                            method="POST"
+                                            class="p-6"
+                                        >
+
+                                            <!-- Account Password -->
+
+                                            <div>
+
+                                                <label
+                                                    for="pinAccountPassword"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Account Password
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="pinAccountPassword"
+                                                        :type="
+                                                            showAccountPassword
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="currentPassword"
+                                                        autocomplete="current-password"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showAccountPassword =
+                                                                !showAccountPassword
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle account password visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showAccountPassword
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showAccountPassword
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Your account password
+                                                    is required before the
+                                                    transaction PIN can be
+                                                    changed.
+                                                </p>
+
+                                            </div>
+
+
+                                            <!-- Current PIN -->
+
+                                            <% if (
+                                                transactionPinConfigured
+                                            ) { %>
+
+                                                <div class="mt-5">
+
+                                                    <label
+                                                        for="currentPin"
+                                                        class="dashboard-form-label"
+                                                    >
+                                                        Current PIN
+                                                    </label>
+
+
+                                                    <div class="relative">
+
+                                                        <input
+                                                            id="currentPin"
+                                                            :type="
+                                                                showCurrentPin
+                                                                    ? 'text'
+                                                                    : 'password'
+                                                            "
+                                                            name="currentPin"
+                                                            inputmode="numeric"
+                                                            pattern="\d{4}"
+                                                            minlength="4"
+                                                            maxlength="4"
+                                                            autocomplete="off"
+                                                            class="dashboard-form-input
+                                                                   pr-12"
+                                                            required
+                                                        >
+
+
+                                                        <button
+                                                            type="button"
+                                                            @click="
+                                                                showCurrentPin =
+                                                                    !showCurrentPin
+                                                            "
+                                                            class="absolute
+                                                                   right-3
+                                                                   top-1/2
+                                                                   -translate-y-1/2
+                                                                   text-gray-400
+                                                                   hover:text-gray-600"
+                                                            aria-label="Toggle current PIN visibility"
+                                                        >
+
+                                                            <i
+                                                                x-show="
+                                                                    !showCurrentPin
+                                                                "
+                                                                data-lucide="eye"
+                                                                class="h-5 w-5"
+                                                            ></i>
+
+
+                                                            <i
+                                                                x-show="
+                                                                    showCurrentPin
+                                                                "
+                                                                x-cloak
+                                                                data-lucide="eye-off"
+                                                                class="h-5 w-5"
+                                                            ></i>
+
+                                                        </button>
+
+                                                    </div>
+
+                                                </div>
+
+                                            <% } %>
+                                            <!-- New PIN -->
+
+                                            <div class="mt-5">
+
+                                                <label
+                                                    for="newPin"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    New 4-Digit PIN
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="newPin"
+                                                        :type="
+                                                            showNewPin
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="newPin"
+                                                        inputmode="numeric"
+                                                        pattern="\d{4}"
+                                                        minlength="4"
+                                                        maxlength="4"
+                                                        autocomplete="off"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showNewPin =
+                                                                !showNewPin
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle new PIN visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showNewPin
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showNewPin
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- Confirm PIN -->
+
+                                            <div class="mt-5">
+
+                                                <label
+                                                    for="confirmPin"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Confirm New PIN
+                                                </label>
+
+
+                                                <div class="relative">
+
+                                                    <input
+                                                        id="confirmPin"
+                                                        :type="
+                                                            showConfirmPin
+                                                                ? 'text'
+                                                                : 'password'
+                                                        "
+                                                        name="confirmPin"
+                                                        inputmode="numeric"
+                                                        pattern="\d{4}"
+                                                        minlength="4"
+                                                        maxlength="4"
+                                                        autocomplete="off"
+                                                        class="dashboard-form-input
+                                                               pr-12"
+                                                        required
+                                                    >
+
+
+                                                    <button
+                                                        type="button"
+                                                        @click="
+                                                            showConfirmPin =
+                                                                !showConfirmPin
+                                                        "
+                                                        class="absolute
+                                                               right-3
+                                                               top-1/2
+                                                               -translate-y-1/2
+                                                               text-gray-400
+                                                               hover:text-gray-600"
+                                                        aria-label="Toggle confirmation PIN visibility"
+                                                    >
+
+                                                        <i
+                                                            x-show="
+                                                                !showConfirmPin
+                                                            "
+                                                            data-lucide="eye"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+
+                                                        <i
+                                                            x-show="
+                                                                showConfirmPin
+                                                            "
+                                                            x-cloak
+                                                            data-lucide="eye-off"
+                                                            class="h-5 w-5"
+                                                        ></i>
+
+                                                    </button>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <!-- PIN Security -->
+
+                                            <div
+                                                class="mt-5
+                                                       p-4
+                                                       rounded-lg
+                                                       bg-gray-50"
+                                            >
+
+                                                <div class="flex items-start">
+
+                                                    <i
+                                                        data-lucide="lock-keyhole"
+                                                        class="h-5 w-5
+                                                               text-gray-500
+                                                               mr-3
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <div>
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-700"
+                                                        >
+                                                            PIN Security
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1"
+                                                        >
+                                                            The transaction PIN
+                                                            must contain exactly
+                                                            4 digits. The PIN is
+                                                            securely hashed before
+                                                            it is stored and is
+                                                            never displayed after
+                                                            it has been saved.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div
+                                                class="flex
+                                                       justify-end
+                                                       mt-6"
+                                            >
+
+                                                <button
+                                                    type="submit"
+                                                    class="inline-flex
+                                                           items-center
+                                                           px-5 py-2.5
+                                                           bg-primary-600
+                                                           hover:bg-primary-700
+                                                           text-white
+                                                           font-medium
+                                                           rounded-lg"
+                                                >
+
+                                                    <i
+                                                        data-lucide="key-round"
+                                                        class="h-4 w-4 mr-2"
+                                                    ></i>
+
+                                                    <%= transactionPinConfigured
+                                                        ? "Change PIN"
+                                                        : "Set PIN"
+                                                    %>
+
+                                                </button>
+
+                                            </div>
+
+                                        </form>
+
+                                    </section>
+
+
+                                    <!-- =================================
+                                         ACCOUNT SECURITY
+                                    ================================== -->
+
+                                    <section
+                                        class="dashboard-card
+                                               mt-6"
+                                    >
+
+                                        <div class="dashboard-card-header">
+
+                                            <div>
+
+                                                <h2
+                                                    class="text-lg
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    Account Security
+                                                </h2>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-500
+                                                           mt-1"
+                                                >
+                                                    Security information
+                                                    for your account.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <div
+                                                class="grid
+                                                       grid-cols-1
+                                                       md:grid-cols-2
+                                                       gap-4"
+                                            >
+
+                                                <!-- Password -->
+
+                                                <div
+                                                    class="p-4
+                                                           rounded-lg
+                                                           bg-gray-50"
+                                                >
+
+                                                    <div class="flex items-start">
+
+                                                        <div
+                                                            class="h-11 w-11
+                                                                   rounded-full
+                                                                   bg-green-100
+                                                                   flex
+                                                                   items-center
+                                                                   justify-center
+                                                                   mr-3
+                                                                   flex-shrink-0"
+                                                        >
+
+                                                            <i
+                                                                data-lucide="shield-check"
+                                                                class="h-5 w-5
+                                                                       text-green-600"
+                                                            ></i>
+
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-800"
+                                                            >
+                                                                Account Password
+                                                            </p>
+
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1"
+                                                            >
+                                                                Your password is
+                                                                required before
+                                                                transaction PIN
+                                                                changes can be
+                                                                made.
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+
+                                                <!-- PIN -->
+
+                                                <div
+                                                    class="p-4
+                                                           rounded-lg
+                                                           bg-gray-50"
+                                                >
+
+                                                    <div class="flex items-start">
+
+                                                        <div
+                                                            class="h-11 w-11
+                                                                   rounded-full
+                                                                   <%= transactionPinConfigured
+                                                                       ? "bg-green-100"
+                                                                       : "bg-yellow-100"
+                                                                   %>
+                                                                   flex
+                                                                   items-center
+                                                                   justify-center
+                                                                   mr-3
+                                                                   flex-shrink-0"
+                                                        >
+
+                                                            <i
+                                                                data-lucide="key-round"
+                                                                class="h-5 w-5
+                                                                       <%= transactionPinConfigured
+                                                                           ? "text-green-600"
+                                                                           : "text-yellow-600"
+                                                                       %>"
+                                                            ></i>
+
+                                                        </div>
+
+
+                                                        <div>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-800"
+                                                            >
+                                                                Transaction PIN
+                                                            </p>
+
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1"
+                                                            >
+                                                                <%= transactionPinConfigured
+                                                                    ? "A transaction PIN is configured for this account."
+                                                                    : "No transaction PIN has been configured yet."
+                                                                %>
+                                                            </p>
+
+                                                        </div>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+
+                                            <div
+                                                class="mt-5
+                                                       p-4
+                                                       bg-blue-50
+                                                       border
+                                                       border-blue-100
+                                                       rounded-lg"
+                                            >
+
+                                                <div class="flex items-start">
+
+                                                    <i
+                                                        data-lucide="info"
+                                                        class="h-5 w-5
+                                                               text-blue-600
+                                                               mr-3
+                                                               flex-shrink-0"
+                                                    ></i>
+
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-blue-800"
+                                                    >
+                                                        Passwords and transaction
+                                                        PINs are stored as secure
+                                                        hashes. The original values
+                                                        are not displayed from the
+                                                        dashboard after they are saved.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </section>
+
+                                </section>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

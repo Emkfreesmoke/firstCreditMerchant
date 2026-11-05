@@ -1,0 +1,369 @@
+<%
+    const transferRecord =
+        typeof transfer !== "undefined"
+            ? transfer
+            : null;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="flex h-screen overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+        <div class="flex flex-col flex-1 overflow-hidden">
+
+            <%- include("partials/topbar") %>
+            <%- include("partials/mobile-menu") %>
+            <%- include("partials/mobile-nav") %>
+
+
+            <main class="flex-1 overflow-y-auto pb-24 md:pb-8">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <a
+                            href="/dashboard/transfers"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500 mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Transfers
+                        </a>
+
+
+                        <% if (!transferRecord) { %>
+
+                            <div
+                                class="bg-white border border-gray-100
+                                       rounded-xl shadow-sm
+                                       py-16 px-6 text-center"
+                            >
+
+                                <i
+                                    data-lucide="send"
+                                    class="h-10 w-10 mx-auto
+                                           text-gray-400 mb-4"
+                                ></i>
+
+                                <h1
+                                    class="text-xl font-semibold
+                                           text-gray-900"
+                                >
+                                    Transfer unavailable
+                                </h1>
+
+                                <p class="text-sm text-gray-500 mt-2">
+                                    This transfer record is not available.
+                                </p>
+
+                            </div>
+
+                        <% } else { %>
+
+                            <!-- Header -->
+                            <div
+                                class="flex items-start
+                                       justify-between
+                                       gap-4 mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl font-bold
+                                               text-gray-900"
+                                    >
+                                        Transfer Details
+                                    </h1>
+
+                                    <% if (transferRecord.reference) { %>
+
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            <%= transferRecord.reference %>
+                                        </p>
+
+                                    <% } %>
+
+                                </div>
+
+
+                                <% if (transferRecord.status) { %>
+
+                                    <span
+                                        class="inline-flex
+                                               px-3 py-1.5
+                                               rounded-full
+                                               bg-gray-100
+                                               text-gray-700
+                                               text-xs font-medium"
+                                    >
+                                        <%= transferRecord.status %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <!-- Amount -->
+                            <% if (
+                                transferRecord.amount !== undefined &&
+                                transferRecord.amount !== null
+                            ) { %>
+
+                                <div
+                                    class="bg-gradient-to-br
+                                           from-primary-600
+                                           via-primary-700
+                                           to-primary-800
+                                           rounded-2xl
+                                           shadow-lg
+                                           text-white
+                                           p-6 mb-6"
+                                >
+
+                                    <p class="text-xs text-white/60">
+                                        Transfer Amount
+                                    </p>
+
+                                    <p
+                                        class="text-3xl font-bold mt-2"
+                                    >
+                                        <%= transferRecord.currency || "" %>
+
+                                        <%= Number(
+                                            transferRecord.amount
+                                        ).toLocaleString(
+                                            undefined,
+                                            {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }
+                                        ) %>
+                                    </p>
+
+                                </div>
+
+                            <% } %>
+
+
+                            <!-- Details -->
+                            <div
+                                class="grid grid-cols-1
+                                       lg:grid-cols-3 gap-6"
+                            >
+
+                                <div
+                                    class="bg-white
+                                           border border-gray-100
+                                           rounded-xl shadow-sm
+                                           lg:col-span-2"
+                                >
+
+                                    <div
+                                        class="px-6 py-4
+                                               border-b border-gray-200"
+                                    >
+                                        <h2
+                                            class="text-lg font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Recipient Information
+                                        </h2>
+                                    </div>
+
+
+                                    <div
+                                        class="p-6 grid grid-cols-1
+                                               sm:grid-cols-2 gap-6"
+                                    >
+
+                                        <% [
+                                            ["Recipient Name", transferRecord.recipientName],
+                                            ["Recipient Account", transferRecord.recipientAccount],
+                                            ["Recipient Bank", transferRecord.recipientBank],
+                                            ["Recipient Country", transferRecord.recipientCountry],
+                                            ["Routing Number", transferRecord.routingNumber],
+                                            ["SWIFT / BIC", transferRecord.swiftCode],
+                                            ["IBAN", transferRecord.iban],
+                                            ["Bank Country", transferRecord.bankCountry]
+                                        ].forEach(function(item) {
+                                            if (item[1]) {
+                                        %>
+
+                                            <div>
+                                                <p class="text-xs text-gray-400">
+                                                    <%= item[0] %>
+                                                </p>
+
+                                                <p
+                                                    class="text-sm font-medium
+                                                           text-gray-800 mt-1"
+                                                >
+                                                    <%= item[1] %>
+                                                </p>
+                                            </div>
+
+                                        <% } }); %>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="bg-white
+                                           border border-gray-100
+                                           rounded-xl shadow-sm"
+                                >
+
+                                    <div
+                                        class="px-6 py-4
+                                               border-b border-gray-200"
+                                    >
+                                        <h2
+                                            class="text-lg font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Transfer
+                                        </h2>
+                                    </div>
+
+
+                                    <div class="p-6 space-y-5">
+
+                                        <% [
+                                            ["Type", transferRecord.type],
+                                            ["Status", transferRecord.status],
+                                            ["Purpose", transferRecord.purpose],
+                                            ["Created", transferRecord.createdAt],
+                                            ["Updated", transferRecord.updatedAt]
+                                        ].forEach(function(item) {
+                                            if (item[1]) {
+                                        %>
+
+                                            <div>
+                                                <p class="text-xs text-gray-400">
+                                                    <%= item[0] %>
+                                                </p>
+
+                                                <p
+                                                    class="text-sm font-medium
+                                                           text-gray-800 mt-1"
+                                                >
+                                                    <%= item[1] %>
+                                                </p>
+                                            </div>
+
+                                        <% } }); %>
+
+
+                                        <% if (
+                                            transferRecord.fee !== undefined &&
+                                            transferRecord.fee !== null
+                                        ) { %>
+
+                                            <div>
+                                                <p class="text-xs text-gray-400">
+                                                    Fee
+                                                </p>
+
+                                                <p
+                                                    class="text-sm font-medium
+                                                           text-gray-800 mt-1"
+                                                >
+                                                    <%= transferRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        transferRecord.fee
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+                                                </p>
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (transferRecord.description) { %>
+
+                                <div
+                                    class="bg-white
+                                           border border-gray-100
+                                           rounded-xl shadow-sm
+                                           mt-6"
+                                >
+
+                                    <div
+                                        class="px-6 py-4
+                                               border-b border-gray-200"
+                                    >
+                                        <h2
+                                            class="text-lg font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Description
+                                        </h2>
+                                    </div>
+
+                                    <div class="p-6">
+                                        <p class="text-sm text-gray-600">
+                                            <%= transferRecord.description %>
+                                        </p>
+                                    </div>
+
+                                </div>
+
+                            <% } %>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

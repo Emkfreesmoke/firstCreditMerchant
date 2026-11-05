@@ -1,0 +1,463 @@
+<%
+    const mobileCustomer =
+        typeof customer !== "undefined"
+            ? customer
+            : null;
+
+    const mobileAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const mobileCustomerName =
+        mobileCustomer &&
+        mobileCustomer.fullName
+            ? mobileCustomer.fullName
+            : mobileCustomer &&
+              mobileCustomer.firstName
+            ? mobileCustomer.firstName
+            : "Customer";
+
+    const mobileAccountNumber =
+        mobileAccount &&
+        mobileAccount.accountNumber
+            ? mobileAccount.accountNumber
+            : "";
+%>
+
+
+<!-- =====================================================
+     CUSTOMER MOBILE NAVIGATION
+====================================================== -->
+
+<div class="md:hidden">
+
+    <!-- =================================================
+         FULL MOBILE MENU
+    ================================================== -->
+
+    <div
+        x-show="mobileMenuOpen"
+        x-cloak
+        @keydown.escape.window="mobileMenuOpen = false"
+    >
+
+        <!-- Overlay -->
+
+        <div
+            x-show="mobileMenuOpen"
+            x-transition.opacity
+            @click="mobileMenuOpen = false"
+            class="dashboard-mobile-overlay"
+            aria-hidden="true"
+        ></div>
+
+
+        <!-- Menu Dialog -->
+
+        <section
+            x-show="mobileMenuOpen"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 translate-y-6 scale-95"
+            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
+            x-transition:leave="transition ease-in duration-150"
+            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
+            x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+            class="dashboard-mobile-dialog"
+            aria-label="Customer dashboard menu"
+        >
+
+            <!-- Close -->
+
+            <button
+                type="button"
+                @click="mobileMenuOpen = false"
+                class="absolute
+                       top-4 right-4
+                       h-9 w-9
+                       inline-flex
+                       items-center
+                       justify-center
+                       rounded-lg
+                       text-gray-400
+                       hover:text-gray-700
+                       hover:bg-gray-100"
+                aria-label="Close dashboard menu"
+            >
+                <i
+                    data-lucide="x"
+                    class="h-5 w-5"
+                ></i>
+            </button>
+
+
+            <!-- Customer Account -->
+
+            <div
+                class="flex items-center
+                       pr-10 pb-4 mb-5
+                       border-b border-gray-100"
+            >
+
+                <div
+                    class="h-12 w-12
+                           rounded-full
+                           bg-gray-100
+                           flex items-center
+                           justify-center
+                           mr-3
+                           flex-shrink-0"
+                >
+                    <i
+                        data-lucide="user"
+                        class="h-5 w-5 text-gray-500"
+                    ></i>
+                </div>
+
+
+                <div class="min-w-0">
+
+                    <h2
+                        class="text-base
+                               font-semibold
+                               text-gray-900
+                               truncate"
+                    >
+                        <%= mobileCustomerName %>
+                    </h2>
+
+
+                    <% if (mobileAccountNumber) { %>
+
+                        <p
+                            class="text-sm
+                                   text-gray-500
+                                   mt-0.5"
+                        >
+                            Account:
+                            <%= mobileAccountNumber %>
+                        </p>
+
+                    <% } else { %>
+
+                        <p
+                            class="text-sm
+                                   text-gray-500
+                                   mt-0.5"
+                        >
+                            Customer account
+                        </p>
+
+                    <% } %>
+
+                </div>
+
+            </div>
+
+
+            <!-- Heading -->
+
+            <div class="text-center mb-5">
+
+                <h2
+                    class="text-lg
+                           font-bold
+                           text-gray-900"
+                >
+                    Banking Menu
+                </h2>
+
+                <p
+                    class="text-sm
+                           text-gray-500
+                           mt-1"
+                >
+                    Select an option to continue.
+                </p>
+
+            </div>
+
+
+            <!-- Menu Items -->
+
+            <div
+                class="grid
+                       grid-cols-3
+                       gap-3"
+            >
+
+                <a
+                    href="/dashboard"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="home"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Home
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/transactions"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="activity"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Activity
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/cards"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="credit-card"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Cards
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/local-transfer"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="send"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Transfer
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/international-transfer"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="globe"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Int'l Wire
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/deposits"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="download"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Deposits
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/investments"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Investments
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/loans"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="landmark"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Loans
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/settings"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="settings"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Settings
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/kyc"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="badge-check"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Verification
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/notifications"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="bell"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Notifications
+                    </span>
+                </a>
+
+
+                <a
+                    href="/dashboard/support"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="help-circle"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Support
+                    </span>
+                </a>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =================================================
+         FIXED BOTTOM NAVIGATION
+    ================================================== -->
+
+    <nav
+        class="dashboard-mobile-nav"
+        aria-label="Mobile dashboard navigation"
+    >
+
+        <div class="dashboard-mobile-nav-inner">
+
+            <!-- Home -->
+
+            <a
+                href="/dashboard"
+                class="dashboard-mobile-nav-link active"
+            >
+                <i data-lucide="home"></i>
+
+                <span>
+                    Home
+                </span>
+            </a>
+
+
+            <!-- Transactions -->
+
+            <a
+                href="/dashboard/transactions"
+                class="dashboard-mobile-nav-link"
+            >
+                <i data-lucide="activity"></i>
+
+                <span>
+                    Activity
+                </span>
+            </a>
+
+
+            <!-- Center Menu -->
+
+            <div
+                class="flex
+                       items-center
+                       justify-center"
+            >
+                <button
+                    type="button"
+                    @click="mobileMenuOpen = true"
+                    class="dashboard-mobile-menu-trigger"
+                    aria-label="Open banking menu"
+                >
+                    <i data-lucide="grid-2x2"></i>
+                </button>
+            </div>
+
+
+            <!-- Cards -->
+
+            <a
+                href="/dashboard/cards"
+                class="dashboard-mobile-nav-link"
+            >
+                <i data-lucide="credit-card"></i>
+
+                <span>
+                    Cards
+                </span>
+            </a>
+
+
+            <!-- Profile -->
+
+            <a
+                href="/dashboard/profile"
+                class="dashboard-mobile-nav-link"
+            >
+                <i data-lucide="user"></i>
+
+                <span>
+                    Profile
+                </span>
+            </a>
+
+        </div>
+
+    </nav>
+
+</div>

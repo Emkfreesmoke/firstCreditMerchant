@@ -1,0 +1,1036 @@
+<%
+  const settings =
+    typeof depositSettings !== "undefined" &&
+    depositSettings
+      ? depositSettings
+      : {};
+
+  const bitcoin =
+    settings.bitcoin || {};
+
+  const usdt =
+    settings.usdt || {};
+
+  const ethereum =
+    settings.ethereum || {};
+
+  const bankTransfer =
+    settings.bankTransfer || {};
+
+  const wireTransfer =
+    settings.wireTransfer || {};
+
+  const cashDeposit =
+    settings.cashDeposit || {};
+
+  const checkDeposit =
+    settings.check || {};
+
+  const other =
+    settings.other || {};
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+  <div
+    x-data="{
+      mobileMenuOpen: false,
+
+      bitcoinEnabled:
+        <%= bitcoin.enabled === true
+          ? "true"
+          : "false"
+        %>,
+
+      usdtEnabled:
+        <%= usdt.enabled === true
+          ? "true"
+          : "false"
+        %>,
+
+      ethereumEnabled:
+        <%= ethereum.enabled === true
+          ? "true"
+          : "false"
+        %>
+    }"
+    class="admin-app-shell
+           flex
+           h-screen
+           overflow-hidden"
+  >
+
+    <%- include("../partials/sidebar") %>
+
+
+    <div
+      class="admin-main-column
+             flex flex-col
+             flex-1
+             overflow-hidden"
+    >
+
+      <%- include("../partials/topbar") %>
+
+      <%- include("../partials/mobile-menu") %>
+
+
+      <main class="admin-main-content">
+
+        <div class="py-6">
+
+          <div
+            class="max-w-6xl
+                   mx-auto
+                   px-4
+                   sm:px-6
+                   lg:px-8"
+          >
+
+            <!-- Header -->
+
+            <div class="mb-6">
+
+              <h1
+                class="text-2xl
+                       font-bold
+                       text-gray-900"
+              >
+                Deposit Settings
+              </h1>
+
+
+              <p
+                class="text-sm
+                       text-gray-500
+                       mt-1"
+              >
+                Configure the deposit methods,
+                wallet addresses and instructions
+                shown to customers.
+              </p>
+
+            </div>
+
+
+            <!-- Success -->
+
+            <% if (
+              typeof saved !== "undefined" &&
+              saved
+            ) { %>
+
+              <div
+                class="mb-6
+                       px-4 py-3
+                       bg-green-50
+                       border
+                       border-green-200
+                       rounded-lg"
+              >
+
+                <div class="flex items-start">
+
+                  <i
+                    data-lucide="circle-check"
+                    class="h-5 w-5
+                           text-green-600
+                           mr-3 mt-0.5
+                           flex-shrink-0"
+                  ></i>
+
+
+                  <p
+                    class="text-sm
+                           text-green-800"
+                  >
+                    Deposit settings saved successfully.
+                  </p>
+
+                </div>
+
+              </div>
+
+            <% } %>
+
+
+            <!-- Error -->
+
+            <% if (
+              typeof error !== "undefined" &&
+              error
+            ) { %>
+
+              <div
+                class="mb-6
+                       px-4 py-3
+                       bg-red-50
+                       border
+                       border-red-200
+                       rounded-lg"
+              >
+
+                <div class="flex items-start">
+
+                  <i
+                    data-lucide="circle-alert"
+                    class="h-5 w-5
+                           text-red-600
+                           mr-3 mt-0.5
+                           flex-shrink-0"
+                  ></i>
+
+
+                  <p
+                    class="text-sm
+                           text-red-800"
+                  >
+                    <%= error %>
+                  </p>
+
+                </div>
+
+              </div>
+
+            <% } %>
+
+
+            <form
+              action="/admin/deposit-settings"
+              method="POST"
+              class="space-y-6"
+            >
+
+              <!-- =================================
+                   CRYPTOCURRENCY
+              ================================== -->
+
+              <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                  <div>
+
+                    <h3>
+                      Cryptocurrency Deposits
+                    </h3>
+
+                    <p
+                      class="text-xs
+                             text-gray-500
+                             mt-1"
+                    >
+                      Only public receiving addresses
+                      should be entered here.
+                    </p>
+
+                  </div>
+
+
+                  <i
+                    data-lucide="bitcoin"
+                    class="h-5 w-5
+                           text-amber-600"
+                  ></i>
+
+                </div>
+
+
+                <div class="p-6 space-y-8">
+
+                  <!-- Bitcoin -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-4"
+                    >
+
+                      <div>
+
+                        <h4
+                          class="text-sm
+                                 font-semibold
+                                 text-gray-900"
+                        >
+                          Bitcoin (BTC)
+                        </h4>
+
+                        <p
+                          class="text-xs
+                                 text-gray-500
+                                 mt-1"
+                        >
+                          Configure the Bitcoin receiving
+                          address displayed to customers.
+                        </p>
+
+                      </div>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="bitcoinEnabled"
+                          x-model="bitcoinEnabled"
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span
+                          class="text-sm
+                                 text-gray-700"
+                        >
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <div
+                      class="grid
+                             grid-cols-1
+                             lg:grid-cols-2
+                             gap-5"
+                    >
+
+                      <div>
+
+                        <label
+                          for="bitcoinWalletAddress"
+                          class="admin-label"
+                        >
+                          Wallet Address
+                        </label>
+
+                        <input
+                          id="bitcoinWalletAddress"
+                          name="bitcoinWalletAddress"
+                          type="text"
+                          value="<%= bitcoin.walletAddress || "" %>"
+                          :required="bitcoinEnabled"
+                          class="admin-input"
+                          placeholder="Enter Bitcoin wallet address"
+                        >
+
+                      </div>
+
+
+                      <div>
+
+                        <label
+                          for="bitcoinNetwork"
+                          class="admin-label"
+                        >
+                          Network
+                        </label>
+
+                        <input
+                          id="bitcoinNetwork"
+                          name="bitcoinNetwork"
+                          type="text"
+                          value="<%= bitcoin.network || "Bitcoin" %>"
+                          :required="bitcoinEnabled"
+                          class="admin-input"
+                          placeholder="Bitcoin"
+                        >
+
+                      </div>
+
+
+                      <div class="lg:col-span-2">
+
+                        <label
+                          for="bitcoinInstructions"
+                          class="admin-label"
+                        >
+                          Customer Instructions
+                        </label>
+
+                        <textarea
+                          id="bitcoinInstructions"
+                          name="bitcoinInstructions"
+                          class="admin-input"
+                          placeholder="Optional Bitcoin deposit instructions"
+                        ><%= bitcoin.instructions || "" %></textarea>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- USDT -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-4"
+                    >
+
+                      <div>
+
+                        <h4
+                          class="text-sm
+                                 font-semibold
+                                 text-gray-900"
+                        >
+                          USDT
+                        </h4>
+
+                        <p
+                          class="text-xs
+                                 text-gray-500
+                                 mt-1"
+                        >
+                          Enter the exact supported network,
+                          such as TRC20 or ERC20.
+                        </p>
+
+                      </div>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="usdtEnabled"
+                          x-model="usdtEnabled"
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span
+                          class="text-sm
+                                 text-gray-700"
+                        >
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <div
+                      class="grid
+                             grid-cols-1
+                             lg:grid-cols-2
+                             gap-5"
+                    >
+
+                      <div>
+
+                        <label
+                          for="usdtWalletAddress"
+                          class="admin-label"
+                        >
+                          Wallet Address
+                        </label>
+
+                        <input
+                          id="usdtWalletAddress"
+                          name="usdtWalletAddress"
+                          type="text"
+                          value="<%= usdt.walletAddress || "" %>"
+                          :required="usdtEnabled"
+                          class="admin-input"
+                          placeholder="Enter USDT wallet address"
+                        >
+
+                      </div>
+
+
+                      <div>
+
+                        <label
+                          for="usdtNetwork"
+                          class="admin-label"
+                        >
+                          Network
+                        </label>
+
+                        <input
+                          id="usdtNetwork"
+                          name="usdtNetwork"
+                          type="text"
+                          value="<%= usdt.network || "" %>"
+                          :required="usdtEnabled"
+                          class="admin-input"
+                          placeholder="Example: TRC20 or ERC20"
+                        >
+
+                      </div>
+
+
+                      <div class="lg:col-span-2">
+
+                        <label
+                          for="usdtInstructions"
+                          class="admin-label"
+                        >
+                          Customer Instructions
+                        </label>
+
+                        <textarea
+                          id="usdtInstructions"
+                          name="usdtInstructions"
+                          class="admin-input"
+                          placeholder="Optional USDT deposit instructions"
+                        ><%= usdt.instructions || "" %></textarea>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- Ethereum -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-4"
+                    >
+
+                      <div>
+
+                        <h4
+                          class="text-sm
+                                 font-semibold
+                                 text-gray-900"
+                        >
+                          Ethereum (ETH)
+                        </h4>
+
+                        <p
+                          class="text-xs
+                                 text-gray-500
+                                 mt-1"
+                        >
+                          Configure the Ethereum receiving
+                          address displayed to customers.
+                        </p>
+
+                      </div>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="ethereumEnabled"
+                          x-model="ethereumEnabled"
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span
+                          class="text-sm
+                                 text-gray-700"
+                        >
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <div
+                      class="grid
+                             grid-cols-1
+                             lg:grid-cols-2
+                             gap-5"
+                    >
+
+                      <div>
+
+                        <label
+                          for="ethereumWalletAddress"
+                          class="admin-label"
+                        >
+                          Wallet Address
+                        </label>
+
+                        <input
+                          id="ethereumWalletAddress"
+                          name="ethereumWalletAddress"
+                          type="text"
+                          value="<%= ethereum.walletAddress || "" %>"
+                          :required="ethereumEnabled"
+                          class="admin-input"
+                          placeholder="Enter Ethereum wallet address"
+                        >
+
+                      </div>
+
+
+                      <div>
+
+                        <label
+                          for="ethereumNetwork"
+                          class="admin-label"
+                        >
+                          Network
+                        </label>
+
+                        <input
+                          id="ethereumNetwork"
+                          name="ethereumNetwork"
+                          type="text"
+                          value="<%= ethereum.network || "Ethereum" %>"
+                          :required="ethereumEnabled"
+                          class="admin-input"
+                          placeholder="Ethereum"
+                        >
+
+                      </div>
+
+
+                      <div class="lg:col-span-2">
+
+                        <label
+                          for="ethereumInstructions"
+                          class="admin-label"
+                        >
+                          Customer Instructions
+                        </label>
+
+                        <textarea
+                          id="ethereumInstructions"
+                          name="ethereumInstructions"
+                          class="admin-input"
+                          placeholder="Optional Ethereum deposit instructions"
+                        ><%= ethereum.instructions || "" %></textarea>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <!-- =================================
+                   TRADITIONAL METHODS
+              ================================== -->
+
+              <section class="admin-panel">
+
+                <div class="admin-panel-header">
+
+                  <div>
+
+                    <h3>
+                      Traditional Deposit Methods
+                    </h3>
+
+                    <p
+                      class="text-xs
+                             text-gray-500
+                             mt-1"
+                    >
+                      Enable methods and provide the
+                      instructions customers should follow.
+                    </p>
+
+                  </div>
+
+
+                  <i
+                    data-lucide="landmark"
+                    class="h-5 w-5
+                           text-primary-700"
+                  ></i>
+
+                </div>
+
+
+                <div class="p-6 space-y-7">
+
+                  <!-- Bank Transfer -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-3"
+                    >
+
+                      <h4
+                        class="text-sm
+                               font-semibold
+                               text-gray-900"
+                      >
+                        Bank Transfer
+                      </h4>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="bankTransferEnabled"
+                          <%= bankTransfer.enabled ? "checked" : "" %>
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span class="text-sm text-gray-700">
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <textarea
+                      name="bankTransferInstructions"
+                      class="admin-input"
+                      placeholder="Enter bank-transfer instructions shown to customers"
+                    ><%= bankTransfer.instructions || "" %></textarea>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- Wire Transfer -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-3"
+                    >
+
+                      <h4
+                        class="text-sm
+                               font-semibold
+                               text-gray-900"
+                      >
+                        Wire Transfer
+                      </h4>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="wireTransferEnabled"
+                          <%= wireTransfer.enabled ? "checked" : "" %>
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span class="text-sm text-gray-700">
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <textarea
+                      name="wireTransferInstructions"
+                      class="admin-input"
+                      placeholder="Enter wire-transfer instructions shown to customers"
+                    ><%= wireTransfer.instructions || "" %></textarea>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- Cash Deposit -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-3"
+                    >
+
+                      <h4
+                        class="text-sm
+                               font-semibold
+                               text-gray-900"
+                      >
+                        Cash Deposit
+                      </h4>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="cashDepositEnabled"
+                          <%= cashDeposit.enabled ? "checked" : "" %>
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span class="text-sm text-gray-700">
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <textarea
+                      name="cashDepositInstructions"
+                      class="admin-input"
+                      placeholder="Enter cash-deposit instructions shown to customers"
+                    ><%= cashDeposit.instructions || "" %></textarea>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- Check -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-3"
+                    >
+
+                      <h4
+                        class="text-sm
+                               font-semibold
+                               text-gray-900"
+                      >
+                        Check
+                      </h4>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="checkEnabled"
+                          <%= checkDeposit.enabled ? "checked" : "" %>
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span class="text-sm text-gray-700">
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <textarea
+                      name="checkInstructions"
+                      class="admin-input"
+                      placeholder="Enter check-deposit instructions shown to customers"
+                    ><%= checkDeposit.instructions || "" %></textarea>
+
+                  </div>
+
+
+                  <div class="border-t border-gray-200"></div>
+
+
+                  <!-- Other -->
+
+                  <div>
+
+                    <div
+                      class="flex
+                             items-center
+                             justify-between
+                             gap-4
+                             mb-3"
+                    >
+
+                      <h4
+                        class="text-sm
+                               font-semibold
+                               text-gray-900"
+                      >
+                        Other
+                      </h4>
+
+
+                      <label
+                        class="inline-flex
+                               items-center
+                               gap-2"
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="otherEnabled"
+                          <%= other.enabled ? "checked" : "" %>
+                          class="rounded
+                                 border-gray-300
+                                 text-primary-600
+                                 focus:ring-primary-500"
+                        >
+
+                        <span class="text-sm text-gray-700">
+                          Enabled
+                        </span>
+
+                      </label>
+
+                    </div>
+
+
+                    <textarea
+                      name="otherInstructions"
+                      class="admin-input"
+                      placeholder="Enter any other deposit instructions"
+                    ><%= other.instructions || "" %></textarea>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <!-- Save -->
+
+              <div
+                class="flex
+                       justify-end"
+              >
+
+                <button
+                  type="submit"
+                  class="admin-primary-button"
+                >
+
+                  <i
+                    data-lucide="save"
+                    class="h-4 w-4"
+                  ></i>
+
+                  Save Deposit Settings
+
+                </button>
+
+              </div>
+
+            </form>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    </div>
+
+  </div>
+
+
+  <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

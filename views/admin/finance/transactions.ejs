@@ -1,0 +1,677 @@
+<%
+    const transactionRecords =
+        typeof transactions !== "undefined" &&
+        Array.isArray(transactions)
+            ? transactions
+            : [];
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            search: ''
+        }"
+        class="admin-app-shell"
+    >
+
+        <!-- =========================================
+             SIDEBAR
+        ========================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =========================================
+             MAIN ADMIN COLUMN
+        ========================================== -->
+
+        <div class="admin-main-column">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+
+            <!-- =====================================
+                 PAGE CONTENT
+            ====================================== -->
+
+            <main class="admin-main-content">
+
+                <div class="w-full py-6">
+
+                    <div
+                        class="w-full
+                               max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- ==========================
+                             PAGE HEADER
+                        =========================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Transactions
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Manage customer transactions.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/transactions/create"
+                                class="admin-primary-button
+                                       w-full
+                                       sm:w-auto"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Create Transaction
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- ==========================
+                             SEARCH
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="relative">
+
+                                <i
+                                    data-lucide="search"
+                                    class="absolute
+                                           left-3
+                                           top-1/2
+                                           -translate-y-1/2
+                                           h-4
+                                           w-4
+                                           text-gray-400"
+                                ></i>
+
+                                <input
+                                    type="search"
+                                    x-model="search"
+                                    class="admin-input pl-9"
+                                    placeholder="Search transactions..."
+                                >
+
+                            </div>
+
+                        </section>
+
+
+                        <!-- ==========================
+                             TRANSACTION RECORDS
+                        =========================== -->
+
+                        <section
+                            class="admin-panel
+                                   w-full
+                                   mb-8"
+                        >
+
+                            <div class="admin-panel-header">
+
+                                <h3>
+                                    Transaction Records
+                                </h3>
+
+                                <% if (
+                                    transactionRecords.length > 0
+                                ) { %>
+
+                                    <span
+                                        class="text-xs
+                                               text-gray-500"
+                                    >
+                                        <%= transactionRecords.length %>
+                                        record<%= transactionRecords.length === 1
+                                            ? ""
+                                            : "s"
+                                        %>
+                                    </span>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <% if (
+                                transactionRecords.length === 0
+                            ) { %>
+
+                                <!-- =====================
+                                     EMPTY STATE
+                                ====================== -->
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="activity"
+                                    ></i>
+
+                                    <p>
+                                        No transactions
+                                    </p>
+
+                                </div>
+
+                            <% } else { %>
+
+                                <!-- =====================
+                                     TABLE
+                                ====================== -->
+
+                                <div
+                                    class="w-full
+                                           overflow-x-auto"
+                                >
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Customer
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Reference
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Type
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Direction
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Amount
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Status
+                                                </th>
+
+                                                <th
+                                                    class="admin-table-heading"
+                                                >
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% transactionRecords.forEach(
+                                                function(transaction) {
+
+                                                    const customerName =
+                                                        transaction.customer
+                                                            ? (
+                                                                transaction.customer.fullName ||
+                                                                [
+                                                                    transaction.customer.firstName,
+                                                                    transaction.customer.middleName,
+                                                                    transaction.customer.lastName
+                                                                ]
+                                                                    .filter(Boolean)
+                                                                    .join(" ")
+                                                            )
+                                                            : "";
+
+                                                    const searchableText =
+                                                        [
+                                                            customerName,
+                                                            transaction.reference,
+                                                            transaction.type,
+                                                            transaction.direction,
+                                                            transaction.currency,
+                                                            transaction.status,
+                                                            transaction.description,
+                                                            transaction.counterparty
+                                                        ]
+                                                            .filter(Boolean)
+                                                            .join(" ")
+                                                            .toLowerCase();
+
+                                                    const transactionId =
+                                                        transaction.id ||
+                                                        transaction._id ||
+                                                        null;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        !search.trim() ||
+                                                        <%- JSON.stringify(searchableText) %>
+                                                            .includes(
+                                                                search
+                                                                    .trim()
+                                                                    .toLowerCase()
+                                                            )
+                                                    "
+                                                >
+
+                                                    <!-- =================
+                                                         CUSTOMER
+                                                    ================== -->
+
+                                                    <td
+                                                        class="px-4
+                                                               py-4"
+                                                    >
+
+                                                        <% if (
+                                                            transaction.customer
+                                                        ) { %>
+
+                                                            <div
+                                                                class="flex
+                                                                       items-center
+                                                                       min-w-0"
+                                                            >
+
+                                                                <div
+                                                                    class="h-9
+                                                                           w-9
+                                                                           rounded-full
+                                                                           bg-gray-100
+                                                                           flex
+                                                                           items-center
+                                                                           justify-center
+                                                                           mr-3
+                                                                           flex-shrink-0"
+                                                                >
+
+                                                                    <i
+                                                                        data-lucide="user"
+                                                                        class="h-4
+                                                                               w-4
+                                                                               text-gray-500"
+                                                                    ></i>
+
+                                                                </div>
+
+
+                                                                <div class="min-w-0">
+
+                                                                    <p
+                                                                        class="text-sm
+                                                                               font-medium
+                                                                               text-gray-900
+                                                                               whitespace-normal
+                                                                               break-words"
+                                                                    >
+                                                                        <%= customerName ||
+                                                                            "Customer"
+                                                                        %>
+                                                                    </p>
+
+
+                                                                    <% if (
+                                                                        transaction.customer.customerId
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-xs
+                                                                                   text-gray-500
+                                                                                   mt-1"
+                                                                        >
+                                                                            <%= transaction.customer.customerId %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         REFERENCE
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-medium
+                                                               text-gray-700"
+                                                    >
+                                                        <%= transaction.reference || "—" %>
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         TYPE
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= transaction.type || "—" %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         DIRECTION
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            transaction.direction ===
+                                                            "Incoming"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       gap-1.5
+                                                                       text-green-700"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="arrow-down-left"
+                                                                    class="h-3.5 w-3.5"
+                                                                ></i>
+
+                                                                Incoming
+
+                                                            </span>
+
+                                                        <% } else if (
+                                                            transaction.direction ===
+                                                            "Outgoing"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       gap-1.5
+                                                                       text-red-700"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="arrow-up-right"
+                                                                    class="h-3.5 w-3.5"
+                                                                ></i>
+
+                                                                Outgoing
+
+                                                            </span>
+
+                                                        <% } else { %>
+
+                                                            <%= transaction.direction || "—" %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         AMOUNT
+                                                    ================== -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+
+                                                        <% if (
+                                                            transaction.amount !== undefined &&
+                                                            transaction.amount !== null
+                                                        ) { %>
+
+                                                            <%= transaction.currency || "" %>
+
+                                                            <%= Number(
+                                                                transaction.amount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } else { %>
+
+                                                            —
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         STATUS
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            transaction.status ===
+                                                            "Completed"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-green-100
+                                                                       text-green-700"
+                                                            >
+                                                                Completed
+                                                            </span>
+
+                                                        <% } else if (
+                                                            transaction.status ===
+                                                            "Pending"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-yellow-100
+                                                                       text-yellow-700"
+                                                            >
+                                                                Pending
+                                                            </span>
+
+                                                        <% } else if (
+                                                            transaction.status ===
+                                                                "Failed" ||
+                                                            transaction.status ===
+                                                                "Rejected"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-red-100
+                                                                       text-red-700"
+                                                            >
+                                                                <%= transaction.status %>
+                                                            </span>
+
+                                                        <% } else if (
+                                                            transaction.status ===
+                                                                "Cancelled" ||
+                                                            transaction.status ===
+                                                                "Reversed"
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-gray-100
+                                                                       text-gray-700"
+                                                            >
+                                                                <%= transaction.status %>
+                                                            </span>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       bg-gray-100
+                                                                       text-gray-700"
+                                                            >
+                                                                <%= transaction.status ||
+                                                                    "Unknown"
+                                                                %>
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- =================
+                                                         ACTION
+                                                    ================== -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            transactionId
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/transactions/<%= transactionId %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-800"
+                                                            >
+
+                                                                Details
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4
+                                                                           w-4
+                                                                           ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

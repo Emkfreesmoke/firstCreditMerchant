@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <%- include("partials/head") %>
+</head>
+
+<body class="font-sans bg-gray-100 text-gray-900">
+
+  <%- include("partials/loader") %>
+
+
+  <main
+    class="min-h-screen flex items-center justify-center px-4 py-12"
+  >
+
+    <div class="w-full max-w-md">
+
+
+      <!-- Logo -->
+      <div class="text-center mb-8">
+
+        <a href="/">
+
+          <img
+            src="/images/logo.png"
+            alt="First Credit Merchant"
+            class="h-14 w-auto mx-auto"
+          >
+
+        </a>
+
+      </div>
+
+
+      <!-- OTP Card -->
+      <div
+        class="bg-white rounded-2xl
+               shadow-xl
+               border border-gray-100
+               overflow-hidden"
+      >
+
+        <!-- Header -->
+        <div
+          class="bg-gradient-to-br
+                 from-primary-600
+                 to-primary-800
+                 px-8 py-8
+                 text-white"
+        >
+
+          <div
+            class="h-14 w-14
+                   rounded-xl
+                   bg-white/10
+                   flex items-center
+                   justify-center
+                   mb-5"
+          >
+
+            <i
+              data-lucide="mail-check"
+              class="h-7 w-7"
+            ></i>
+
+          </div>
+
+
+          <h1 class="text-2xl font-bold">
+            Verify Your Email
+          </h1>
+
+
+          <p
+            class="text-white/70
+                   text-sm mt-2"
+          >
+            Enter the 6-digit verification code
+            sent to your email address.
+          </p>
+
+        </div>
+
+
+        <!-- Form -->
+        <div class="px-8 py-8">
+
+
+          <!-- Error Message -->
+
+          <% if (
+            typeof error !== "undefined" &&
+            error
+          ) { %>
+
+            <div
+              class="mb-5
+                     px-4 py-3
+                     bg-red-50
+                     border border-red-200
+                     rounded-lg"
+            >
+
+              <p class="text-sm text-red-700">
+                <%= error %>
+              </p>
+
+            </div>
+
+          <% } %>
+
+
+          <!-- Resend Success -->
+
+          <% if (
+            typeof resent !== "undefined" &&
+            resent
+          ) { %>
+
+            <div
+              class="mb-5
+                     px-4 py-3
+                     bg-green-50
+                     border border-green-200
+                     rounded-lg"
+            >
+
+              <p class="text-sm text-green-700">
+                A new verification code has been sent.
+              </p>
+
+            </div>
+
+          <% } %>
+
+
+          <!-- OTP Verification Form -->
+
+          <form
+            action="/verify-otp"
+            method="POST"
+            id="otp-verification-form"
+          >
+
+            <div class="mb-6">
+
+              <label
+                for="verification-code"
+                class="block
+                       text-sm
+                       font-medium
+                       text-gray-700
+                       mb-2"
+              >
+                Verification Code
+              </label>
+
+
+              <input
+                id="verification-code"
+                type="text"
+                name="code"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                minlength="6"
+                autocomplete="one-time-code"
+                placeholder="000000"
+                class="w-full
+                       px-4 py-4
+                       text-center
+                       text-2xl
+                       font-semibold
+                       tracking-[0.45em]
+                       border
+                       border-gray-300
+                       rounded-lg
+                       focus:outline-none
+                       focus:ring-2
+                       focus:ring-primary-500
+                       focus:border-primary-500"
+                required
+              >
+
+            </div>
+
+
+            <button
+              type="submit"
+              class="w-full
+                     py-3 px-4
+                     bg-primary-600
+                     hover:bg-primary-700
+                     text-white
+                     font-medium
+                     rounded-lg
+                     shadow
+                     transition
+                     duration-150
+                     flex
+                     items-center
+                     justify-center"
+            >
+
+              <i
+                data-lucide="badge-check"
+                class="h-5 w-5 mr-2"
+              ></i>
+
+              Verify Email
+
+            </button>
+
+          </form>
+
+
+          <!-- Resend -->
+
+          <div
+            class="border-t
+                   border-gray-100
+                   mt-7 pt-6"
+          >
+
+            <p
+              class="text-sm
+                     text-center
+                     text-gray-500
+                     mb-3"
+            >
+              Didn't receive the code?
+            </p>
+
+
+            <form
+              action="/resend-otp"
+              method="POST"
+            >
+
+              <button
+                type="submit"
+                class="w-full
+                       py-2.5 px-4
+                       bg-gray-100
+                       hover:bg-gray-200
+                       text-gray-700
+                       text-sm
+                       font-medium
+                       rounded-lg
+                       transition"
+              >
+
+                <i
+                  data-lucide="refresh-cw"
+                  class="inline-block
+                         h-4 w-4
+                         mr-2"
+                ></i>
+
+                Resend Verification Code
+
+              </button>
+
+            </form>
+
+          </div>
+
+
+          <!-- Back -->
+
+          <div class="mt-6 text-center">
+
+            <a
+              href="/login"
+              class="text-sm
+                     font-medium
+                     text-primary-600
+                     hover:text-primary-700"
+            >
+              Back to Sign In
+            </a>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <%- include("partials/scripts") %>
+
+</body>
+
+</html>

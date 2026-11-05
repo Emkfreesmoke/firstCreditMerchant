@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta
+      name="description"
+      content="Swift and Secure Money Transfer to any bank account with First Credit Merchant."
+    />
+
+    <title><%= title || "Account Login - First Credit Merchant" %></title>
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="https://i.postimg.cc/6qdzfgQL/favicon.png"
+    />
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link href="https://fonts.googleapis.com" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Tailwind Configuration -->
+    <script src=" /js/register-config.js"></script>
+
+    <!-- Shared Authentication CSS -->
+
+    <link rel="stylesheet" href=" /css/register.css" />
+
+    <!-- Login CSS -->
+    <link rel="stylesheet" href=" /css/login.css" />
+
+    <!-- Alpine -->
+    <script src=" https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Lucide -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+  </head>
+
+  <body class="font-sans bg-gray-50 text-gray-900 flex min-h-screen">
+    <!-- Loader -->
+    <%- include("sections/login/loader") %>
+
+    <div class="w-full">
+      <div class="flex flex-col lg:flex-row min-h-screen">
+        <!-- Left Branding Panel -->
+        <%- include("sections/login/branding") %>
+
+        <!-- Login Form -->
+        <%- include("sections/login/form") %>
+      </div>
+    </div>
+
+    <!-- Login JavaScript -->
+    <script src="/js/login.js"></script>
+  </body>
+</html>

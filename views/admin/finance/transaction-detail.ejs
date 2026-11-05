@@ -1,0 +1,167 @@
+<%
+    const transactionRecord =
+        typeof transaction !== "undefined"
+            ? transaction
+            : null;
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="flex h-screen overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+        <div class="flex flex-col flex-1 overflow-hidden">
+
+            <%- include("../partials/topbar") %>
+            <%- include("../partials/mobile-menu") %>
+
+            <main class="flex-1 overflow-y-auto">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl mx-auto
+                               px-4 sm:px-6 lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/transactions"
+                            class="inline-flex items-center
+                                   text-sm text-gray-500 mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Transactions
+                        </a>
+
+
+                        <% if (!transactionRecord) { %>
+
+                            <div
+                                class="bg-white border border-gray-100
+                                       rounded-xl shadow-sm
+                                       py-16 text-center"
+                            >
+                                <h1
+                                    class="text-xl font-semibold
+                                           text-gray-900"
+                                >
+                                    Transaction unavailable
+                                </h1>
+                            </div>
+
+                        <% } else { %>
+
+                            <div class="mb-6">
+                                <h1 class="text-2xl font-bold text-gray-900">
+                                    Transaction Details
+                                </h1>
+                            </div>
+
+
+                            <div
+                                class="bg-white border border-gray-100
+                                       rounded-xl shadow-sm overflow-hidden"
+                            >
+
+                                <div
+                                    class="p-6 grid grid-cols-1
+                                           sm:grid-cols-2
+                                           lg:grid-cols-3 gap-6"
+                                >
+
+                                    <% [
+                                        ["Reference", transactionRecord.reference],
+                                        ["Type", transactionRecord.type],
+                                        ["Direction", transactionRecord.direction],
+                                        ["Currency", transactionRecord.currency],
+                                        ["Status", transactionRecord.status],
+                                        ["Counterparty", transactionRecord.counterparty],
+                                        ["Created", transactionRecord.createdAt],
+                                        ["Updated", transactionRecord.updatedAt]
+                                    ].forEach(function(item) {
+                                        if (item[1]) {
+                                    %>
+
+                                        <div>
+                                            <p class="text-xs text-gray-400">
+                                                <%= item[0] %>
+                                            </p>
+
+                                            <p
+                                                class="text-sm font-medium
+                                                       text-gray-800 mt-1"
+                                            >
+                                                <%= item[1] %>
+                                            </p>
+                                        </div>
+
+                                    <% } }); %>
+
+
+                                    <% if (
+                                        transactionRecord.amount !==
+                                            undefined &&
+                                        transactionRecord.amount !== null
+                                    ) { %>
+
+                                        <div>
+                                            <p class="text-xs text-gray-400">
+                                                Amount
+                                            </p>
+
+                                            <p
+                                                class="text-sm font-semibold
+                                                       text-gray-900 mt-1"
+                                            >
+                                                <%= transactionRecord.currency || "" %>
+
+                                                <%= Number(
+                                                    transactionRecord.amount
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+                                            </p>
+                                        </div>
+
+                                    <% } %>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

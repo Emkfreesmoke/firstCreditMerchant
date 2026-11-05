@@ -1,0 +1,57 @@
+<div
+  class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100"
+>
+  <div
+    class="px-6 py-4 border-b border-gray-200 flex justify-between items-center"
+  >
+    <div class="flex items-center">
+      <i data-lucide="list" class="h-5 w-5 text-gray-500 mr-2"></i>
+
+      <h3 class="text-lg font-medium text-gray-900">Recent Transactions</h3>
+    </div>
+
+    <a href="/">
+      View all
+
+      <i data-lucide="chevron-right" class="h-4 w-4 ml-1"></i>
+    </a>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3"></th>
+
+          <th class="dashboard-table-heading">Amount</th>
+
+          <th class="dashboard-table-heading">Type</th>
+
+          <th class="dashboard-table-heading">Status</th>
+
+          <th class="dashboard-table-heading">Reference ID</th>
+
+          <th class="dashboard-table-heading">Created</th>
+        </tr>
+      </thead>
+
+      <tbody class="bg-white">
+        <tr>
+          <td colspan="6" class="px-6 py-12 text-center">
+            <div
+              class="h-12 w-12 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-3"
+            >
+              <i data-lucide="activity" class="h-6 w-6 text-gray-400"></i>
+            </div>
+
+            <p class="text-sm font-medium text-gray-700">No transactions yet</p>
+
+            <p class="text-xs text-gray-500 mt-1">
+              Recent account activity will appear here.
+            </p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

@@ -1,0 +1,370 @@
+/* =========================================================
+   REGISTER PAGE
+   First Credit Merchant
+   ========================================================= */
+
+:root {
+  --primary-color: #032d3f;
+  --primary-color-dark: #011d2c;
+  --primary-color-light: #d2c66a;
+
+  --secondary-color: #e4ea00;
+  --secondary-color-dark: #9c9f0b;
+  --secondary-color-light: #e4f327;
+
+  --text-color: #111827;
+  --bg-color: #f9fafb;
+  --card-bg-color: #ffffff;
+}
+
+/* ---------------------------------------------------------
+   BASE
+   --------------------------------------------------------- */
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Lato", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   PAGE LOADER
+   --------------------------------------------------------- */
+
+.page-loading {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: #ffffff;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition:
+    opacity 0.4s 0.2s ease-in-out,
+    visibility 0.4s 0.2s ease-in-out;
+
+  z-index: 9999;
+}
+
+.page-loading.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.page-loading-inner {
+  position: absolute;
+
+  top: 50%;
+  left: 0;
+
+  width: 100%;
+
+  text-align: center;
+
+  transform: translateY(-50%);
+
+  transition: opacity 0.2s ease-in-out;
+
+  opacity: 0;
+}
+
+.page-loading.active > .page-loading-inner {
+  opacity: 1;
+}
+
+.loading-container {
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-direction: column;
+}
+
+/* ---------------------------------------------------------
+   LOADER ANIMATION
+   --------------------------------------------------------- */
+
+.loading-animation {
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 80px;
+  height: 80px;
+
+  margin-bottom: 1rem;
+}
+
+.loading-animation .circle {
+  position: absolute;
+
+  width: 100%;
+  height: 100%;
+
+  border: 4px solid transparent;
+  border-radius: 50%;
+
+  mix-blend-mode: overlay;
+
+  animation: registerRotateCircle 1.5s linear infinite;
+}
+
+.loading-animation .circle:nth-child(1) {
+  border-top-color: var(--primary-color);
+  animation-delay: 0s;
+}
+
+.loading-animation .circle:nth-child(2) {
+  border-right-color: var(--primary-color-light);
+  animation-delay: 0.2s;
+}
+
+.loading-animation .circle:nth-child(3) {
+  border-bottom-color: var(--secondary-color);
+  animation-delay: 0.4s;
+}
+
+.loading-animation .circle:nth-child(4) {
+  border-left-color: var(--primary-color-light);
+  animation-delay: 0.6s;
+}
+
+.loading-animation .core {
+  width: 20px;
+  height: 20px;
+
+  border-radius: 50%;
+
+  background: linear-gradient(
+    45deg,
+    var(--primary-color-light),
+    var(--primary-color-dark)
+  );
+
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+
+  animation: registerPulse 1s ease-in-out infinite alternate;
+}
+
+.page-loading .text {
+  margin-top: 0.5rem;
+
+  color: var(--primary-color);
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+
+  background: linear-gradient(
+    90deg,
+    var(--primary-color-dark),
+    var(--primary-color-light),
+    var(--primary-color-dark)
+  );
+
+  background-size: 200% auto;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+
+  animation: registerGradient 2s linear infinite;
+}
+
+/* ---------------------------------------------------------
+   FLOATING BACKGROUND ELEMENTS
+   --------------------------------------------------------- */
+
+.floating {
+  animation: registerFloating 3s ease-in-out infinite;
+}
+
+.floating-slow {
+  animation: registerFloating 6s ease-in-out infinite;
+}
+
+.floating-slower {
+  animation: registerFloating 8s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------
+   INPUT INTERACTIONS
+   --------------------------------------------------------- */
+
+.input-wrapper {
+  position: relative;
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.input-wrapper:focus-within {
+  transform: translateY(-2px);
+}
+
+.input-icon {
+  position: absolute;
+
+  top: 50%;
+  left: 1rem;
+
+  transform: translateY(-50%);
+
+  color: #94a3b8;
+
+  transition: color 0.3s ease;
+}
+
+.input-wrapper:focus-within .input-icon {
+  color: var(--primary-color);
+}
+
+input:focus + .input-toggle {
+  color: var(--primary-color);
+}
+
+/* ---------------------------------------------------------
+   FORM ELEMENT POLISH
+   --------------------------------------------------------- */
+
+input,
+select,
+button {
+  font-family: inherit;
+}
+
+input,
+select {
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+input::placeholder {
+  color: #94a3b8;
+}
+
+button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* Alpine: don't flash hidden steps before Alpine loads */
+
+[x-cloak] {
+  display: none !important;
+}
+
+/* ---------------------------------------------------------
+   ANIMATIONS
+   --------------------------------------------------------- */
+
+@keyframes registerRotateCircle {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes registerPulse {
+  from {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  to {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes registerGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes registerFloating {
+  0% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* ---------------------------------------------------------
+   MOBILE
+   --------------------------------------------------------- */
+
+@media (max-width: 1023px) {
+  body {
+    background: #f9fafb;
+  }
+}
+
+/* ---------------------------------------------------------
+   REDUCED MOTION
+   --------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .floating,
+  .floating-slow,
+  .floating-slower,
+  .loading-animation .circle,
+  .loading-animation .core,
+  .page-loading .text {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

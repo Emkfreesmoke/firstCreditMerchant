@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include("partials/head") %>
+  </head>
+
+  <body class="bg-gray-50">
+    <%- include("partials/loader") %>
+
+    <div
+      x-data="{ mobileMenuOpen: false }"
+      class="flex h-screen overflow-hidden"
+    >
+      <%- include("partials/sidebar") %> <%- include("partials/mobile-menu") %>
+
+      <div class="flex flex-col flex-1 overflow-hidden">
+        <%- include("partials/topbar") %> <%- include("partials/mobile-nav") %>
+
+        <main class="flex-1 overflow-y-auto pb-24 md:pb-8">
+          <div class="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 py-6">
+            <!-- Back -->
+            <a
+              href="/dashboard/transactions"
+              class="inline-flex items-center text-sm text-gray-500 hover:text-gray-700 mb-6"
+            >
+              <i data-lucide="arrow-left" class="h-4 w-4 mr-2"></i>
+
+              Back to Transactions
+            </a>
+
+            <!-- Header -->
+            <div
+              class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"
+            >
+              <div>
+                <h1 class="text-2xl font-bold text-gray-900">
+                  Transaction Details
+                </h1>
+
+                <p class="text-sm text-gray-500 mt-1">
+                  Reference: <%= transactionId || "TRX-000001" %>
+                </p>
+              </div>
+
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-50 text-yellow-700 text-xs font-medium"
+              >
+                <span
+                  class="h-1.5 w-1.5 rounded-full bg-yellow-500 mr-1.5"
+                ></span>
+
+                Pending
+              </span>
+            </div>
+
+            <!-- Main Information -->
+            <div
+              class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden"
+            >
+              <!-- Amount Hero -->
+              <div
+                class="p-8 bg-gradient-to-br from-primary-600 to-primary-800 text-white text-center"
+              >
+                <div
+                  class="h-14 w-14 rounded-full bg-white/15 flex items-center justify-center mx-auto mb-4"
+                >
+                  <i data-lucide="arrow-down-left" class="h-7 w-7"></i>
+                </div>
+
+                <p class="text-sm text-white/70">Transaction Amount</p>
+
+                <h2 class="text-3xl font-bold mt-1">$0.00 USD</h2>
+
+                <p class="text-sm text-white/70 mt-2">Incoming Credit</p>
+              </div>
+
+              <!-- Details -->
+              <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="dashboard-detail">
+                  <span> Reference </span>
+
+                  <strong> <%= transactionId || "TRX-000001" %> </strong>
+                </div>
+
+                <div class="dashboard-detail">
+                  <span> Transaction Type </span>
+
+                  <strong> Credit </strong>
+                </div>
+
+                <div class="dashboard-detail">
+                  <span> Direction </span>
+
+                  <strong> Incoming </strong>
+                </div>
+
+                <div class="dashboard-detail">
+                  <span> Currency </span>
+
+                  <strong> USD </strong>
+                </div>
+
+                <div class="dashboard-detail">
+                  <span> Counterparty </span>
+
+                  <strong> Not specified </strong>
+                </div>
+
+                <div class="dashboard-detail">
+                  <span> Date </span>
+
+                  <strong> Not specified </strong>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="px-6 pb-6">
+                <div class="p-4 bg-gray-50 rounded-lg">
+                  <span class="block text-xs text-gray-400 mb-2">
+                    Description
+                  </span>
+
+                  <p class="text-sm text-gray-600">No description provided.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security -->
+            <div class="mt-6 bg-white rounded-xl border border-gray-100 p-5">
+              <div class="flex items-start">
+                <div
+                  class="h-10 w-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center flex-shrink-0 mr-3"
+                >
+                  <i data-lucide="shield-check" class="h-5 w-5"></i>
+                </div>
+
+                <div>
+                  <h3 class="text-sm font-medium text-gray-900">
+                    Transaction Security
+                  </h3>
+
+                  <p class="text-xs text-gray-500 mt-1">
+                    Transaction information is displayed from your account
+                    activity.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        <%- include("partials/footer") %>
+      </div>
+    </div>
+
+    <%- include("partials/scripts") %>
+  </body>
+</html>

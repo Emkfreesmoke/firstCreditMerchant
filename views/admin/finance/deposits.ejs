@@ -1,0 +1,965 @@
+<%
+    const depositRecords =
+        typeof deposits !== "undefined" &&
+        Array.isArray(deposits)
+            ? deposits
+            : [];
+
+    const completedDeposits =
+        depositRecords.filter(
+            deposit =>
+                deposit &&
+                deposit.status === "Completed"
+        );
+
+    const pendingDeposits =
+        depositRecords.filter(
+            deposit =>
+                deposit &&
+                deposit.status === "Pending"
+        );
+
+    const rejectedDeposits =
+        depositRecords.filter(
+            deposit =>
+                deposit &&
+                deposit.status === "Rejected"
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            depositFilter: 'all'
+        }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <!-- =====================================
+             SIDEBAR
+        ====================================== -->
+
+        <%- include("../partials/sidebar") %>
+
+
+        <!-- =====================================
+             MAIN AREA
+        ====================================== -->
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- =============================
+                             PAGE HEADER
+                        ============================== -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Deposits
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review customer deposit requests
+                                    and completed deposits.
+                                </p>
+
+                            </div>
+
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       gap-2"
+                            >
+
+                                <a
+                                    href="/admin/deposit-settings"
+                                    class="admin-secondary-button"
+                                >
+
+                                    <i
+                                        data-lucide="sliders-horizontal"
+                                        class="h-4 w-4"
+                                    ></i>
+
+                                    Deposit Settings
+
+                                </a>
+
+
+                                <a
+                                    href="/admin/deposits/create"
+                                    class="admin-primary-button"
+                                >
+
+                                    <i
+                                        data-lucide="plus"
+                                        class="h-4 w-4"
+                                    ></i>
+
+                                    Record Deposit
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =============================
+                             SUMMARY
+                        ============================== -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <!-- Total -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Total Deposits
+                                    </p>
+
+
+                                    <p class="admin-stat-value">
+                                        <%= depositRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-blue-50
+                                           text-blue-700"
+                                >
+
+                                    <i
+                                        data-lucide="circle-dollar-sign"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Pending -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Pending
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingDeposits.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-yellow-50
+                                           text-yellow-700"
+                                >
+
+                                    <i data-lucide="clock"></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Completed -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Completed
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= completedDeposits.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-green-50
+                                           text-green-700"
+                                >
+
+                                    <i
+                                        data-lucide="circle-check"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- Rejected -->
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Rejected
+                                    </p>
+
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-red-700"
+                                    >
+                                        <%= rejectedDeposits.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="admin-stat-icon
+                                           bg-red-50
+                                           text-red-700"
+                                >
+
+                                    <i
+                                        data-lucide="circle-x"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =============================
+                             FILTERS
+                        ============================== -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <!-- Search -->
+
+                                <div
+                                    class="relative
+                                           flex-1"
+                                >
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4 w-4
+                                               text-gray-400
+                                               pointer-events-none"
+                                    ></i>
+
+
+                                    <input
+                                        type="search"
+                                        placeholder="Search deposits..."
+                                        class="admin-input pl-9"
+                                    >
+
+                                </div>
+
+
+                                <!-- Filter Buttons -->
+
+                                <div
+                                    class="flex
+                                           flex-wrap
+                                           gap-2"
+                                >
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            depositFilter = 'all'
+                                        "
+                                        :class="
+                                            depositFilter === 'all'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               transition-colors"
+                                    >
+                                        All
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            depositFilter = 'pending'
+                                        "
+                                        :class="
+                                            depositFilter === 'pending'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               transition-colors"
+                                    >
+                                        Pending
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            depositFilter = 'completed'
+                                        "
+                                        :class="
+                                            depositFilter === 'completed'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               transition-colors"
+                                    >
+                                        Completed
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            depositFilter = 'rejected'
+                                        "
+                                        :class="
+                                            depositFilter === 'rejected'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4
+                                               py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium
+                                               transition-colors"
+                                    >
+                                        Rejected
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =============================
+                             DEPOSIT RECORDS
+                        ============================== -->
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Deposit Records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Pending deposits require
+                                        administrator review before
+                                        customer balances are credited.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                depositRecords.length === 0
+                            ) { %>
+
+                                <!-- Empty State -->
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14
+                                               w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="circle-dollar-sign"
+                                            class="h-7
+                                                   w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No deposit records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Customer deposit requests
+                                        will appear here.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <!-- Deposit Table -->
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Amount
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Method
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Date
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% depositRecords.forEach(
+                                                function(deposit) {
+
+                                                    const depositCustomer =
+                                                        deposit.customer ||
+                                                        null;
+
+                                                    const customerName =
+                                                        depositCustomer
+                                                            ? [
+                                                                depositCustomer.firstName,
+                                                                depositCustomer.middleName,
+                                                                depositCustomer.lastName
+                                                              ]
+                                                                .filter(Boolean)
+                                                                .join(" ")
+                                                            : "";
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        depositFilter ===
+                                                            'all' ||
+
+                                                        (
+                                                            depositFilter ===
+                                                                'pending' &&
+                                                            '<%= deposit.status || "" %>' ===
+                                                                'Pending'
+                                                        ) ||
+
+                                                        (
+                                                            depositFilter ===
+                                                                'completed' &&
+                                                            '<%= deposit.status || "" %>' ===
+                                                                'Completed'
+                                                        ) ||
+
+                                                        (
+                                                            depositFilter ===
+                                                                'rejected' &&
+                                                            '<%= deposit.status || "" %>' ===
+                                                                'Rejected'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Customer -->
+
+                                                    <td
+                                                        class="px-6 py-4"
+                                                    >
+
+                                                        <% if (
+                                                            depositCustomer
+                                                        ) { %>
+
+                                                            <div
+                                                                class="flex
+                                                                       items-center"
+                                                            >
+
+                                                                <div
+                                                                    class="h-10
+                                                                           w-10
+                                                                           rounded-full
+                                                                           bg-gray-100
+                                                                           flex
+                                                                           items-center
+                                                                           justify-center
+                                                                           mr-3
+                                                                           flex-shrink-0"
+                                                                >
+
+                                                                    <i
+                                                                        data-lucide="user"
+                                                                        class="h-5
+                                                                               w-5
+                                                                               text-gray-500"
+                                                                    ></i>
+
+                                                                </div>
+
+
+                                                                <div class="min-w-0">
+
+                                                                    <% if (
+                                                                        customerName
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-sm
+                                                                                   font-medium
+                                                                                   text-gray-900"
+                                                                        >
+                                                                            <%= customerName %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+
+                                                                    <% if (
+                                                                        depositCustomer.email
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-xs
+                                                                                   text-gray-500
+                                                                                   mt-1"
+                                                                        >
+                                                                            <%= depositCustomer.email %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+
+                                                                    <% if (
+                                                                        depositCustomer.customerId
+                                                                    ) { %>
+
+                                                                        <p
+                                                                            class="text-xs
+                                                                                   text-gray-400
+                                                                                   mt-1"
+                                                                        >
+                                                                            <%= depositCustomer.customerId %>
+                                                                        </p>
+
+                                                                    <% } %>
+
+                                                                </div>
+
+                                                            </div>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Reference -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <span
+                                                            class="font-medium
+                                                                   text-gray-700"
+                                                        >
+                                                            <%= deposit.reference || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Amount -->
+
+                                                    <td
+                                                        class="admin-table-cell
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+
+                                                        <% if (
+                                                            deposit.amount !==
+                                                                undefined &&
+                                                            deposit.amount !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= deposit.currency || "" %>
+
+                                                            <%= Number(
+                                                                deposit.amount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Method -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <span>
+                                                            <%= deposit.method || "" %>
+                                                        </span>
+
+
+                                                        <% if (
+                                                            deposit.method ===
+                                                                "Cryptocurrency" &&
+                                                            deposit.cryptoAsset
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+
+                                                                <%= deposit.cryptoAsset %>
+
+                                                                <% if (
+                                                                    deposit.cryptoNetwork
+                                                                ) { %>
+
+                                                                    •
+                                                                    <%= deposit.cryptoNetwork %>
+
+                                                                <% } %>
+
+                                                            </p>
+
+                                                        <% } %>
+
+
+                                                        <% if (
+                                                            deposit.paymentReference
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+                                                                Ref:
+                                                                <%= deposit.paymentReference %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Status -->
+
+                                                    <td
+                                                        class="px-6 py-4"
+                                                    >
+
+                                                        <% if (
+                                                            deposit.status
+                                                        ) { %>
+
+                                                            <span
+                                                                class="admin-badge
+                                                                       <%= deposit.status === "Completed"
+                                                                           ? "bg-green-100 text-green-700"
+                                                                           : deposit.status === "Pending"
+                                                                           ? "bg-yellow-100 text-yellow-700"
+                                                                           : deposit.status === "Rejected"
+                                                                           ? "bg-red-100 text-red-700"
+                                                                           : "bg-gray-100 text-gray-700"
+                                                                       %>"
+                                                            >
+
+                                                                <%= deposit.status %>
+
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Date -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            deposit.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                deposit.createdAt
+                                                            ).toLocaleDateString() %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Action -->
+
+                                                    <td
+                                                        class="px-6 py-4"
+                                                    >
+
+                                                        <% if (
+                                                            deposit._id ||
+                                                            deposit.id
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/admin/deposits/<%= deposit._id || deposit.id %>"
+                                                                class="admin-small-button"
+                                                            >
+
+                                                                <% if (
+                                                                    deposit.status ===
+                                                                    "Pending"
+                                                                ) { %>
+
+                                                                    Review
+
+                                                                <% } else { %>
+
+                                                                    Details
+
+                                                                <% } %>
+
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-3.5
+                                                                           w-3.5"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

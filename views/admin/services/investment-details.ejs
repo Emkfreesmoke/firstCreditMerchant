@@ -1,0 +1,1754 @@
+<%
+    const investmentRecord =
+        typeof investment !== "undefined"
+            ? investment
+            : null;
+
+    const investmentCustomer =
+        typeof customer !== "undefined" &&
+        customer
+            ? customer
+            : (
+                investmentRecord &&
+                investmentRecord.customer
+                    ? investmentRecord.customer
+                    : null
+            );
+
+    const investmentAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/investments"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Investments
+
+                        </a>
+
+
+                        <!-- =================================
+                             MESSAGES
+                        ================================== -->
+
+                        <% if (
+                            typeof created !== "undefined" &&
+                            created
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Investment created successfully.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof approved !== "undefined" &&
+                            approved
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Investment approved successfully.
+                                The principal has not been debited yet.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof rejected !== "undefined" &&
+                            rejected
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-lg
+                                       text-sm
+                                       text-red-800"
+                            >
+                                Investment rejected.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof activated !== "undefined" &&
+                            activated
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Investment activated and the
+                                principal was debited.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof matured !== "undefined" &&
+                            matured
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-purple-50
+                                       border
+                                       border-purple-200
+                                       rounded-lg
+                                       text-sm
+                                       text-purple-800"
+                            >
+                                Investment matured and payout
+                                was credited to the customer.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof closed !== "undefined" &&
+                            closed
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-gray-50
+                                       border
+                                       border-gray-200
+                                       rounded-lg
+                                       text-sm
+                                       text-gray-700"
+                            >
+                                Investment closed successfully.
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!investmentRecord) { %>
+
+                            <section class="admin-panel">
+
+                                <div
+                                    class="py-16
+                                           text-center"
+                                >
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Investment unavailable
+                                    </h1>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- =================================
+                                 HEADER
+                            ================================== -->
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       sm:items-start
+                                       sm:justify-between
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        Investment Details
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        <%= investmentRecord.reference || "" %>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="admin-badge
+                                           <%= investmentRecord.status === "Active"
+                                               ? "bg-green-50 text-green-700"
+                                               : investmentRecord.status === "Approved"
+                                               ? "bg-blue-50 text-blue-700"
+                                               : investmentRecord.status === "Matured"
+                                               ? "bg-purple-50 text-purple-700"
+                                               : investmentRecord.status === "Closed"
+                                               ? "bg-gray-100 text-gray-700"
+                                               : investmentRecord.status === "Rejected"
+                                               ? "bg-red-50 text-red-700"
+                                               : investmentRecord.status === "Cancelled"
+                                               ? "bg-red-50 text-red-700"
+                                               : "bg-yellow-50 text-yellow-700"
+                                           %>"
+                                >
+                                    <%= investmentRecord.status || "" %>
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       lg:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- =================================
+                                     INVESTMENT INFORMATION
+                                ================================== -->
+
+                                <section
+                                    class="admin-panel
+                                           lg:col-span-2"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <div>
+
+                                            <h3>
+                                                Investment Information
+                                            </h3>
+
+
+                                            <p
+                                                class="text-xs
+                                                       text-gray-500
+                                                       mt-1"
+                                            >
+                                                Review the investment
+                                                terms, value, and status.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div
+                                        class="p-6
+                                               grid
+                                               grid-cols-1
+                                               sm:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Name
+                                            </span>
+
+                                            <strong>
+                                                <%= investmentRecord.name ||
+                                                    investmentRecord.type ||
+                                                    ""
+                                                %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Type
+                                            </span>
+
+                                            <strong>
+                                                <%= investmentRecord.type || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Principal
+                                            </span>
+
+                                            <strong>
+
+                                                <%= investmentRecord.currency || "" %>
+
+                                                <%= Number(
+                                                    investmentRecord.principal ||
+                                                    0
+                                                ).toLocaleString(
+                                                    undefined,
+                                                    {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    }
+                                                ) %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Current Value
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    investmentRecord.currentValue !==
+                                                        undefined &&
+                                                    investmentRecord.currentValue !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= investmentRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        investmentRecord.currentValue
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                <% } else { %>
+
+                                                    Not set
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Return Amount
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    investmentRecord.returnAmount !==
+                                                        undefined &&
+                                                    investmentRecord.returnAmount !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= investmentRecord.currency || "" %>
+
+                                                    <%= Number(
+                                                        investmentRecord.returnAmount
+                                                    ).toLocaleString(
+                                                        undefined,
+                                                        {
+                                                            minimumFractionDigits: 2,
+                                                            maximumFractionDigits: 2
+                                                        }
+                                                    ) %>
+
+                                                <% } else { %>
+
+                                                    Not set
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Return Percentage
+                                            </span>
+
+                                            <strong>
+
+                                                <% if (
+                                                    investmentRecord.returnPercentage !==
+                                                        undefined &&
+                                                    investmentRecord.returnPercentage !==
+                                                        null
+                                                ) { %>
+
+                                                    <%= Number(
+                                                        investmentRecord.returnPercentage
+                                                    ).toFixed(2) %>%
+
+                                                <% } else { %>
+
+                                                    Not set
+
+                                                <% } %>
+
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Currency
+                                            </span>
+
+                                            <strong>
+                                                <%= investmentRecord.currency || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                Duration
+                                            </span>
+
+                                            <strong>
+                                                <%= investmentRecord.duration || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+                                        <% if (
+                                            investmentRecord.startDate
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Start Date
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        investmentRecord.startDate
+                                                    ).toLocaleDateString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            investmentRecord.maturityDate
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Maturity Date
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        investmentRecord.maturityDate
+                                                    ).toLocaleDateString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            investmentRecord.debitedAt
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Principal Debited
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        investmentRecord.debitedAt
+                                                    ).toLocaleString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            investmentRecord.paidOutAt
+                                        ) { %>
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Payout Credited
+                                                </span>
+
+                                                <strong>
+                                                    <%= new Date(
+                                                        investmentRecord.paidOutAt
+                                                    ).toLocaleString() %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            investmentRecord.description
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       sm:col-span-2"
+                                            >
+
+                                                <span>
+                                                    Description
+                                                </span>
+
+                                                <strong
+                                                    class="whitespace-pre-line"
+                                                >
+                                                    <%= investmentRecord.description %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+
+                                        <% if (
+                                            investmentRecord.adminNote
+                                        ) { %>
+
+                                            <div
+                                                class="admin-detail
+                                                       sm:col-span-2"
+                                            >
+
+                                                <span>
+                                                    Admin Note
+                                                </span>
+
+                                                <strong
+                                                    class="whitespace-pre-line"
+                                                >
+                                                    <%= investmentRecord.adminNote %>
+                                                </strong>
+
+                                            </div>
+
+                                        <% } %>
+
+                                    </div>
+
+                                </section>
+
+
+                               <!-- =================================
+                                     RIGHT COLUMN
+                                ================================== -->
+
+                                <aside class="space-y-6">
+
+                                    <!-- =================================
+                                         CUSTOMER
+                                    ================================== -->
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Customer
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <% if (
+                                                investmentCustomer
+                                            ) { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= [
+                                                        investmentCustomer.firstName,
+                                                        investmentCustomer.middleName,
+                                                        investmentCustomer.lastName
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                    %>
+                                                </p>
+
+
+                                                <% if (
+                                                    investmentCustomer.email
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-gray-500
+                                                               mt-1"
+                                                    >
+                                                        <%= investmentCustomer.email %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    investmentCustomer.customerId
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400
+                                                               mt-2"
+                                                    >
+                                                        <%= investmentCustomer.customerId %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    investmentAccount &&
+                                                    investmentAccount.accountNumber
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Account Number
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+                                                            <%= investmentAccount.accountNumber %>
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    values &&
+                                                    values.displayedBalance !==
+                                                        undefined &&
+                                                    values.displayedBalance !==
+                                                        null
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Current Balance
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+
+                                                            <%= values.currency ||
+                                                                investmentRecord.currency ||
+                                                                ""
+                                                            %>
+
+                                                            <%= Number(
+                                                                values.displayedBalance
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+                                            <% } else { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           text-gray-500"
+                                                >
+                                                    Customer unavailable
+                                                </p>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+
+                                    <!-- =================================
+                                         INVESTMENT ACTIONS
+                                    ================================== -->
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Investment Actions
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <!-- =========================
+                                                 PENDING / UNDER REVIEW
+                                            ========================== -->
+
+                                            <% if (
+                                                investmentRecord.status ===
+                                                    "Pending" ||
+                                                investmentRecord.status ===
+                                                    "Under Review"
+                                            ) { %>
+
+                                                <form
+                                                    action="/admin/investments/<%= investmentRecord._id || investmentRecord.id %>/approve"
+                                                    method="POST"
+                                                    class="space-y-4"
+                                                >
+
+                                                    <!-- Name -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalName"
+                                                            class="admin-label"
+                                                        >
+                                                            Investment Name
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalName"
+                                                            type="text"
+                                                            name="name"
+                                                            value="<%= investmentRecord.name || investmentRecord.type || "" %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Duration -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalDuration"
+                                                            class="admin-label"
+                                                        >
+                                                            Duration
+                                                        </label>
+
+
+                                                        <select
+                                                            id="approvalDuration"
+                                                            name="duration"
+                                                            class="admin-input"
+                                                            required
+                                                        >
+
+                                                            <% [
+                                                                "3 Months",
+                                                                "6 Months",
+                                                                "12 Months",
+                                                                "24 Months",
+                                                                "36 Months",
+                                                                "60 Months"
+                                                            ].forEach(
+                                                                function(duration) {
+                                                            %>
+
+                                                                <option
+                                                                    value="<%= duration %>"
+                                                                    <%= investmentRecord.duration === duration
+                                                                        ? "selected"
+                                                                        : ""
+                                                                    %>
+                                                                >
+                                                                    <%= duration %>
+                                                                </option>
+
+                                                            <% }); %>
+
+                                                        </select>
+
+                                                    </div>
+
+
+                                                    <!-- Initial Value -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalCurrentValue"
+                                                            class="admin-label"
+                                                        >
+                                                            Initial Value
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalCurrentValue"
+                                                            type="number"
+                                                            name="currentValue"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.currentValue !== undefined &&
+                                                                investmentRecord.currentValue !== null
+                                                                    ? investmentRecord.currentValue
+                                                                    : investmentRecord.principal
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Return Amount -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalReturnAmount"
+                                                            class="admin-label"
+                                                        >
+                                                            Expected Return Amount
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalReturnAmount"
+                                                            type="number"
+                                                            name="returnAmount"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.returnAmount !== undefined &&
+                                                                investmentRecord.returnAmount !== null
+                                                                    ? investmentRecord.returnAmount
+                                                                    : ""
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Return Percentage -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalReturnPercentage"
+                                                            class="admin-label"
+                                                        >
+                                                            Expected Return (%)
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalReturnPercentage"
+                                                            type="number"
+                                                            name="returnPercentage"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.returnPercentage !== undefined &&
+                                                                investmentRecord.returnPercentage !== null
+                                                                    ? investmentRecord.returnPercentage
+                                                                    : ""
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Start Date -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalStartDate"
+                                                            class="admin-label"
+                                                        >
+                                                            Start Date
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalStartDate"
+                                                            type="date"
+                                                            name="startDate"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Maturity Date -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalMaturityDate"
+                                                            class="admin-label"
+                                                        >
+                                                            Maturity Date
+                                                        </label>
+
+
+                                                        <input
+                                                            id="approvalMaturityDate"
+                                                            type="date"
+                                                            name="maturityDate"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Admin Note -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="approvalAdminNote"
+                                                            class="admin-label"
+                                                        >
+                                                            Admin Note
+                                                        </label>
+
+
+                                                        <textarea
+                                                            id="approvalAdminNote"
+                                                            name="adminNote"
+                                                            rows="3"
+                                                            class="admin-input"
+                                                            placeholder="Optional approval note"
+                                                        ></textarea>
+
+                                                    </div>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-primary-button
+                                                               w-full"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="circle-check"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Approve Investment
+
+                                                    </button>
+
+                                                </form>
+
+
+                                                <div
+                                                    class="my-5
+                                                           border-t
+                                                           border-gray-100"
+                                                ></div>
+
+
+                                                <!-- Reject -->
+
+                                                <form
+                                                    action="/admin/investments/<%= investmentRecord._id || investmentRecord.id %>/reject"
+                                                    method="POST"
+                                                >
+
+                                                    <label
+                                                        for="rejectionAdminNote"
+                                                        class="admin-label"
+                                                    >
+                                                        Rejection Note
+                                                    </label>
+
+
+                                                    <textarea
+                                                        id="rejectionAdminNote"
+                                                        name="adminNote"
+                                                        rows="3"
+                                                        class="admin-input"
+                                                        placeholder="Reason for rejection"
+                                                        required
+                                                    ></textarea>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="inline-flex
+                                                               items-center
+                                                               justify-center
+                                                               w-full
+                                                               px-4 py-2.5
+                                                               mt-3
+                                                               bg-red-600
+                                                               hover:bg-red-700
+                                                               text-white
+                                                               text-sm
+                                                               font-semibold
+                                                               rounded-lg"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="x-circle"
+                                                            class="h-4 w-4 mr-2"
+                                                        ></i>
+
+                                                        Reject Investment
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- =========================
+                                                 APPROVED
+                                            ========================== -->
+
+                                            <% } else if (
+                                                investmentRecord.status ===
+                                                    "Approved"
+                                            ) { %>
+
+                                                <div
+                                                    class="mb-4
+                                                           p-4
+                                                           bg-blue-50
+                                                           border
+                                                           border-blue-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-blue-900"
+                                                    >
+                                                        Investment Approved
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-blue-700
+                                                               mt-1"
+                                                    >
+                                                        Activating this
+                                                        investment will debit
+                                                        the principal from the
+                                                        customer's available
+                                                        balance.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <div
+                                                    class="mb-4
+                                                           p-4
+                                                           bg-gray-50
+                                                           border
+                                                           border-gray-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500"
+                                                    >
+                                                        Principal
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-lg
+                                                               font-semibold
+                                                               text-gray-900
+                                                               mt-1"
+                                                    >
+
+                                                        <%= investmentRecord.currency || "" %>
+
+                                                        <%= Number(
+                                                            investmentRecord.principal ||
+                                                            0
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+
+                                                    </p>
+
+                                                </div>
+
+
+                                                <form
+                                                    action="/admin/investments/<%= investmentRecord._id || investmentRecord.id %>/activate"
+                                                    method="POST"
+                                                >
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-primary-button
+                                                               w-full"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="play"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Activate Investment
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- =========================
+                                                 ACTIVE
+                                            ========================== -->
+
+                                            <% } else if (
+                                                investmentRecord.status ===
+                                                    "Active"
+                                            ) { %>
+
+                                                <div
+                                                    class="mb-4
+                                                           p-4
+                                                           bg-green-50
+                                                           border
+                                                           border-green-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-green-900"
+                                                    >
+                                                        Investment Active
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-green-700
+                                                               mt-1"
+                                                    >
+                                                        The principal has
+                                                        already been deducted.
+                                                        Process maturity when
+                                                        the investment payout
+                                                        is ready.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <form
+                                                    action="/admin/investments/<%= investmentRecord._id || investmentRecord.id %>/mature"
+                                                    method="POST"
+                                                    class="space-y-4"
+                                                >
+
+                                                    <!-- Final Value -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="maturityCurrentValue"
+                                                            class="admin-label"
+                                                        >
+                                                            Final Investment Value
+                                                        </label>
+
+
+                                                        <input
+                                                            id="maturityCurrentValue"
+                                                            type="number"
+                                                            name="currentValue"
+                                                            min="0.01"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.currentValue !== undefined &&
+                                                                investmentRecord.currentValue !== null
+                                                                    ? investmentRecord.currentValue
+                                                                    : ""
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500"
+                                                    >
+                                                        You can enter the final
+                                                        investment value, or
+                                                        provide a return amount
+                                                        or return percentage.
+                                                    </p>
+
+
+                                                    <!-- Return Amount -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="maturityReturnAmount"
+                                                            class="admin-label"
+                                                        >
+                                                            Return Amount
+                                                        </label>
+
+
+                                                        <input
+                                                            id="maturityReturnAmount"
+                                                            type="number"
+                                                            name="returnAmount"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.returnAmount !== undefined &&
+                                                                investmentRecord.returnAmount !== null
+                                                                    ? investmentRecord.returnAmount
+                                                                    : ""
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Return Percentage -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="maturityReturnPercentage"
+                                                            class="admin-label"
+                                                        >
+                                                            Return Percentage
+                                                        </label>
+
+
+                                                        <input
+                                                            id="maturityReturnPercentage"
+                                                            type="number"
+                                                            name="returnPercentage"
+                                                            min="0"
+                                                            step="0.01"
+                                                            value="<%= investmentRecord.returnPercentage !== undefined &&
+                                                                investmentRecord.returnPercentage !== null
+                                                                    ? investmentRecord.returnPercentage
+                                                                    : ""
+                                                            %>"
+                                                            class="admin-input"
+                                                        >
+
+                                                    </div>
+
+
+                                                    <!-- Note -->
+
+                                                    <div>
+
+                                                        <label
+                                                            for="maturityAdminNote"
+                                                            class="admin-label"
+                                                        >
+                                                            Maturity Note
+                                                        </label>
+
+
+                                                        <textarea
+                                                            id="maturityAdminNote"
+                                                            name="adminNote"
+                                                            rows="3"
+                                                            class="admin-input"
+                                                            placeholder="Optional maturity note"
+                                                        ></textarea>
+
+                                                    </div>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-primary-button
+                                                               w-full"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="badge-check"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Mature and Pay Out
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- =========================
+                                                 MATURED
+                                            ========================== -->
+
+                                            <% } else if (
+                                                investmentRecord.status ===
+                                                    "Matured"
+                                            ) { %>
+
+                                                <div
+                                                    class="mb-4
+                                                           p-4
+                                                           bg-purple-50
+                                                           border
+                                                           border-purple-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-purple-900"
+                                                    >
+                                                        Investment Matured
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-purple-700
+                                                               mt-1"
+                                                    >
+                                                        The investment payout
+                                                        has already been
+                                                        credited to the
+                                                        customer.
+                                                    </p>
+
+                                                </div>
+
+
+                                                <% if (
+                                                    investmentRecord.currentValue !==
+                                                        undefined &&
+                                                    investmentRecord.currentValue !==
+                                                        null
+                                                ) { %>
+
+                                                    <div
+                                                        class="mb-4
+                                                               p-4
+                                                               bg-gray-50
+                                                               border
+                                                               border-gray-200
+                                                               rounded-lg"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500"
+                                                        >
+                                                            Final Payout
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-lg
+                                                                   font-semibold
+                                                                   text-gray-900
+                                                                   mt-1"
+                                                        >
+
+                                                            <%= investmentRecord.currency || "" %>
+
+                                                            <%= Number(
+                                                                investmentRecord.currentValue
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+
+                                                <form
+                                                    action="/admin/investments/<%= investmentRecord._id || investmentRecord.id %>/close"
+                                                    method="POST"
+                                                >
+
+                                                    <label
+                                                        for="closingAdminNote"
+                                                        class="admin-label"
+                                                    >
+                                                        Closing Note
+                                                    </label>
+
+
+                                                    <textarea
+                                                        id="closingAdminNote"
+                                                        name="adminNote"
+                                                        rows="3"
+                                                        class="admin-input"
+                                                        placeholder="Optional closing note"
+                                                    ></textarea>
+
+
+                                                    <button
+                                                        type="submit"
+                                                        class="admin-secondary-button
+                                                               w-full
+                                                               mt-3"
+                                                    >
+
+                                                        <i
+                                                            data-lucide="archive"
+                                                            class="h-4 w-4"
+                                                        ></i>
+
+                                                        Close Investment
+
+                                                    </button>
+
+                                                </form>
+
+
+                                            <!-- =========================
+                                                 CLOSED
+                                            ========================== -->
+
+                                            <% } else if (
+                                                investmentRecord.status ===
+                                                    "Closed"
+                                            ) { %>
+
+                                                <div
+                                                    class="p-4
+                                                           bg-gray-50
+                                                           border
+                                                           border-gray-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-800"
+                                                    >
+                                                        Investment Closed
+                                                    </p>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-600
+                                                               mt-1"
+                                                    >
+                                                        The investment has
+                                                        completed its lifecycle.
+                                                        No additional financial
+                                                        action is available.
+                                                    </p>
+
+                                                </div>
+
+
+                                            <!-- =========================
+                                                 REJECTED
+                                            ========================== -->
+
+                                            <% } else if (
+                                                investmentRecord.status ===
+                                                    "Rejected"
+                                            ) { %>
+
+                                                <div
+                                                    class="p-4
+                                                           bg-red-50
+                                                           border
+                                                           border-red-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-red-800"
+                                                    >
+                                                        Investment Rejected
+                                                    </p>
+
+
+                                                    <% if (
+                                                        investmentRecord.adminNote
+                                                    ) { %>
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-red-700
+                                                                   mt-2
+                                                                   whitespace-pre-line"
+                                                        >
+                                                            <%= investmentRecord.adminNote %>
+                                                        </p>
+
+                                                    <% } %>
+
+                                                </div>
+
+
+                                            <!-- =========================
+                                                 CANCELLED / OTHER
+                                            ========================== -->
+
+                                            <% } else { %>
+
+                                                <div
+                                                    class="p-4
+                                                           bg-gray-50
+                                                           border
+                                                           border-gray-200
+                                                           rounded-lg"
+                                                >
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-gray-600"
+                                                    >
+                                                        No administrator
+                                                        financial action is
+                                                        available for this
+                                                        investment.
+                                                    </p>
+
+                                                </div>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+                                </aside>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

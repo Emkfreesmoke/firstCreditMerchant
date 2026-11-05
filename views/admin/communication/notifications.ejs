@@ -1,0 +1,729 @@
+<%
+    const records =
+        typeof notifications !== "undefined" &&
+        Array.isArray(notifications)
+            ? notifications
+            : [];
+
+    const unreadRecords =
+        records.filter(
+            record =>
+                record &&
+                record.read !== true
+        );
+
+    const importantRecords =
+        records.filter(
+            record =>
+                record &&
+                (
+                    record.priority === "Important" ||
+                    record.priority === "Urgent"
+                )
+        );
+
+    const readRecords =
+        records.filter(
+            record =>
+                record &&
+                record.read === true
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            notificationFilter: 'all',
+            search: ''
+        }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <% if (
+                            typeof created !== "undefined" &&
+                            created
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       p-4
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg
+                                       text-sm
+                                       text-green-800"
+                            >
+                                Notification created successfully.
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- Header -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Notifications
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Create and monitor customer
+                                    notifications.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/notifications/create"
+                                class="admin-primary-button"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Create Notification
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- Summary -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Total Notifications
+                                    </p>
+
+                                    <p class="admin-stat-value">
+                                        <%= records.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Unread
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-blue-700"
+                                    >
+                                        <%= unreadRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Read
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= readRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Important
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-red-700"
+                                    >
+                                        <%= importantRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Filters -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       lg:flex-row
+                                       lg:items-center
+                                       gap-4"
+                            >
+
+                                <div class="relative flex-1">
+
+                                    <i
+                                        data-lucide="search"
+                                        class="absolute
+                                               left-3
+                                               top-1/2
+                                               -translate-y-1/2
+                                               h-4 w-4
+                                               text-gray-400"
+                                    ></i>
+
+
+                                    <input
+                                        type="search"
+                                        x-model="search"
+                                        class="admin-input pl-9"
+                                        placeholder="Search notifications..."
+                                    >
+
+                                </div>
+
+
+                                <div class="flex flex-wrap gap-2">
+
+                                    <% [
+                                        ["all", "All"],
+                                        ["unread", "Unread"],
+                                        ["read", "Read"],
+                                        ["important", "Important"],
+                                        ["urgent", "Urgent"]
+                                    ].forEach(function(item) { %>
+
+                                        <button
+                                            type="button"
+                                            @click="
+                                                notificationFilter =
+                                                    '<%= item[0] %>'
+                                            "
+                                            :class="
+                                                notificationFilter ===
+                                                    '<%= item[0] %>'
+                                                    ? 'bg-primary-600 text-white'
+                                                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                            "
+                                            class="px-4 py-2
+                                                   rounded-lg
+                                                   text-sm
+                                                   font-medium"
+                                        >
+                                            <%= item[1] %>
+                                        </button>
+
+                                    <% }); %>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Notification records -->
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Customer Notifications
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Notifications sent to customer
+                                        dashboard accounts.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (!records.length) { %>
+
+                                <div class="admin-empty-state">
+
+                                    <div
+                                        class="h-14 w-14
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-4"
+                                    >
+
+                                        <i
+                                            data-lucide="bell"
+                                            class="h-7 w-7
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <h3
+                                        class="text-base
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        No notification records
+                                    </h3>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-2"
+                                    >
+                                        Create a notification to send
+                                        an update to a customer.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Notification
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Type
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Priority
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Created
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% records.forEach(
+                                                function(record) {
+
+                                                    const recordCustomer =
+                                                        record.customer ||
+                                                        null;
+
+                                                    const customerName =
+                                                        recordCustomer
+                                                            ? [
+                                                                recordCustomer.firstName,
+                                                                recordCustomer.middleName,
+                                                                recordCustomer.lastName
+                                                              ]
+                                                                .filter(Boolean)
+                                                                .join(" ")
+                                                            : "";
+
+                                                    const searchableText = [
+                                                        customerName,
+                                                        recordCustomer
+                                                            ? recordCustomer.email
+                                                            : "",
+                                                        record.title,
+                                                        record.message,
+                                                        record.type,
+                                                        record.priority
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                        .replace(/'/g, "\\'")
+                                                        .toLowerCase();
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        (
+                                                            notificationFilter === 'all' ||
+
+                                                            (
+                                                                notificationFilter === 'unread' &&
+                                                                <%= record.read === true
+                                                                    ? "false"
+                                                                    : "true"
+                                                                %>
+                                                            ) ||
+
+                                                            (
+                                                                notificationFilter === 'read' &&
+                                                                <%= record.read === true
+                                                                    ? "true"
+                                                                    : "false"
+                                                                %>
+                                                            ) ||
+
+                                                            (
+                                                                notificationFilter === 'important' &&
+                                                                '<%= record.priority || "" %>' === 'Important'
+                                                            ) ||
+
+                                                            (
+                                                                notificationFilter === 'urgent' &&
+                                                                '<%= record.priority || "" %>' === 'Urgent'
+                                                            )
+                                                        ) &&
+
+                                                        (
+                                                            !search ||
+
+                                                            '<%= searchableText %>'.includes(
+                                                                search.toLowerCase()
+                                                            )
+                                                        )
+                                                    "
+                                                >
+
+                                                    <!-- Customer -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <% if (
+                                                            recordCustomer
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-sm
+                                                                       font-medium
+                                                                       text-gray-900"
+                                                            >
+                                                                <%= customerName %>
+                                                            </p>
+
+
+                                                            <% if (
+                                                                recordCustomer.email
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-500
+                                                                           mt-1"
+                                                                >
+                                                                    <%= recordCustomer.email %>
+                                                                </p>
+
+                                                            <% } %>
+
+
+                                                            <% if (
+                                                                recordCustomer.customerId
+                                                            ) { %>
+
+                                                                <p
+                                                                    class="text-xs
+                                                                           text-gray-400
+                                                                           mt-1"
+                                                                >
+                                                                    <%= recordCustomer.customerId %>
+                                                                </p>
+
+                                                            <% } %>
+
+                                                        <% } else { %>
+
+                                                            <span
+                                                                class="text-sm
+                                                                       text-gray-400"
+                                                            >
+                                                                Customer unavailable
+                                                            </span>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Notification -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-900"
+                                                        >
+                                                            <%= record.title || "" %>
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500
+                                                                   mt-1
+                                                                   max-w-sm"
+                                                        >
+                                                            <%= record.message
+                                                                ? (
+                                                                    record.message.length > 100
+                                                                        ? record.message.slice(
+                                                                            0,
+                                                                            100
+                                                                          ) + "..."
+                                                                        : record.message
+                                                                  )
+                                                                : ""
+                                                            %>
+                                                        </p>
+
+                                                    </td>
+
+
+                                                    <!-- Type -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   bg-gray-100
+                                                                   text-gray-700"
+                                                        >
+                                                            <%= record.type || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Priority -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.priority === "Urgent"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : record.priority === "Important"
+                                                                       ? "bg-orange-50 text-orange-700"
+                                                                       : "bg-gray-100 text-gray-600"
+                                                                   %>"
+                                                        >
+                                                            <%= record.priority || "Normal" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <!-- Read status -->
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.read === true
+                                                                       ? "bg-green-50 text-green-700"
+                                                                       : "bg-blue-50 text-blue-700"
+                                                                   %>"
+                                                        >
+                                                            <%= record.read === true
+                                                                ? "Read"
+                                                                : "Unread"
+                                                            %>
+                                                        </span>
+
+
+                                                        <% if (
+                                                            record.readAt
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+                                                                <%= new Date(
+                                                                    record.readAt
+                                                                ).toLocaleString() %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <!-- Created -->
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.createdAt
+                                                            ? new Date(
+                                                                record.createdAt
+                                                              ).toLocaleString()
+                                                            : ""
+                                                        %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

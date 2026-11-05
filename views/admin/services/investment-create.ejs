@@ -1,0 +1,708 @@
+<%
+    const customerRecords =
+        typeof customers !== "undefined" &&
+        Array.isArray(customers)
+            ? customers
+            : [];
+
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+
+    const selectedId =
+        oldForm.customerId ||
+        (
+            typeof selectedCustomerId !== "undefined"
+                ? selectedCustomerId
+                : ""
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/investments"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Investments
+
+                        </a>
+
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                Create Investment
+                            </h1>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Create an investment record
+                                for an active customer.
+                            </p>
+
+                        </div>
+
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-4
+                                       bg-red-50
+                                       border
+                                       border-red-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3
+                                               mt-0.5"
+                                    ></i>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-red-800"
+                                    >
+                                        <%= error %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Investment Information
+                                    </h3>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Creating an investment does
+                                        not debit the customer's
+                                        account automatically.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <form
+                                action="/admin/investments/create"
+                                method="POST"
+                                class="p-6"
+                            >
+
+                                <div
+                                    class="grid
+                                           grid-cols-1
+                                           md:grid-cols-2
+                                           gap-5"
+                                >
+
+                                    <!-- Customer -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="customerId"
+                                            class="admin-label"
+                                        >
+                                            Customer
+                                        </label>
+
+
+                                        <select
+                                            id="customerId"
+                                            name="customerId"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select customer
+                                            </option>
+
+
+                                            <% customerRecords.forEach(
+                                                function(customer) {
+
+                                                    const customerId =
+                                                        customer.id ||
+                                                        customer._id;
+
+                                                    const label = [
+                                                        customer.fullName,
+                                                        customer.customerId
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" · ");
+                                            %>
+
+                                                <option
+                                                    value="<%= customerId %>"
+                                                    <%= String(
+                                                        customerId
+                                                    ) === String(
+                                                        selectedId
+                                                    )
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= label || customerId %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Name -->
+
+                                    <div>
+
+                                        <label
+                                            for="investmentName"
+                                            class="admin-label"
+                                        >
+                                            Investment Name
+                                        </label>
+
+
+                                        <input
+                                            id="investmentName"
+                                            type="text"
+                                            name="name"
+                                            value="<%= oldForm.name || "" %>"
+                                            class="admin-input"
+                                            placeholder="Example: Growth Portfolio"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Type -->
+
+                                    <div>
+
+                                        <label
+                                            for="investmentType"
+                                            class="admin-label"
+                                        >
+                                            Investment Type
+                                        </label>
+
+
+                                        <select
+                                            id="investmentType"
+                                            name="type"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <option value="">
+                                                Select type
+                                            </option>
+
+
+                                            <% [
+                                                "Fixed Investment",
+                                                "Savings Investment",
+                                                "Growth Fund",
+                                                "Business Investment",
+                                                "Retirement Investment",
+                                                "Custom Investment"
+                                            ].forEach(
+                                                function(type) {
+                                            %>
+
+                                                <option
+                                                    value="<%= type %>"
+                                                    <%= oldForm.type === type
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= type %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Principal -->
+
+                                    <div>
+
+                                        <label
+                                            for="principal"
+                                            class="admin-label"
+                                        >
+                                            Principal
+                                        </label>
+
+
+                                        <input
+                                            id="principal"
+                                            type="number"
+                                            name="principal"
+                                            min="0.01"
+                                            step="0.01"
+                                            value="<%= oldForm.principal || "" %>"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Current Value -->
+
+                                    <div>
+
+                                        <label
+                                            for="currentValue"
+                                            class="admin-label"
+                                        >
+                                            Current Value
+                                        </label>
+
+
+                                        <input
+                                            id="currentValue"
+                                            type="number"
+                                            name="currentValue"
+                                            min="0"
+                                            step="0.01"
+                                            value="<%= oldForm.currentValue || "" %>"
+                                            class="admin-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Return Amount -->
+
+                                    <div>
+
+                                        <label
+                                            for="returnAmount"
+                                            class="admin-label"
+                                        >
+                                            Return Amount
+                                        </label>
+
+
+                                        <input
+                                            id="returnAmount"
+                                            type="number"
+                                            name="returnAmount"
+                                            step="0.01"
+                                            value="<%= oldForm.returnAmount || "" %>"
+                                            class="admin-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Return Percentage -->
+
+                                    <div>
+
+                                        <label
+                                            for="returnPercentage"
+                                            class="admin-label"
+                                        >
+                                            Return Percentage
+                                        </label>
+
+
+                                        <input
+                                            id="returnPercentage"
+                                            type="number"
+                                            name="returnPercentage"
+                                            min="0"
+                                            step="0.01"
+                                            value="<%= oldForm.returnPercentage || "" %>"
+                                            class="admin-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Duration -->
+
+                                    <div>
+
+                                        <label
+                                            for="duration"
+                                            class="admin-label"
+                                        >
+                                            Duration
+                                        </label>
+
+
+                                        <select
+                                            id="duration"
+                                            name="duration"
+                                            class="admin-input"
+                                        >
+
+                                            <option value="">
+                                                Select duration
+                                            </option>
+
+
+                                            <% [
+                                                "3 Months",
+                                                "6 Months",
+                                                "12 Months",
+                                                "24 Months",
+                                                "36 Months",
+                                                "60 Months"
+                                            ].forEach(
+                                                function(duration) {
+                                            %>
+
+                                                <option
+                                                    value="<%= duration %>"
+                                                    <%= oldForm.duration === duration
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= duration %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Initial Status -->
+
+                                    <div>
+
+                                        <label
+                                            for="status"
+                                            class="admin-label"
+                                        >
+                                            Initial Status
+                                        </label>
+
+
+                                        <select
+                                            id="status"
+                                            name="status"
+                                            class="admin-input"
+                                            required
+                                        >
+
+                                            <% [
+                                                "Pending",
+                                                "Under Review",
+                                                "Approved",
+                                                "Rejected"
+                                            ].forEach(
+                                                function(status) {
+                                            %>
+
+                                                <option
+                                                    value="<%= status %>"
+                                                    <%= (
+                                                        oldForm.status ||
+                                                        "Pending"
+                                                    ) === status
+                                                        ? "selected"
+                                                        : ""
+                                                    %>
+                                                >
+                                                    <%= status %>
+                                                </option>
+
+                                            <% }); %>
+
+                                        </select>
+
+                                    </div>
+
+
+                                    <!-- Start -->
+
+                                    <div>
+
+                                        <label
+                                            for="startDate"
+                                            class="admin-label"
+                                        >
+                                            Start Date
+                                        </label>
+
+
+                                        <input
+                                            id="startDate"
+                                            type="date"
+                                            name="startDate"
+                                            value="<%= oldForm.startDate || "" %>"
+                                            class="admin-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Maturity -->
+
+                                    <div>
+
+                                        <label
+                                            for="maturityDate"
+                                            class="admin-label"
+                                        >
+                                            Maturity Date
+                                        </label>
+
+
+                                        <input
+                                            id="maturityDate"
+                                            type="date"
+                                            name="maturityDate"
+                                            value="<%= oldForm.maturityDate || "" %>"
+                                            class="admin-input"
+                                        >
+
+                                    </div>
+
+
+                                    <!-- Description -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="description"
+                                            class="admin-label"
+                                        >
+                                            Description
+                                        </label>
+
+
+                                        <textarea
+                                            id="description"
+                                            name="description"
+                                            rows="4"
+                                            class="admin-input"
+                                            placeholder="Investment description or goal"
+                                        ><%= oldForm.description || "" %></textarea>
+
+                                    </div>
+
+
+                                    <!-- Note -->
+
+                                    <div class="md:col-span-2">
+
+                                        <label
+                                            for="adminNote"
+                                            class="admin-label"
+                                        >
+                                            Admin Note
+                                        </label>
+
+
+                                        <textarea
+                                            id="adminNote"
+                                            name="adminNote"
+                                            rows="4"
+                                            class="admin-input"
+                                            placeholder="Optional internal note"
+                                        ><%= oldForm.adminNote || "" %></textarea>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="mt-6
+                                           p-4
+                                           bg-blue-50
+                                           border
+                                           border-blue-100
+                                           rounded-lg"
+                                >
+
+                                    <div class="flex items-start">
+
+                                        <i
+                                            data-lucide="info"
+                                            class="h-5 w-5
+                                                   text-blue-600
+                                                   mr-3
+                                                   mt-0.5"
+                                        ></i>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-blue-800"
+                                        >
+                                            Approved investments are not
+                                            funded automatically. The
+                                            principal is deducted only when
+                                            the investment is activated.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div
+                                    class="flex
+                                           flex-col-reverse
+                                           sm:flex-row
+                                           sm:justify-end
+                                           gap-3
+                                           mt-7"
+                                >
+
+                                    <a
+                                        href="/admin/investments"
+                                        class="admin-secondary-button"
+                                    >
+                                        Cancel
+                                    </a>
+
+
+                                    <button
+                                        type="submit"
+                                        class="admin-primary-button"
+                                    >
+
+                                        <i
+                                            data-lucide="trending-up"
+                                            class="h-4 w-4"
+                                        ></i>
+
+                                        Create Investment
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

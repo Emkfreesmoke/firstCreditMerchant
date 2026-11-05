@@ -1,0 +1,787 @@
+<%
+    const record =
+        typeof card !== "undefined"
+            ? card
+            : null;
+
+    const recordCustomer =
+        typeof customer !== "undefined" &&
+        customer
+            ? customer
+            : (
+                record &&
+                record.customer
+                    ? record.customer
+                    : null
+            );
+
+    const recordAccount =
+        typeof account !== "undefined"
+            ? account
+            : null;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{ mobileMenuOpen: false }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-6xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <a
+                            href="/admin/cards"
+                            class="inline-flex
+                                   items-center
+                                   text-sm
+                                   text-gray-500
+                                   hover:text-gray-700
+                                   mb-6"
+                        >
+                            <i
+                                data-lucide="arrow-left"
+                                class="h-4 w-4 mr-2"
+                            ></i>
+
+                            Back to Cards
+                        </a>
+
+
+                        <% if (
+                            typeof created !== "undefined" &&
+                            created
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-3
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg"
+                            >
+
+                                <p class="text-sm text-green-800">
+                                    Card created successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (
+                            typeof updated !== "undefined" &&
+                            updated
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-3
+                                       bg-green-50
+                                       border
+                                       border-green-200
+                                       rounded-lg"
+                            >
+
+                                <p class="text-sm text-green-800">
+                                    Card updated successfully.
+                                </p>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <% if (!record) { %>
+
+                            <section class="admin-panel">
+
+                                <div class="admin-empty-state">
+
+                                    <h1
+                                        class="text-xl
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Card unavailable
+                                    </h1>
+
+                                </div>
+
+                            </section>
+
+
+                        <% } else { %>
+
+                            <!-- Header -->
+
+                            <div
+                                class="flex
+                                       flex-col
+                                       sm:flex-row
+                                       sm:items-center
+                                       sm:justify-between
+                                       gap-4
+                                       mb-6"
+                            >
+
+                                <div>
+
+                                    <h1
+                                        class="text-2xl
+                                               font-bold
+                                               text-gray-900"
+                                    >
+                                        Card Details
+                                    </h1>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        •••• <%= record.lastFour || "" %>
+                                    </p>
+
+                                </div>
+
+
+                                <span
+                                    class="admin-badge
+                                           <%= record.status === "Active"
+                                               ? "bg-green-50 text-green-700"
+                                               : record.status === "Frozen"
+                                               ? "bg-blue-50 text-blue-700"
+                                               : record.status === "Pending"
+                                               ? "bg-yellow-50 text-yellow-700"
+                                               : record.status === "Expired"
+                                               ? "bg-red-50 text-red-700"
+                                               : "bg-gray-100 text-gray-600"
+                                           %>"
+                                >
+                                    <%= record.status || "" %>
+                                </span>
+
+                            </div>
+
+
+                            <div
+                                class="grid
+                                       grid-cols-1
+                                       lg:grid-cols-3
+                                       gap-6"
+                            >
+
+                                <!-- Update Card -->
+
+                                <section
+                                    class="admin-panel
+                                           lg:col-span-2"
+                                >
+
+                                    <div class="admin-panel-header">
+
+                                        <div>
+
+                                            <h3>
+                                                Card Information
+                                            </h3>
+
+
+                                            <p
+                                                class="text-xs
+                                                       text-gray-500
+                                                       mt-1"
+                                            >
+                                                Update display-safe card
+                                                details and status.
+                                            </p>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <form
+                                        action="/admin/cards/<%= record._id || record.id %>/update"
+                                        method="POST"
+                                        class="p-6"
+                                    >
+
+                                        <div
+                                            class="grid
+                                                   grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+                                            <div>
+
+                                                <label
+                                                    for="displayName"
+                                                    class="admin-label"
+                                                >
+                                                    Display Name
+                                                </label>
+
+
+                                                <input
+                                                    id="displayName"
+                                                    name="displayName"
+                                                    type="text"
+                                                    value="<%= record.displayName || "" %>"
+                                                    class="admin-input"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="holderName"
+                                                    class="admin-label"
+                                                >
+                                                    Holder Name
+                                                </label>
+
+
+                                                <input
+                                                    id="holderName"
+                                                    name="holderName"
+                                                    type="text"
+                                                    value="<%= record.holderName || "" %>"
+                                                    class="admin-input"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="issuerName"
+                                                    class="admin-label"
+                                                >
+                                                    Issuer Name
+                                                </label>
+
+
+                                                <input
+                                                    id="issuerName"
+                                                    name="issuerName"
+                                                    type="text"
+                                                    value="<%= record.issuerName || "" %>"
+                                                    class="admin-input"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="cardType"
+                                                    class="admin-label"
+                                                >
+                                                    Card Type
+                                                </label>
+
+
+                                                <select
+                                                    id="cardType"
+                                                    name="type"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                                    <% [
+                                                        "Virtual Debit",
+                                                        "Physical Debit",
+                                                        "Virtual Credit",
+                                                        "Physical Credit"
+                                                    ].forEach(
+                                                        function(type) {
+                                                    %>
+
+                                                        <option
+                                                            value="<%= type %>"
+                                                            <%= record.type === type
+                                                                ? "selected"
+                                                                : ""
+                                                            %>
+                                                        >
+                                                            <%= type %>
+                                                        </option>
+
+                                                    <% }); %>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="lastFour"
+                                                    class="admin-label"
+                                                >
+                                                    Last Four Digits
+                                                </label>
+
+
+                                                <input
+                                                    id="lastFour"
+                                                    name="lastFour"
+                                                    type="text"
+                                                    inputmode="numeric"
+                                                    maxlength="4"
+                                                    pattern="\d{4}"
+                                                    value="<%= record.lastFour || "" %>"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="expiry"
+                                                    class="admin-label"
+                                                >
+                                                    Expiration
+                                                </label>
+
+
+                                                <input
+                                                    id="expiry"
+                                                    name="expiry"
+                                                    type="text"
+                                                    maxlength="5"
+                                                    pattern="(0[1-9]|1[0-2])\/\d{2}"
+                                                    value="<%= record.expiry || "" %>"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="currency"
+                                                    class="admin-label"
+                                                >
+                                                    Currency
+                                                </label>
+
+
+                                                <select
+                                                    id="currency"
+                                                    name="currency"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                                    <% [
+                                                        "USD",
+                                                        "GBP",
+                                                        "EUR",
+                                                        "NGN"
+                                                    ].forEach(
+                                                        function(currency) {
+                                                    %>
+
+                                                        <option
+                                                            value="<%= currency %>"
+                                                            <%= record.currency === currency
+                                                                ? "selected"
+                                                                : ""
+                                                            %>
+                                                        >
+                                                            <%= currency %>
+                                                        </option>
+
+                                                    <% }); %>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="spendingLimit"
+                                                    class="admin-label"
+                                                >
+                                                    Spending Limit
+                                                </label>
+
+
+                                                <input
+                                                    id="spendingLimit"
+                                                    name="spendingLimit"
+                                                    type="number"
+                                                    step="0.01"
+                                                    min="0"
+                                                    value="<%= record.spendingLimit || 0 %>"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="status"
+                                                    class="admin-label"
+                                                >
+                                                    Status
+                                                </label>
+
+
+                                                <select
+                                                    id="status"
+                                                    name="status"
+                                                    class="admin-input"
+                                                    required
+                                                >
+
+                                                    <% [
+                                                        "Pending",
+                                                        "Active",
+                                                        "Frozen",
+                                                        "Inactive",
+                                                        "Expired"
+                                                    ].forEach(
+                                                        function(status) {
+                                                    %>
+
+                                                        <option
+                                                            value="<%= status %>"
+                                                            <%= record.status === status
+                                                                ? "selected"
+                                                                : ""
+                                                            %>
+                                                        >
+                                                            <%= status %>
+                                                        </option>
+
+                                                    <% }); %>
+
+                                                </select>
+
+                                            </div>
+
+
+                                            <div
+                                                class="md:col-span-2"
+                                            >
+
+                                                <label
+                                                    for="adminNote"
+                                                    class="admin-label"
+                                                >
+                                                    Admin Note
+                                                </label>
+
+
+                                                <textarea
+                                                    id="adminNote"
+                                                    name="adminNote"
+                                                    class="admin-input"
+                                                    placeholder="Optional internal note"
+                                                ><%= record.adminNote || "" %></textarea>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="flex
+                                                   justify-end
+                                                   mt-7"
+                                        >
+
+                                            <button
+                                                type="submit"
+                                                class="admin-primary-button"
+                                            >
+
+                                                <i
+                                                    data-lucide="save"
+                                                    class="h-4 w-4"
+                                                ></i>
+
+                                                Save Card
+
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+
+                                </section>
+
+
+                                <!-- Customer -->
+
+                                <aside class="space-y-6">
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Customer
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6">
+
+                                            <% if (
+                                                recordCustomer
+                                            ) { %>
+
+                                                <p
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-gray-900"
+                                                >
+                                                    <%= [
+                                                        recordCustomer.firstName,
+                                                        recordCustomer.middleName,
+                                                        recordCustomer.lastName
+                                                    ]
+                                                        .filter(Boolean)
+                                                        .join(" ")
+                                                    %>
+                                                </p>
+
+
+                                                <% if (
+                                                    recordCustomer.email
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-sm
+                                                               text-gray-500
+                                                               mt-1"
+                                                    >
+                                                        <%= recordCustomer.email %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    recordCustomer.customerId
+                                                ) { %>
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-400
+                                                               mt-2"
+                                                    >
+                                                        <%= recordCustomer.customerId %>
+                                                    </p>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    recordAccount &&
+                                                    recordAccount.accountNumber
+                                                ) { %>
+
+                                                    <div
+                                                        class="mt-4
+                                                               pt-4
+                                                               border-t
+                                                               border-gray-100"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-400"
+                                                        >
+                                                            Account Number
+                                                        </p>
+
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-800
+                                                                   mt-1"
+                                                        >
+                                                            <%= recordAccount.accountNumber %>
+                                                        </p>
+
+                                                    </div>
+
+                                                <% } %>
+
+                                            <% } else { %>
+
+                                                <p class="text-sm text-gray-500">
+                                                    Customer unavailable
+                                                </p>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+
+                                    <section class="admin-panel">
+
+                                        <div class="admin-panel-header">
+
+                                            <h3>
+                                                Record
+                                            </h3>
+
+                                        </div>
+
+
+                                        <div class="p-6 space-y-4">
+
+                                            <div class="admin-detail">
+
+                                                <span>
+                                                    Created
+                                                </span>
+
+                                                <strong>
+                                                    <%= record.createdAt
+                                                        ? new Date(
+                                                            record.createdAt
+                                                          ).toLocaleString()
+                                                        : ""
+                                                    %>
+                                                </strong>
+
+                                            </div>
+
+
+                                            <% if (
+                                                record.issuedAt
+                                            ) { %>
+
+                                                <div class="admin-detail">
+
+                                                    <span>
+                                                        Issued
+                                                    </span>
+
+                                                    <strong>
+                                                        <%= new Date(
+                                                            record.issuedAt
+                                                        ).toLocaleString() %>
+                                                    </strong>
+
+                                                </div>
+
+                                            <% } %>
+
+
+                                            <% if (
+                                                record.activatedAt
+                                            ) { %>
+
+                                                <div class="admin-detail">
+
+                                                    <span>
+                                                        Activated
+                                                    </span>
+
+                                                    <strong>
+                                                        <%= new Date(
+                                                            record.activatedAt
+                                                        ).toLocaleString() %>
+                                                    </strong>
+
+                                                </div>
+
+                                            <% } %>
+
+                                        </div>
+
+                                    </section>
+
+                                </aside>
+
+                            </div>
+
+                        <% } %>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

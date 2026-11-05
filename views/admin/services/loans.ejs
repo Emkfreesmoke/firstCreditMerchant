@@ -1,0 +1,575 @@
+<%
+    const loanRecords =
+        typeof loans !== "undefined" &&
+        Array.isArray(loans)
+            ? loans
+            : [];
+
+    const pendingLoans =
+        loanRecords.filter(
+            loan =>
+                loan &&
+                (
+                    loan.status === "Pending" ||
+                    loan.status === "Under Review"
+                )
+        );
+
+    const approvedLoans =
+        loanRecords.filter(
+            loan =>
+                loan &&
+                loan.status === "Approved"
+        );
+
+    const activeLoans =
+        loanRecords.filter(
+            loan =>
+                loan &&
+                loan.status === "Active"
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("../partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("../partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            loanFilter: 'all'
+        }"
+        class="admin-app-shell
+               flex h-screen
+               overflow-hidden"
+    >
+
+        <%- include("../partials/sidebar") %>
+
+
+        <div
+            class="admin-main-column
+                   flex flex-col
+                   flex-1
+                   overflow-hidden"
+        >
+
+            <%- include("../partials/topbar") %>
+
+            <%- include("../partials/mobile-menu") %>
+
+
+            <main class="admin-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               lg:px-8"
+                    >
+
+                        <!-- Header -->
+
+                        <div
+                            class="flex
+                                   flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Loans
+                                </h1>
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500
+                                           mt-1"
+                                >
+                                    Review and manage customer
+                                    loan records.
+                                </p>
+
+                            </div>
+
+
+                            <a
+                                href="/admin/loans/create"
+                                class="admin-primary-button"
+                            >
+
+                                <i
+                                    data-lucide="plus"
+                                    class="h-4 w-4"
+                                ></i>
+
+                                Create Loan
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- Summary -->
+
+                        <div
+                            class="grid
+                                   grid-cols-1
+                                   sm:grid-cols-2
+                                   xl:grid-cols-4
+                                   gap-4
+                                   mb-6"
+                        >
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Total Loans
+                                    </p>
+
+                                    <p class="admin-stat-value">
+                                        <%= loanRecords.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Pending Review
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingLoans.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Approved
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-blue-700"
+                                    >
+                                        <%= approvedLoans.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="admin-stat-card">
+
+                                <div>
+
+                                    <p class="admin-stat-label">
+                                        Active
+                                    </p>
+
+                                    <p
+                                        class="admin-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= activeLoans.length %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Filters -->
+
+                        <div
+                            class="admin-panel
+                                   p-4
+                                   mb-6"
+                        >
+
+                            <div class="flex flex-wrap gap-2">
+
+                                <% [
+                                    ["all", "All"],
+                                    ["pending", "Pending"],
+                                    ["approved", "Approved"],
+                                    ["active", "Active"],
+                                    ["rejected", "Rejected"]
+                                ].forEach(function(item) { %>
+
+                                    <button
+                                        type="button"
+                                        @click="
+                                            loanFilter =
+                                                '<%= item[0] %>'
+                                        "
+                                        :class="
+                                            loanFilter ===
+                                                '<%= item[0] %>'
+                                                ? 'bg-primary-600 text-white'
+                                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                        "
+                                        class="px-4 py-2
+                                               rounded-lg
+                                               text-sm
+                                               font-medium"
+                                    >
+                                        <%= item[1] %>
+                                    </button>
+
+                                <% }); %>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Records -->
+
+                        <section class="admin-panel">
+
+                            <div class="admin-panel-header">
+
+                                <div>
+
+                                    <h3>
+                                        Loan Records
+                                    </h3>
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Customer loan applications
+                                        and active loans.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                loanRecords.length === 0
+                            ) { %>
+
+                                <div class="admin-empty-state">
+
+                                    <i
+                                        data-lucide="landmark"
+                                        class="h-9 w-9
+                                               text-gray-400
+                                               mb-3"
+                                    ></i>
+
+                                    <p class="text-sm text-gray-500">
+                                        No loan records
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="admin-table-heading">
+                                                    Customer
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Type
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Requested
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Approved
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="admin-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% loanRecords.forEach(
+                                                function(record) {
+
+                                                    const recordCustomer =
+                                                        record.customer ||
+                                                        null;
+
+                                                    const customerName =
+                                                        recordCustomer
+                                                            ? [
+                                                                recordCustomer.firstName,
+                                                                recordCustomer.middleName,
+                                                                recordCustomer.lastName
+                                                              ]
+                                                                .filter(Boolean)
+                                                                .join(" ")
+                                                            : "";
+
+                                                    const loanId =
+                                                        record._id ||
+                                                        record.id;
+                                            %>
+
+                                                <tr
+                                                    x-show="
+                                                        loanFilter === 'all' ||
+
+                                                        (
+                                                            loanFilter === 'pending' &&
+                                                            (
+                                                                '<%= record.status || "" %>' === 'Pending' ||
+                                                                '<%= record.status || "" %>' === 'Under Review'
+                                                            )
+                                                        ) ||
+
+                                                        (
+                                                            loanFilter === 'approved' &&
+                                                            '<%= record.status || "" %>' === 'Approved'
+                                                        ) ||
+
+                                                        (
+                                                            loanFilter === 'active' &&
+                                                            '<%= record.status || "" %>' === 'Active'
+                                                        ) ||
+
+                                                        (
+                                                            loanFilter === 'rejected' &&
+                                                            '<%= record.status || "" %>' === 'Rejected'
+                                                        )
+                                                    "
+                                                >
+
+                                                    <td class="px-6 py-4">
+
+                                                        <p
+                                                            class="text-sm
+                                                                   font-medium
+                                                                   text-gray-900"
+                                                        >
+                                                            <%= customerName %>
+                                                        </p>
+
+
+                                                        <% if (
+                                                            recordCustomer &&
+                                                            recordCustomer.email
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-500
+                                                                       mt-1"
+                                                            >
+                                                                <%= recordCustomer.email %>
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <td class="admin-table-cell">
+                                                        <%= record.reference || "" %>
+                                                    </td>
+
+
+                                                    <td class="admin-table-cell">
+                                                        <%= record.type || "" %>
+                                                    </td>
+
+
+                                                    <td class="admin-table-cell">
+
+                                                        <%= record.currency || "" %>
+
+                                                        <%= Number(
+                                                            record.requestedAmount ||
+                                                            0
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+
+                                                    </td>
+
+
+                                                    <td class="admin-table-cell">
+
+                                                        <% if (
+                                                            record.approvedAmount !==
+                                                                undefined &&
+                                                            record.approvedAmount !==
+                                                                null
+                                                        ) { %>
+
+                                                            <%= record.currency || "" %>
+
+                                                            <%= Number(
+                                                                record.approvedAmount
+                                                            ).toLocaleString(
+                                                                undefined,
+                                                                {
+                                                                    minimumFractionDigits: 2,
+                                                                    maximumFractionDigits: 2
+                                                                }
+                                                            ) %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <td class="px-6 py-4">
+
+                                                        <span
+                                                            class="admin-badge
+                                                                   <%= record.status === "Active"
+                                                                       ? "bg-green-50 text-green-700"
+                                                                       : record.status === "Approved"
+                                                                       ? "bg-blue-50 text-blue-700"
+                                                                       : record.status === "Rejected"
+                                                                       ? "bg-red-50 text-red-700"
+                                                                       : "bg-yellow-50 text-yellow-700"
+                                                                   %>"
+                                                        >
+                                                            <%= record.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <td class="admin-table-cell">
+
+                                                        <a
+                                                            href="/admin/loans/<%= loanId %>"
+                                                            class="admin-small-button"
+                                                        >
+
+                                                            <% if (
+                                                                record.status === "Pending" ||
+                                                                record.status === "Under Review"
+                                                            ) { %>
+
+                                                                Review
+
+                                                            <% } else { %>
+
+                                                                Manage
+
+                                                            <% } %>
+
+                                                        </a>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+        </div>
+
+    </div>
+
+
+    <%- include("../partials/scripts") %>
+
+</body>
+
+</html>

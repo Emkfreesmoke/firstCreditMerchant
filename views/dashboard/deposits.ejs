@@ -1,0 +1,1536 @@
+<%
+    const depositRecords =
+        typeof deposits !== "undefined" &&
+        Array.isArray(deposits)
+            ? deposits
+            : [];
+
+    const values =
+        typeof dashboardValues !== "undefined"
+            ? dashboardValues
+            : null;
+
+    const settings =
+        typeof depositSettings !== "undefined" &&
+        depositSettings
+            ? depositSettings
+            : {};
+
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+
+    const currency =
+        values &&
+        values.currency
+            ? values.currency
+            : (
+                typeof account !== "undefined" &&
+                account &&
+                account.currency
+                    ? account.currency
+                    : ""
+            );
+
+    const bitcoin =
+        settings.bitcoin || {};
+
+    const usdt =
+        settings.usdt || {};
+
+    const ethereum =
+        settings.ethereum || {};
+
+    const bankTransfer =
+        settings.bankTransfer || {};
+
+    const wireTransfer =
+        settings.wireTransfer || {};
+
+    const cashDeposit =
+        settings.cashDeposit || {};
+
+    const checkDeposit =
+        settings.check || {};
+
+    const otherDeposit =
+        settings.other || {};
+
+    const cryptoAvailable =
+        bitcoin.enabled === true ||
+        usdt.enabled === true ||
+        ethereum.enabled === true;
+
+    const anyMethodAvailable =
+        cryptoAvailable ||
+        bankTransfer.enabled === true ||
+        wireTransfer.enabled === true ||
+        cashDeposit.enabled === true ||
+        checkDeposit.enabled === true ||
+        otherDeposit.enabled === true;
+
+    const completedDeposits =
+        depositRecords.filter(
+            deposit =>
+                deposit &&
+                deposit.status === "Completed"
+        );
+
+    const pendingDeposits =
+        depositRecords.filter(
+            deposit =>
+                deposit &&
+                deposit.status === "Pending"
+        );
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false,
+            depositFilter: 'all'
+        }"
+        class="dashboard-app-shell
+               flex h-screen overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex flex-col
+                   flex-1 overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main class="dashboard-main-content">
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-7xl mx-auto
+                               px-4 sm:px-6 md:px-8"
+                    >
+
+                        <!-- =====================================
+                             HEADER
+                        ====================================== -->
+
+                        <div
+                            class="flex flex-col
+                                   sm:flex-row
+                                   sm:items-center
+                                   sm:justify-between
+                                   gap-4 mb-6"
+                        >
+
+                            <div>
+
+                                <h1
+                                    class="text-2xl
+                                           font-bold
+                                           text-gray-900"
+                                >
+                                    Deposits
+                                </h1>
+
+
+                                <p
+                                    class="text-sm
+                                           text-gray-500 mt-1"
+                                >
+                                    Fund your account and review
+                                    previous deposit requests.
+                                </p>
+
+                            </div>
+
+
+                            <% if (
+                                values &&
+                                values.displayedBalance !== undefined &&
+                                values.displayedBalance !== null
+                            ) { %>
+
+                                <div
+                                    class="inline-flex
+                                           items-center
+                                           self-start
+                                           px-4 py-2
+                                           rounded-lg
+                                           bg-primary-50
+                                           border border-primary-100
+                                           text-primary-700
+                                           text-sm font-medium"
+                                >
+
+                                    <i
+                                        data-lucide="wallet"
+                                        class="h-4 w-4 mr-2"
+                                    ></i>
+
+
+                                    <span>
+
+                                        <%= currency %>
+
+                                        <%= Number(
+                                            values.displayedBalance
+                                        ).toLocaleString(
+                                            undefined,
+                                            {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }
+                                        ) %>
+
+                                    </span>
+
+                                </div>
+
+                            <% } %>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             SUCCESS
+                        ====================================== -->
+
+                        <% if (
+                            typeof submitted !== "undefined" &&
+                            submitted
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-4
+                                       bg-green-50
+                                       border border-green-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-check"
+                                        class="h-5 w-5
+                                               text-green-600
+                                               mr-3 mt-0.5
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-green-800"
+                                        >
+                                            Deposit request submitted
+                                        </p>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-green-700 mt-1"
+                                        >
+                                            Your deposit is pending
+                                            administrator review.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- =====================================
+                             ERROR
+                        ====================================== -->
+
+                        <% if (
+                            typeof error !== "undefined" &&
+                            error
+                        ) { %>
+
+                            <div
+                                class="mb-6
+                                       px-4 py-4
+                                       bg-red-50
+                                       border border-red-200
+                                       rounded-xl"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5 w-5
+                                               text-red-600
+                                               mr-3 mt-0.5
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-red-800"
+                                    >
+                                        <%= error %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                        <!-- =====================================
+                             SUMMARY
+                        ====================================== -->
+
+                        <div
+                            class="grid grid-cols-1
+                                   sm:grid-cols-2
+                                   lg:grid-cols-3
+                                   gap-4 mb-6"
+                        >
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Deposit Records
+                                    </p>
+
+                                    <p class="dashboard-stat-value">
+                                        <%= depositRecords.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11 w-11
+                                           rounded-full
+                                           bg-blue-50
+                                           flex items-center
+                                           justify-center"
+                                >
+
+                                    <i
+                                        data-lucide="receipt"
+                                        class="h-5 w-5
+                                               text-blue-700"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Completed
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-green-700"
+                                    >
+                                        <%= completedDeposits.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11 w-11
+                                           rounded-full
+                                           bg-green-50
+                                           flex items-center
+                                           justify-center"
+                                >
+
+                                    <i
+                                        data-lucide="circle-check"
+                                        class="h-5 w-5
+                                               text-green-700"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="dashboard-stat-card">
+
+                                <div>
+
+                                    <p class="dashboard-stat-label">
+                                        Pending
+                                    </p>
+
+                                    <p
+                                        class="dashboard-stat-value
+                                               text-yellow-700"
+                                    >
+                                        <%= pendingDeposits.length %>
+                                    </p>
+
+                                </div>
+
+
+                                <div
+                                    class="h-11 w-11
+                                           rounded-full
+                                           bg-yellow-50
+                                           flex items-center
+                                           justify-center"
+                                >
+
+                                    <i
+                                        data-lucide="clock"
+                                        class="h-5 w-5
+                                               text-yellow-700"
+                                    ></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- =====================================
+                             MAKE A DEPOSIT
+                        ====================================== -->
+
+                        <section
+                            class="dashboard-card mb-6"
+                        >
+
+                            <div class="dashboard-card-header">
+
+                                <div>
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Make a Deposit
+                                    </h2>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500 mt-1"
+                                    >
+                                        Select one of the available
+                                        funding methods.
+                                    </p>
+
+                                </div>
+
+
+                                <i
+                                    data-lucide="circle-dollar-sign"
+                                    class="h-5 w-5
+                                           text-primary-700"
+                                ></i>
+
+                            </div>
+
+
+                            <% if (!anyMethodAvailable) { %>
+
+                                <div
+                                    class="py-12 px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-12 w-12
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-3"
+                                    >
+
+                                        <i
+                                            data-lucide="circle-off"
+                                            class="h-6 w-6
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <p
+                                        class="text-sm
+                                               font-medium
+                                               text-gray-700"
+                                    >
+                                        No deposit methods available
+                                    </p>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500 mt-1"
+                                    >
+                                        Deposit methods are not
+                                        currently enabled.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <form
+                                    action="/dashboard/deposits"
+                                    method="POST"
+                                    class="p-6"
+                                    id="customer-deposit-form"
+                                >
+
+                                    <!-- =========================
+                                         BASE FIELDS
+                                    ========================== -->
+
+                                    <div
+                                        class="grid grid-cols-1
+                                               lg:grid-cols-2
+                                               gap-6"
+                                    >
+
+                                        <div>
+
+                                            <label
+                                                for="deposit-amount"
+                                                class="dashboard-form-label"
+                                            >
+                                                Deposit Amount
+                                            </label>
+
+
+                                            <input
+                                                id="deposit-amount"
+                                                type="number"
+                                                name="amount"
+                                                min="0.01"
+                                                step="0.01"
+                                                value="<%= oldForm.amount || "" %>"
+                                                class="dashboard-form-input"
+                                                placeholder="<%= currency ? currency + ' 0.00' : '0.00' %>"
+                                                required
+                                            >
+
+                                        </div>
+
+
+                                        <div>
+
+                                            <label
+                                                for="deposit-method"
+                                                class="dashboard-form-label"
+                                            >
+                                                Deposit Method
+                                            </label>
+
+
+                                            <select
+                                                id="deposit-method"
+                                                name="method"
+                                                class="dashboard-form-input"
+                                                required
+                                            >
+
+                                                <option value="">
+                                                    Select deposit method
+                                                </option>
+
+
+                                                <% if (
+                                                    bankTransfer.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="Bank Transfer"
+                                                        <%= oldForm.method === "Bank Transfer"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Bank Transfer
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    wireTransfer.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="Wire Transfer"
+                                                        <%= oldForm.method === "Wire Transfer"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Wire Transfer
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    cashDeposit.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="Cash Deposit"
+                                                        <%= oldForm.method === "Cash Deposit"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Cash Deposit
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    checkDeposit.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="Check"
+                                                        <%= oldForm.method === "Check"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Check
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    otherDeposit.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="Other"
+                                                        <%= oldForm.method === "Other"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Other
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    cryptoAvailable
+                                                ) { %>
+
+                                                    <option
+                                                        value="Cryptocurrency"
+                                                        <%= oldForm.method === "Cryptocurrency"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Cryptocurrency
+                                                    </option>
+
+                                                <% } %>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =========================
+                                         TRADITIONAL DEPOSIT
+                                    ========================== -->
+
+                                    <div
+                                        id="traditional-deposit-section"
+                                        class="hidden mt-6"
+                                    >
+
+                                        <div
+                                            class="bg-blue-50
+                                                   border
+                                                   border-blue-100
+                                                   rounded-xl p-5"
+                                        >
+
+                                            <div class="flex items-start">
+
+                                                <i
+                                                    data-lucide="info"
+                                                    class="h-5 w-5
+                                                           text-blue-600
+                                                           mr-3 mt-0.5
+                                                           flex-shrink-0"
+                                                ></i>
+
+
+                                                <div class="min-w-0">
+
+                                                    <h3
+                                                        id="traditional-method-name"
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-blue-900"
+                                                    ></h3>
+
+
+                                                    <p
+                                                        id="traditional-instructions"
+                                                        class="text-sm
+                                                               text-blue-800
+                                                               mt-2
+                                                               whitespace-pre-line"
+                                                    ></p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <div
+                                            class="grid grid-cols-1
+                                                   lg:grid-cols-2
+                                                   gap-5 mt-5"
+                                        >
+
+                                            <div>
+
+                                                <label
+                                                    for="paymentReference"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Payment Reference
+                                                </label>
+
+
+                                                <input
+                                                    id="paymentReference"
+                                                    type="text"
+                                                    name="paymentReference"
+                                                    value="<%= oldForm.paymentReference || "" %>"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Bank reference, receipt number or other reference"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="traditionalDescription"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Note
+                                                </label>
+
+
+                                                <input
+                                                    id="traditionalDescription"
+                                                    type="text"
+                                                    name="description"
+                                                    value="<%= oldForm.description || "" %>"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Optional deposit note"
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- =========================
+                                         CRYPTO DEPOSIT
+                                    ========================== -->
+
+                                    <div
+                                        id="crypto-deposit-section"
+                                        class="hidden mt-6"
+                                    >
+
+                                        <div>
+
+                                            <label
+                                                for="crypto-asset"
+                                                class="dashboard-form-label"
+                                            >
+                                                Select Cryptocurrency
+                                            </label>
+
+
+                                            <select
+                                                id="crypto-asset"
+                                                name="cryptoAsset"
+                                                class="dashboard-form-input"
+                                            >
+
+                                                <option value="">
+                                                    Select Bitcoin, USDT or Ethereum
+                                                </option>
+
+
+                                                <% if (
+                                                    bitcoin.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="BTC"
+                                                        <%= oldForm.cryptoAsset === "BTC"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Bitcoin (BTC)
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    usdt.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="USDT"
+                                                        <%= oldForm.cryptoAsset === "USDT"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        USDT
+                                                    </option>
+
+                                                <% } %>
+
+
+                                                <% if (
+                                                    ethereum.enabled
+                                                ) { %>
+
+                                                    <option
+                                                        value="ETH"
+                                                        <%= oldForm.cryptoAsset === "ETH"
+                                                            ? "selected"
+                                                            : ""
+                                                        %>
+                                                    >
+                                                        Ethereum (ETH)
+                                                    </option>
+
+                                                <% } %>
+
+                                            </select>
+
+                                        </div>
+
+
+                                        <!-- Wallet Details -->
+
+                                        <div
+                                            id="crypto-wallet-details"
+                                            class="hidden
+                                                   mt-5
+                                                   bg-amber-50
+                                                   border
+                                                   border-amber-200
+                                                   rounded-xl
+                                                   p-5"
+                                        >
+
+                                            <div class="flex items-start">
+
+                                                <i
+                                                    data-lucide="wallet-cards"
+                                                    class="h-5 w-5
+                                                           text-amber-700
+                                                           mr-3 mt-0.5
+                                                           flex-shrink-0"
+                                                ></i>
+
+
+                                                <div
+                                                    class="flex-1
+                                                           min-w-0"
+                                                >
+
+                                                    <p
+                                                        class="text-xs
+                                                               uppercase
+                                                               tracking-wide
+                                                               text-amber-700
+                                                               font-semibold"
+                                                    >
+                                                        Deposit Address
+                                                    </p>
+
+
+                                                    <h3
+                                                        id="crypto-name"
+                                                        class="text-sm
+                                                               font-semibold
+                                                               text-gray-900
+                                                               mt-2"
+                                                    ></h3>
+
+
+                                                    <div class="mt-4">
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500"
+                                                        >
+                                                            Network
+                                                        </p>
+
+
+                                                        <p
+                                                            id="crypto-network"
+                                                            class="text-sm
+                                                                   font-semibold
+                                                                   text-gray-900
+                                                                   mt-1"
+                                                        ></p>
+
+                                                    </div>
+
+
+                                                    <div class="mt-4">
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500"
+                                                        >
+                                                            Wallet Address
+                                                        </p>
+
+
+                                                        <div
+                                                            class="mt-1
+                                                                   flex
+                                                                   flex-col
+                                                                   sm:flex-row
+                                                                   sm:items-center
+                                                                   gap-2"
+                                                        >
+
+                                                            <code
+                                                                id="crypto-address"
+                                                                class="flex-1
+                                                                       min-w-0
+                                                                       px-3 py-2.5
+                                                                       bg-white
+                                                                       border
+                                                                       border-amber-200
+                                                                       rounded-lg
+                                                                       text-xs
+                                                                       text-gray-800
+                                                                       break-all"
+                                                            ></code>
+
+
+                                                            <button
+                                                                id="copy-wallet-address"
+                                                                type="button"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       justify-center
+                                                                       px-4 py-2.5
+                                                                       bg-white
+                                                                       border
+                                                                       border-amber-200
+                                                                       rounded-lg
+                                                                       text-xs
+                                                                       font-semibold
+                                                                       text-gray-700
+                                                                       hover:bg-amber-100"
+                                                            >
+
+                                                                <i
+                                                                    data-lucide="copy"
+                                                                    class="h-4 w-4 mr-2"
+                                                                ></i>
+
+                                                                Copy
+
+                                                            </button>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    <div
+                                                        id="crypto-instructions-container"
+                                                        class="hidden mt-4"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-gray-500"
+                                                        >
+                                                            Instructions
+                                                        </p>
+
+
+                                                        <p
+                                                            id="crypto-instructions"
+                                                            class="text-sm
+                                                                   text-gray-700
+                                                                   mt-1
+                                                                   whitespace-pre-line"
+                                                        ></p>
+
+                                                    </div>
+
+
+                                                    <div
+                                                        class="mt-4
+                                                               px-3 py-2
+                                                               bg-red-50
+                                                               border
+                                                               border-red-100
+                                                               rounded-lg"
+                                                    >
+
+                                                        <p
+                                                            class="text-xs
+                                                                   text-red-700"
+                                                        >
+                                                            Verify the cryptocurrency,
+                                                            network and wallet address
+                                                            before sending funds.
+                                                        </p>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <!-- Crypto Submission Fields -->
+
+                                        <div
+                                            id="crypto-submission-fields"
+                                            class="hidden
+                                                   grid
+                                                   grid-cols-1
+                                                   lg:grid-cols-2
+                                                   gap-5 mt-5"
+                                        >
+
+                                            <div>
+
+                                                <label
+                                                    for="cryptoAmount"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Crypto Amount
+                                                </label>
+
+
+                                                <input
+                                                    id="cryptoAmount"
+                                                    type="number"
+                                                    name="cryptoAmount"
+                                                    min="0"
+                                                    step="any"
+                                                    value="<%= oldForm.cryptoAmount || "" %>"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Amount of crypto sent"
+                                                >
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <label
+                                                    for="transactionHash"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Transaction Hash
+                                                </label>
+
+
+                                                <input
+                                                    id="transactionHash"
+                                                    type="text"
+                                                    name="transactionHash"
+                                                    value="<%= oldForm.transactionHash || "" %>"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Enter transaction hash"
+                                                >
+
+                                            </div>
+
+
+                                            <div class="lg:col-span-2">
+
+                                                <label
+                                                    for="cryptoDescription"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Note
+                                                </label>
+
+
+                                                <textarea
+                                                    id="cryptoDescription"
+                                                    name="description"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Optional deposit note"
+                                                ><%= oldForm.description || "" %></textarea>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- Submit -->
+
+                                    <div
+                                        class="flex
+                                               justify-end
+                                               mt-6 pt-6
+                                               border-t
+                                               border-gray-100"
+                                    >
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   w-full sm:w-auto
+                                                   px-6 py-3
+                                                   bg-primary-600
+                                                   hover:bg-primary-700
+                                                   text-white
+                                                   font-semibold
+                                                   text-sm
+                                                   rounded-lg
+                                                   transition"
+                                        >
+
+                                            <i
+                                                data-lucide="upload"
+                                                class="h-4 w-4 mr-2"
+                                            ></i>
+
+                                            Submit Deposit
+
+                                        </button>
+
+                                    </div>
+
+                                </form>
+
+                            <% } %>
+
+                        </section>
+
+
+                        <!-- =====================================
+                             DEPOSIT HISTORY
+                        ====================================== -->
+
+                        <section class="dashboard-card">
+
+                            <div class="dashboard-card-header">
+
+                                <div>
+
+                                    <h2
+                                        class="text-lg
+                                               font-semibold
+                                               text-gray-900"
+                                    >
+                                        Deposit History
+                                    </h2>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Track your submitted and
+                                        completed deposits.
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+
+                            <% if (
+                                depositRecords.length === 0
+                            ) { %>
+
+                                <div
+                                    class="py-14 px-6
+                                           text-center"
+                                >
+
+                                    <div
+                                        class="h-12 w-12
+                                               mx-auto
+                                               rounded-full
+                                               bg-gray-100
+                                               flex
+                                               items-center
+                                               justify-center
+                                               mb-3"
+                                    >
+
+                                        <i
+                                            data-lucide="circle-dollar-sign"
+                                            class="h-6 w-6
+                                                   text-gray-400"
+                                        ></i>
+
+                                    </div>
+
+
+                                    <p
+                                        class="text-sm
+                                               font-medium
+                                               text-gray-700"
+                                    >
+                                        No deposits yet
+                                    </p>
+
+
+                                    <p
+                                        class="text-xs
+                                               text-gray-500
+                                               mt-1"
+                                    >
+                                        Your submitted deposit
+                                        requests will appear here.
+                                    </p>
+
+                                </div>
+
+
+                            <% } else { %>
+
+                                <div class="overflow-x-auto">
+
+                                    <table
+                                        class="min-w-full
+                                               divide-y
+                                               divide-gray-200"
+                                    >
+
+                                        <thead class="bg-gray-50">
+
+                                            <tr>
+
+                                                <th class="dashboard-table-heading">
+                                                    Reference
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Amount
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Method
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Status
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Date
+                                                </th>
+
+                                                <th class="dashboard-table-heading">
+                                                    Action
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+                                        <tbody
+                                            class="bg-white
+                                                   divide-y
+                                                   divide-gray-100"
+                                        >
+
+                                            <% depositRecords.forEach(
+                                                function(deposit) {
+                                            %>
+
+                                                <tr>
+
+                                                    <td class="dashboard-table-cell">
+                                                        <%= deposit.reference || "" %>
+                                                    </td>
+
+
+                                                    <td
+                                                        class="dashboard-table-cell
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+
+                                                        <%= deposit.currency || currency %>
+
+                                                        <%= Number(
+                                                            deposit.amount || 0
+                                                        ).toLocaleString(
+                                                            undefined,
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                                maximumFractionDigits: 2
+                                                            }
+                                                        ) %>
+
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <%= deposit.method || "" %>
+
+
+                                                        <% if (
+                                                            deposit.method ===
+                                                                "Cryptocurrency" &&
+                                                            deposit.cryptoAsset
+                                                        ) { %>
+
+                                                            <p
+                                                                class="text-xs
+                                                                       text-gray-400
+                                                                       mt-1"
+                                                            >
+
+                                                                <%= deposit.cryptoAsset %>
+
+                                                                <% if (
+                                                                    deposit.cryptoNetwork
+                                                                ) { %>
+
+                                                                    •
+                                                                    <%= deposit.cryptoNetwork %>
+
+                                                                <% } %>
+
+                                                            </p>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <td class="px-5 py-4">
+
+                                                        <span
+                                                            class="inline-flex
+                                                                   px-2.5 py-1
+                                                                   rounded-full
+                                                                   text-xs
+                                                                   font-medium
+                                                                   <%= deposit.status === "Completed"
+                                                                       ? "bg-green-100 text-green-700"
+                                                                       : deposit.status === "Pending"
+                                                                       ? "bg-yellow-100 text-yellow-700"
+                                                                       : deposit.status === "Rejected"
+                                                                       ? "bg-red-100 text-red-700"
+                                                                       : "bg-gray-100 text-gray-700"
+                                                                   %>"
+                                                        >
+                                                            <%= deposit.status || "" %>
+                                                        </span>
+
+                                                    </td>
+
+
+                                                    <td class="dashboard-table-cell">
+
+                                                        <% if (
+                                                            deposit.createdAt
+                                                        ) { %>
+
+                                                            <%= new Date(
+                                                                deposit.createdAt
+                                                            ).toLocaleDateString() %>
+
+                                                        <% } %>
+
+                                                    </td>
+
+
+                                                    <td class="px-5 py-4">
+
+                                                        <% if (
+                                                            deposit.id ||
+                                                            deposit._id
+                                                        ) { %>
+
+                                                            <a
+                                                                href="/dashboard/deposits/<%= deposit.id || deposit._id %>"
+                                                                class="inline-flex
+                                                                       items-center
+                                                                       text-sm
+                                                                       font-medium
+                                                                       text-primary-700
+                                                                       hover:text-primary-900"
+                                                            >
+
+                                                                Details
+
+                                                                <i
+                                                                    data-lucide="arrow-right"
+                                                                    class="h-4 w-4 ml-1"
+                                                                ></i>
+
+                                                            </a>
+
+                                                        <% } %>
+
+                                                    </td>
+
+                                                </tr>
+
+                                            <% }); %>
+
+                                        </tbody>
+
+                                    </table>
+
+                                </div>
+
+                            <% } %>
+
+                        </section>
+
+
+                        <!-- =====================================
+                             JS CONFIGURATION
+                        ====================================== -->
+
+                        <div
+                            id="deposit-page-config"
+                            class="hidden"
+
+                            data-bank-instructions="<%= encodeURIComponent(bankTransfer.instructions || "") %>"
+
+                            data-wire-instructions="<%= encodeURIComponent(wireTransfer.instructions || "") %>"
+
+                            data-cash-instructions="<%= encodeURIComponent(cashDeposit.instructions || "") %>"
+
+                            data-check-instructions="<%= encodeURIComponent(checkDeposit.instructions || "") %>"
+
+                            data-other-instructions="<%= encodeURIComponent(otherDeposit.instructions || "") %>"
+
+                            data-btc-network="<%= encodeURIComponent(bitcoin.network || "") %>"
+
+                            data-btc-address="<%= encodeURIComponent(bitcoin.walletAddress || "") %>"
+
+                            data-btc-instructions="<%= encodeURIComponent(bitcoin.instructions || "") %>"
+
+                            data-usdt-network="<%= encodeURIComponent(usdt.network || "") %>"
+
+                            data-usdt-address="<%= encodeURIComponent(usdt.walletAddress || "") %>"
+
+                            data-usdt-instructions="<%= encodeURIComponent(usdt.instructions || "") %>"
+
+                            data-eth-network="<%= encodeURIComponent(ethereum.network || "") %>"
+
+                            data-eth-address="<%= encodeURIComponent(ethereum.walletAddress || "") %>"
+
+                            data-eth-instructions="<%= encodeURIComponent(ethereum.instructions || "") %>"
+                        ></div>
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>
