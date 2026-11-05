@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const path = require("node:path");
 const express = require("express");
-const mongoose = require("mongoose");
+const connectDatabase = require("./config/database");
 
 const indexRouter = require("./routes/index");
 const dashboardRoutes = require("./routes/dashboard");
@@ -18,33 +18,18 @@ const { verifyMailer } = require("./utils/mailer");
 
 const app = express();
 app.locals.currentYear = new Date().getFullYear();
-const PORT = Number(process.env.PORT) || 3000;
+app.use(async function connectDatabaseMiddleware(req, res, next) {
+  try {
+    await connectDatabase();
 
-/* =========================================================
-   DATABASE
-========================================================= */
+    next();
+  } catch (error) {
+    console.error("Database connection failed:", error.message);
 
-async function connectDatabase() {
-  const mongoUri = process.env.MONGODB_URI;
-
-  if (!mongoUri) {
-    throw new Error("MONGODB_URI is missing from the environment.");
+    next(error);
   }
-
-  await mongoose.connect(mongoUri, {
-    serverSelectionTimeoutMS: 10000,
-  });
-
-  console.log(`MongoDB Atlas connected: ${mongoose.connection.name}`);
-}
-
-mongoose.connection.on("error", function (error) {
-  console.error("MongoDB runtime error:", error.message);
 });
 
-mongoose.connection.on("disconnected", function () {
-  console.warn("MongoDB disconnected");
-});
 /* =========================================================
    MAILER
 ========================================================= */
@@ -56,23 +41,18 @@ mongoose.connection.on("disconnected", function () {
 //   .catch((error) => {
 //     console.error("SMTP verification failed:", error.message);
 //   });
-
-verifyMailer()
-  .then(() => {
-    console.log("Email service connected");
-  })
-  .catch((error) => {
-    console.error("SMTP verification failed");
-
-    console.error({
-      message: error.message,
-      code: error.code,
-      command: error.command,
-      response: error.response,
-      responseCode: error.responseCode,
+if (
+  process.env.NODE_ENV !== "production" &&
+  process.env.VERIFY_SMTP_ON_START === "true"
+) {
+  verifyMailer()
+    .then(function () {
+      console.log("Email service connected");
+    })
+    .catch(function (error) {
+      console.error("SMTP verification failed:", error.message);
     });
-  });
-
+}
 /* =========================================================
    BODY PARSERS
 ========================================================= */
@@ -244,86 +224,6 @@ app.use((error, req, res, next) => {
         : error.message,
     error: app.get("env") === "development" ? error : null,
   });
-});
-
-/*
-|--------------------------------------------------------------------------
-| Start server
-|--------------------------------------------------------------------------
-*/
-
-let server;
-
-async function startApplication() {
-  try {
-    await connectDatabase();
-
-    server = app.listen(PORT, function () {
-      console.log(`Application running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Application startup failed:", error.message);
-
-    process.exit(1);
-  }
-}
-
-startApplication();
-/*
-|--------------------------------------------------------------------------
-| Graceful shutdown
-|--------------------------------------------------------------------------
-*/
-
-let isShuttingDown = false;
-
-async function shutdown(signal) {
-  if (isShuttingDown) {
-    return;
-  }
-
-  isShuttingDown = true;
-
-  console.log(`${signal} received. Shutting down.`);
-
-  const closeDatabase = async function () {
-    try {
-      await mongoose.connection.close();
-
-      console.log("MongoDB connection closed");
-    } catch (error) {
-      console.error("Error closing MongoDB:", error.message);
-    }
-  };
-
-  if (!server) {
-    await closeDatabase();
-    process.exit(0);
-  }
-
-  server.close(async function (error) {
-    if (error) {
-      console.error("Error closing HTTP server:", error.message);
-    }
-
-    await closeDatabase();
-
-    process.exit(error ? 1 : 0);
-  });
-
-  setTimeout(function () {
-    console.error("Forcing shutdown after timeout");
-
-    process.exit(1);
-  }, 10000).unref();
-}
-
-process.on("SIGINT", function () {
-  shutdown("SIGINT");
-});
-
-process.on("SIGTERM", function () {
-  shutdown("SIGTERM");
 });
 
 module.exports = app;
