@@ -8787,18 +8787,19 @@ header.main-header .header-sticky.active {
 }
 /* =========================================================
    PUBLIC MOBILE NAV
-   SHOW ONE SLICKNAV BUTTON
+   SINGLE SLICKNAV INSTANCE
 ========================================================= */
 
 @media (max-width: 991px) {
-  /*
-   * Allow the working SlickNav wrapper.
-   */
-
   .navbar-toggle {
+    display: none !important;
+  }
+
+  .responsive-menu {
     display: block !important;
 
     position: absolute;
+
     top: 50%;
     right: 15px;
 
@@ -8809,19 +8810,7 @@ header.main-header .header-sticky.active {
     z-index: 120;
   }
 
-  /*
-   * Hide the second SlickNav host.
-   */
-
-  .responsive-menu {
-    display: none !important;
-  }
-
-  /*
-   * Style the single working menu.
-   */
-
-  .navbar-toggle .slicknav_menu {
+  .responsive-menu .slicknav_menu {
     position: static;
 
     width: auto;
@@ -8831,52 +8820,56 @@ header.main-header .header-sticky.active {
     background: transparent;
   }
 
-  .navbar-toggle .slicknav_btn {
-    width: 54px;
-    height: 48px;
-
+  .responsive-menu .slicknav_btn {
     display: flex !important;
 
     align-items: center;
     justify-content: center;
 
+    width: 54px;
+    height: 48px;
+
     margin: 0;
+
     padding: 0;
 
     border: 0;
+
     border-radius: 12px;
 
     background: #d8e28c !important;
-
-    box-shadow: none;
   }
 
-  .navbar-toggle .slicknav_icon {
-    display: block;
+  .responsive-menu .slicknav_menutxt {
+    display: none !important;
+  }
 
+  .responsive-menu .slicknav_icon {
     width: 24px;
+
+    height: auto;
 
     margin: 0;
   }
 
-  .navbar-toggle .slicknav_icon-bar {
+  .responsive-menu .slicknav_icon-bar {
     display: block;
 
     width: 24px !important;
-    height: 3px;
+    height: 3px !important;
 
     margin: 4px auto !important;
 
     border-radius: 999px;
 
     background: #ffffff !important;
+
+    box-shadow: none;
   }
 
-  /*
-   * Mobile dropdown.
-   */
+  /* Actual dropdown */
 
-  .navbar-toggle .slicknav_nav {
+  .responsive-menu .slicknav_nav {
     position: absolute;
 
     top: calc(100% + 12px);
@@ -8884,7 +8877,6 @@ header.main-header .header-sticky.active {
 
     width: min(330px, calc(100vw - 30px));
 
-    margin: 0;
     padding: 8px 0;
 
     border-radius: 14px;
@@ -8894,21 +8886,17 @@ header.main-header .header-sticky.active {
     box-shadow: 0 14px 34px rgba(3, 45, 63, 0.18);
   }
 
-  /*
-   * Keep desktop navigation hidden.
-   */
-
   .main-header .main-menu {
     display: none !important;
   }
 }
 
 @media (max-width: 575px) {
-  .navbar-toggle {
+  .responsive-menu {
     right: 15px;
   }
 
-  .navbar-toggle .slicknav_btn {
+  .responsive-menu .slicknav_btn {
     width: 50px;
     height: 46px;
   }
