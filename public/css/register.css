@@ -1729,3 +1729,9 @@ input:focus + .input-toggle {
     transition-duration: 0.01ms !important;
   }
 }
+/* Force-hide the desktop branding panel on mobile screens */
+@media (max-width: 1023px) {
+  .hidden.lg\:flex {
+    display: none !important;
+  }
+}
