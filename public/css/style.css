@@ -8729,3 +8729,34 @@ header.main-header .header-sticky.active {
     box-sizing: border-box !important;
   }
 }
+/* =========================================================
+   NAVBAR DUPLICATE BUTTON & ABOUT VIDEO MOBILE FIX
+   ========================================================= */
+
+/* Prevent double hamburger menu triggers */
+.navbar-toggle {
+  display: none !important;
+}
+
+/* Ensure SlickNav single menu button is neatly positioned on mobile */
+.slicknav_btn {
+  background: #032d3f !important;
+  border-radius: 8px !important;
+}
+
+/* Force About Video to remain responsive on mobile without horizontal spill */
+.post-image,
+.about-us-video,
+.about-us-video figure {
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+.about-us-video video {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  object-fit: cover !important;
+}
