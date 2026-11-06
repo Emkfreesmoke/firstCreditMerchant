@@ -69,7 +69,7 @@
         </a>
 
         <!-- =========================================
-             MAIN MENU
+             DESKTOP MAIN MENU
         ========================================== -->
 
         <div class="collapse navbar-collapse main-menu">
@@ -178,13 +178,29 @@
         </div>
 
         <!-- =========================================
-             MAIN MENU END
+             DESKTOP MAIN MENU END
         ========================================== -->
+
+        <!-- =========================================
+             MOBILE MENU BUTTON
+
+             IMPORTANT:
+             Your SlickNav plugin inserts the generated
+             hamburger button into .navbar-toggle
+        ========================================== -->
+
+        <div class="navbar-toggle" aria-label="Mobile navigation"></div>
       </div>
     </nav>
 
     <!-- =========================================
-         RESPONSIVE MENU (Targeted by SlickNav script)
+         RESPONSIVE MOBILE MENU
+
+         main.js uses:
+         prependTo: ".responsive-menu"
+
+         SlickNav inserts the generated mobile
+         navigation list into this container.
     ========================================== -->
 
     <div class="responsive-menu"></div>
