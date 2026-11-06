@@ -1158,9 +1158,9 @@ exports.updateCustomerFinancialValues = async (req, res, next) => {
 
         reference: transactionReference,
 
-        type: "Adjustment",
+        type: balanceDifference > 0 ? "Deposit" : "Debit",
 
-        direction,
+        direction: balanceDifference > 0 ? "Incoming" : "Outgoing",
 
         amount: absoluteAmount,
 
@@ -1168,13 +1168,11 @@ exports.updateCustomerFinancialValues = async (req, res, next) => {
 
         status: "Completed",
 
-        description:
-          adminNote ||
-          (balanceDifference > 0
-            ? "Administrative balance increase"
-            : "Administrative balance decrease"),
+        description: adminNote || (balanceDifference > 0 ? "Credit" : "Debit"),
 
-        counterparty: "First Credit Merchant Admin",
+        counterparty: "",
+
+        transactionDate,
       });
     }
 
