@@ -27,35 +27,22 @@
       <!-- Login Form -->
       <div class="px-8 pb-8">
         <form action="/login" method="POST" id="customer-login-form">
-          <% if (
-  typeof error !== "undefined" &&
-  error
-) { %>
+          <% if (typeof error !== "undefined" && error) { %>
+            <div
+              class="mb-6 px-4 py-3 bg-yellow-50 border border-yellow-200 rounded-lg"
+            >
+              <div class="flex items-start">
+                <i
+                  data-lucide="clock"
+                  class="h-5 w-5 text-yellow-600 mr-3 mt-0.5 flex-shrink-0"
+                ></i>
+                <p class="text-sm text-yellow-800">
+                  <%= error %>
+                </p>
+              </div>
+            </div>
+          <% } %>
 
-  <div
-    class="mb-6 px-4 py-3
-           bg-yellow-50
-           border border-yellow-200
-           rounded-lg"
-  >
-    <div class="flex items-start">
-
-      <i
-        data-lucide="clock"
-        class="h-5 w-5
-               text-yellow-600
-               mr-3 mt-0.5
-               flex-shrink-0"
-      ></i>
-
-      <p class="text-sm text-yellow-800">
-        <%= error %>
-      </p>
-
-    </div>
-  </div>
-
-<% } %>
           <!-- Username -->
           <div class="mb-6">
             <label
@@ -66,16 +53,20 @@
             </label>
 
             <div class="input-wrapper">
-              <div class="relative">
-                <div class="input-icon">
-                  <i data-lucide="user" class="h-5 w-5"></i>
+              <div style="position: relative; width: 100%;">
+                <!-- Properly centered input icon -->
+                <div
+                  style="position: absolute; top: 50%; left: 14px; transform: translateY(-50%); display: flex; align-items: center; color: #94a3b8; pointer-events: none; z-index: 2;"
+                >
+                  <i data-lucide="user" style="width: 20px; height: 20px;"></i>
                 </div>
 
+                <!-- Input with padding-left to clear the icon -->
                 <input
                   id="email"
                   type="text"
                   name="email"
-                  class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  style="width: 100%; min-height: 50px; padding-left: 45px; padding-right: 16px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none;"
                   placeholder="Enter username"
                   required
                   autocomplete="username"
@@ -103,38 +94,43 @@
             </div>
 
             <div class="input-wrapper">
-              <div class="relative">
-                <div class="input-icon">
-                  <i data-lucide="lock" class="h-5 w-5"></i>
+              <div style="position: relative; width: 100%;">
+                <!-- Properly centered lock icon -->
+                <div
+                  style="position: absolute; top: 50%; left: 14px; transform: translateY(-50%); display: flex; align-items: center; color: #94a3b8; pointer-events: none; z-index: 2;"
+                >
+                  <i data-lucide="lock" style="width: 20px; height: 20px;"></i>
                 </div>
 
+                <!-- Password Input with padding-left and padding-right for toggle button -->
                 <input
                   id="password"
                   type="password"
                   name="password"
-                  class="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  style="width: 100%; min-height: 50px; padding-left: 45px; padding-right: 45px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none;"
                   placeholder="••••••••"
                   required
                   autocomplete="current-password"
                 />
 
-                <!-- Show / Hide Password -->
+                <!-- Show / Hide Password Toggle -->
                 <button
                   type="button"
                   id="password-toggle"
-                  class="absolute inset-y-0 right-0 flex items-center pr-3 input-toggle"
+                  style="position: absolute; top: 0; right: 0; height: 100%; width: 45px; background: transparent; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #94a3b8;"
                   aria-label="Show or hide password"
                 >
                   <i
                     data-lucide="eye"
                     id="show-password"
-                    class="h-5 w-5 text-gray-400"
+                    style="width: 20px; height: 20px;"
                   ></i>
 
                   <i
                     data-lucide="eye-off"
                     id="hide-password"
-                    class="h-5 w-5 text-gray-400 hidden"
+                    style="width: 20px; height: 20px;"
+                    class="hidden"
                   ></i>
                 </button>
               </div>
@@ -156,74 +152,40 @@
           </div>
 
           <!-- Login Actions -->
-<div class="flex flex-col space-y-4">
+          <div class="flex flex-col space-y-4">
+            <!-- Sign In Button -->
+            <button
+              type="submit"
+              style="display: flex !important; width: 100% !important; min-height: 50px !important; background-color: #032d3f !important; color: #ffffff !important; padding: 12px 16px !important; border-radius: 8px !important; font-weight: 600 !important; align-items: center !important; justify-content: center !important; border: none !important; cursor: pointer !important; visibility: visible !important; opacity: 1 !important;"
+            >
+              <i
+                data-lucide="log-in"
+                style="width: 20px !important; height: 20px !important; margin-right: 8px !important;"
+              ></i>
 
-    <!-- Sign In -->
-    <button
-        type="submit"
-        class="w-full
-               py-3
-               px-4
-               bg-primary-600
-               hover:bg-primary-700
-               text-white
-               font-medium
-               rounded-lg
-               shadow
-               transition
-               duration-150
-               ease-in-out
-               flex
-               items-center
-               justify-center"
-    >
-        <i
-            data-lucide="log-in"
-            class="h-5 w-5 mr-2"
-        ></i>
+              Sign In
+            </button>
 
-        Sign In
-    </button>
+            <!-- Create Account Link -->
+            <div class="flex items-center justify-center">
+              <a
+                href="/register"
+                class="inline-flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-primary-600 transition-colors"
+              >
+                <i
+                  data-lucide="user-plus"
+                  style="width: 20px; height: 20px; flex-shrink: 0;"
+                ></i>
 
-
-    <!-- Create Account -->
-    <div
-        class="flex
-               items-center
-               justify-center"
-    >
-        <a
-            href="/register"
-            class="inline-flex
-                   items-center
-                   justify-center
-                   gap-2
-                   text-sm
-                   text-gray-500
-                   hover:text-primary-600
-                   transition-colors"
-        >
-            <i
-                data-lucide="user-plus"
-                class="h-5
-                       w-5
-                       flex-shrink-0"
-            ></i>
-
-            <span>
-                Not enrolled?
-                <span
-                    class="font-medium
-                           text-primary-600
-                           hover:text-primary-700"
-                >
+                <span>
+                  Not enrolled?
+                  <span class="font-medium text-primary-600 hover:text-primary-700">
                     Create account
+                  </span>
                 </span>
-            </span>
-        </a>
-    </div>
-
-</div>
+              </a>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -248,8 +210,9 @@
           class="text-primary-600 hover:text-primary-700 font-medium"
           target="_blank"
         >
-          Privacy Policy </a
-        >.
+          Privacy Policy
+        </a>
+        .
       </p>
     </div>
   </div>
