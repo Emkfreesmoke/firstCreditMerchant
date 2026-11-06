@@ -8787,15 +8787,15 @@ header.main-header .header-sticky.active {
 }
 /* =========================================================
    PUBLIC MOBILE NAV
-   SINGLE SLICKNAV CONTROL
+   SHOW ONE SLICKNAV BUTTON
 ========================================================= */
 
 @media (max-width: 991px) {
   /*
-   * SlickNav is mounted only inside .responsive-menu.
+   * Allow the working SlickNav wrapper.
    */
 
-  .responsive-menu {
+  .navbar-toggle {
     display: block !important;
 
     position: absolute;
@@ -8806,24 +8806,22 @@ header.main-header .header-sticky.active {
 
     transform: translateY(-50%);
 
-    z-index: 110;
+    z-index: 120;
   }
 
   /*
-   * Hide any legacy/generated secondary
-   * navbar-toggle wrapper.
+   * Hide the second SlickNav host.
    */
 
-  .navbar-toggle {
+  .responsive-menu {
     display: none !important;
   }
 
   /*
-   * Only the SlickNav button belonging
-   * to responsive-menu is visible.
+   * Style the single working menu.
    */
 
-  .responsive-menu .slicknav_menu {
+  .navbar-toggle .slicknav_menu {
     position: static;
 
     width: auto;
@@ -8833,17 +8831,16 @@ header.main-header .header-sticky.active {
     background: transparent;
   }
 
-  .responsive-menu .slicknav_btn {
+  .navbar-toggle .slicknav_btn {
+    width: 54px;
+    height: 48px;
+
     display: flex !important;
 
     align-items: center;
     justify-content: center;
 
-    width: 54px;
-    height: 48px;
-
     margin: 0;
-
     padding: 0;
 
     border: 0;
@@ -8854,16 +8851,15 @@ header.main-header .header-sticky.active {
     box-shadow: none;
   }
 
-  .responsive-menu .slicknav_icon {
+  .navbar-toggle .slicknav_icon {
     display: block;
 
     width: 24px;
-    height: auto;
 
     margin: 0;
   }
 
-  .responsive-menu .slicknav_icon-bar {
+  .navbar-toggle .slicknav_icon-bar {
     display: block;
 
     width: 24px !important;
@@ -8877,10 +8873,10 @@ header.main-header .header-sticky.active {
   }
 
   /*
-   * Dropdown menu itself.
+   * Mobile dropdown.
    */
 
-  .responsive-menu .slicknav_nav {
+  .navbar-toggle .slicknav_nav {
     position: absolute;
 
     top: calc(100% + 12px);
@@ -8889,7 +8885,6 @@ header.main-header .header-sticky.active {
     width: min(330px, calc(100vw - 30px));
 
     margin: 0;
-
     padding: 8px 0;
 
     border-radius: 14px;
@@ -8900,7 +8895,7 @@ header.main-header .header-sticky.active {
   }
 
   /*
-   * Keep desktop menu hidden.
+   * Keep desktop navigation hidden.
    */
 
   .main-header .main-menu {
@@ -8908,16 +8903,12 @@ header.main-header .header-sticky.active {
   }
 }
 
-/* =========================================================
-   SMALL PHONE
-========================================================= */
-
 @media (max-width: 575px) {
-  .responsive-menu {
+  .navbar-toggle {
     right: 15px;
   }
 
-  .responsive-menu .slicknav_btn {
+  .navbar-toggle .slicknav_btn {
     width: 50px;
     height: 46px;
   }
