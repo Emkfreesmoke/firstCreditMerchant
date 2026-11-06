@@ -8703,3 +8703,29 @@ header.main-header .header-sticky.active {
     background: linear-gradient(135deg, #032f36 0%, #07504e 100%) !important;
   }
 }
+/* =========================================================
+   ABOUT VIDEO MOBILE OVERFLOW FIX
+   ========================================================= */
+
+@media (max-width: 768px) {
+  .about-us-video,
+  .about-video,
+  .about-content video,
+  section video {
+    max-width: 100% !important;
+    width: 100% !important;
+    height: auto !important;
+    object-fit: cover !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  /* Ensure container wrappers don't force overflow */
+  .about-us-video *,
+  .about-video * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
