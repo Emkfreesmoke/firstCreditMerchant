@@ -1,17 +1,34 @@
-const fs = require("fs");
-const path = require("path");
+"use strict";
+
+const fs = require("node:fs");
+const path = require("node:path");
 const crypto = require("node:crypto");
 const multer = require("multer");
 
 /* =========================================================
-   PRIVATE KYC UPLOAD DIRECTORY
+   KYC UPLOAD DIRECTORY
 ========================================================= */
 
-const kycUploadDirectory = path.join(__dirname, "..", "uploads", "kyc");
+/*
+ * Vercel's deployed filesystem is read-only.
+ *
+ * /tmp is writable during a function invocation.
+ *
+ * Outside Vercel, keep using uploads/kyc.
+ */
 
-fs.mkdirSync(kycUploadDirectory, {
-  recursive: true,
-});
+const kycUploadDirectory =
+  process.env.VERCEL === "1"
+    ? path.join("/tmp", "kyc")
+    : path.join(__dirname, "..", "uploads", "kyc");
+
+function ensureKycUploadDirectory() {
+  if (!fs.existsSync(kycUploadDirectory)) {
+    fs.mkdirSync(kycUploadDirectory, {
+      recursive: true,
+    });
+  }
+}
 
 /* =========================================================
    STORAGE
@@ -19,7 +36,13 @@ fs.mkdirSync(kycUploadDirectory, {
 
 const storage = multer.diskStorage({
   destination: function (req, file, callback) {
-    callback(null, kycUploadDirectory);
+    try {
+      ensureKycUploadDirectory();
+
+      callback(null, kycUploadDirectory);
+    } catch (error) {
+      callback(error);
+    }
   },
 
   filename: function (req, file, callback) {
@@ -27,7 +50,9 @@ const storage = multer.diskStorage({
 
     const randomName = crypto.randomBytes(16).toString("hex");
 
-    callback(null, `${Date.now()}-${randomName}${extension}`);
+    const filename = `${Date.now()}-${randomName}${extension}`;
+
+    callback(null, filename);
   },
 });
 
@@ -74,17 +99,22 @@ const kycUpload = multer({
 
   limits: {
     /*
-     * Ten megabytes per individual file.
+     * Maximum size:
+     * 10 MB per document.
      */
 
     fileSize: 10 * 1024 * 1024,
 
     /*
-     * Front, back, and one optional
-     * supporting document.
+     * Front, back,
+     * and one supporting document.
      */
 
     files: 3,
+
+    /*
+     * Maximum normal form fields.
+     */
 
     fields: 20,
   },
@@ -124,6 +154,10 @@ function handleKycUpload(req, res, next) {
       return next();
     }
 
+    /*
+     * Multer-specific errors.
+     */
+
     if (error instanceof multer.MulterError) {
       if (error.code === "LIMIT_FILE_SIZE") {
         return res
@@ -148,13 +182,26 @@ function handleKycUpload(req, res, next) {
         .send(error.message || "The KYC documents could not be uploaded.");
     }
 
+    /*
+     * Our file-type validation.
+     */
+
     if (error.code === "INVALID_KYC_FILE_TYPE") {
       return res.status(422).send(error.message);
     }
 
+    /*
+     * Unknown errors go to the
+     * main Express error handler.
+     */
+
     return next(error);
   });
 }
+
+/* =========================================================
+   EXPORTS
+========================================================= */
 
 module.exports = {
   handleKycUpload,
