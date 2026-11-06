@@ -1356,3 +1356,20 @@ a[href="/privacy"] {
 #login-form .create-account-link:hover .create-account-icon {
   color: #032d3f;
 }
+/* Force login submit button to be fully visible and styled correctly */
+#customer-login-form button[type="submit"] {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  min-height: 48px !important;
+  background-color: #032d3f !important; /* fallback primary color */
+  color: #ffffff !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+
+#customer-login-form button[type="submit"]:hover {
+  background-color: #011d2c !important;
+}
