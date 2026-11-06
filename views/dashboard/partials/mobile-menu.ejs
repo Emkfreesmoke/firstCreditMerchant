@@ -73,8 +73,10 @@
                 type="button"
                 @click="mobileMenuOpen = false"
                 class="absolute
-                       top-4 right-4
-                       h-9 w-9
+                       top-4
+                       right-4
+                       h-9
+                       w-9
                        inline-flex
                        items-center
                        justify-center
@@ -84,34 +86,46 @@
                        hover:bg-gray-100"
                 aria-label="Close dashboard menu"
             >
+
                 <i
                     data-lucide="x"
                     class="h-5 w-5"
                 ></i>
+
             </button>
 
 
-            <!-- Customer Account -->
+            <!-- =========================================
+                 CUSTOMER ACCOUNT
+            ========================================== -->
 
             <div
-                class="flex items-center
-                       pr-10 pb-4 mb-5
-                       border-b border-gray-100"
+                class="flex
+                       items-center
+                       pr-10
+                       pb-4
+                       mb-5
+                       border-b
+                       border-gray-100"
             >
 
                 <div
-                    class="h-12 w-12
+                    class="h-12
+                           w-12
                            rounded-full
                            bg-gray-100
-                           flex items-center
+                           flex
+                           items-center
                            justify-center
                            mr-3
                            flex-shrink-0"
                 >
+
                     <i
                         data-lucide="user"
                         class="h-5 w-5 text-gray-500"
                     ></i>
+
                 </div>
 
 
@@ -155,7 +169,9 @@
             </div>
 
 
-            <!-- Heading -->
+            <!-- =========================================
+                 MENU TITLE
+            ========================================== -->
 
             <div class="text-center mb-5">
 
@@ -178,7 +194,9 @@
             </div>
 
 
-            <!-- Menu Items -->
+            <!-- =========================================
+                 MENU ITEMS
+            ========================================== -->
 
             <div
                 class="grid
@@ -186,11 +204,14 @@
                        gap-3"
             >
 
+                <!-- Home -->
+
                 <a
                     href="/dashboard"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="home"></i>
                     </div>
@@ -198,14 +219,18 @@
                     <span class="text-xs font-medium">
                         Home
                     </span>
+
                 </a>
 
+
+                <!-- Activity -->
 
                 <a
                     href="/dashboard/transactions"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="activity"></i>
                     </div>
@@ -213,14 +238,37 @@
                     <span class="text-xs font-medium">
                         Activity
                     </span>
+
                 </a>
 
+
+                <!-- Make Deposit -->
+
+                <a
+                    href="/dashboard/deposits"
+                    @click="mobileMenuOpen = false"
+                    class="dashboard-mobile-menu-item"
+                >
+
+                    <div class="dashboard-mobile-menu-icon">
+                        <i data-lucide="download"></i>
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        Make Deposit
+                    </span>
+
+                </a>
+
+
+                <!-- Cards -->
 
                 <a
                     href="/dashboard/cards"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="credit-card"></i>
                     </div>
@@ -228,14 +276,18 @@
                     <span class="text-xs font-medium">
                         Cards
                     </span>
+
                 </a>
 
+
+                <!-- Local Transfer -->
 
                 <a
                     href="/dashboard/local-transfer"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="send"></i>
                     </div>
@@ -243,14 +295,18 @@
                     <span class="text-xs font-medium">
                         Transfer
                     </span>
+
                 </a>
 
+
+                <!-- International Transfer -->
 
                 <a
                     href="/dashboard/international-transfer"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="globe"></i>
                     </div>
@@ -258,29 +314,18 @@
                     <span class="text-xs font-medium">
                         Int'l Wire
                     </span>
+
                 </a>
 
 
-                <a
-                    href="/dashboard/deposits"
-                    @click="mobileMenuOpen = false"
-                    class="dashboard-mobile-menu-item"
-                >
-                    <div class="dashboard-mobile-menu-icon">
-                        <i data-lucide="download"></i>
-                    </div>
-
-                    <span class="text-xs font-medium">
-                        Deposits
-                    </span>
-                </a>
-
+                <!-- Investments -->
 
                 <a
                     href="/dashboard/investments"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="trending-up"></i>
                     </div>
@@ -288,14 +333,18 @@
                     <span class="text-xs font-medium">
                         Investments
                     </span>
+
                 </a>
 
+
+                <!-- Loans -->
 
                 <a
                     href="/dashboard/loans"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="landmark"></i>
                     </div>
@@ -303,14 +352,18 @@
                     <span class="text-xs font-medium">
                         Loans
                     </span>
+
                 </a>
 
+
+                <!-- Settings -->
 
                 <a
                     href="/dashboard/settings"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="settings"></i>
                     </div>
@@ -318,14 +371,18 @@
                     <span class="text-xs font-medium">
                         Settings
                     </span>
+
                 </a>
 
+
+                <!-- Verification -->
 
                 <a
                     href="/dashboard/kyc"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="badge-check"></i>
                     </div>
@@ -333,14 +390,18 @@
                     <span class="text-xs font-medium">
                         Verification
                     </span>
+
                 </a>
 
+
+                <!-- Notifications -->
 
                 <a
                     href="/dashboard/notifications"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="bell"></i>
                     </div>
@@ -348,14 +409,18 @@
                     <span class="text-xs font-medium">
                         Notifications
                     </span>
+
                 </a>
 
+
+                <!-- Support -->
 
                 <a
                     href="/dashboard/support"
                     @click="mobileMenuOpen = false"
                     class="dashboard-mobile-menu-item"
                 >
+
                     <div class="dashboard-mobile-menu-icon">
                         <i data-lucide="help-circle"></i>
                     </div>
@@ -363,6 +428,7 @@
                     <span class="text-xs font-medium">
                         Support
                     </span>
+
                 </a>
 
             </div>
@@ -387,13 +453,15 @@
 
             <a
                 href="/dashboard"
-                class="dashboard-mobile-nav-link active"
+                class="dashboard-mobile-nav-link"
             >
+
                 <i data-lucide="home"></i>
 
                 <span>
                     Home
                 </span>
+
             </a>
 
 
@@ -403,11 +471,13 @@
                 href="/dashboard/transactions"
                 class="dashboard-mobile-nav-link"
             >
+
                 <i data-lucide="activity"></i>
 
                 <span>
                     Activity
                 </span>
+
             </a>
 
 
@@ -418,14 +488,18 @@
                        items-center
                        justify-center"
             >
+
                 <button
                     type="button"
                     @click="mobileMenuOpen = true"
                     class="dashboard-mobile-menu-trigger"
                     aria-label="Open banking menu"
                 >
+
                     <i data-lucide="grid-2x2"></i>
+
                 </button>
+
             </div>
 
 
@@ -435,11 +509,13 @@
                 href="/dashboard/cards"
                 class="dashboard-mobile-nav-link"
             >
+
                 <i data-lucide="credit-card"></i>
 
                 <span>
                     Cards
                 </span>
+
             </a>
 
 
@@ -449,11 +525,13 @@
                 href="/dashboard/profile"
                 class="dashboard-mobile-nav-link"
             >
+
                 <i data-lucide="user"></i>
 
                 <span>
                     Profile
                 </span>
+
             </a>
 
         </div>

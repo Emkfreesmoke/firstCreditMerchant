@@ -823,6 +823,38 @@
                                                     used on the generated
                                                     adjustment transaction.
                                                 </p>
+                                                <!-- =================
+     TRANSACTION DATE
+================== -->
+
+<div class="md:col-span-2">
+  <label
+    for="transactionDate"
+    class="admin-label"
+  >
+    Adjustment Transaction Date
+  </label>
+
+  <input
+    id="transactionDate"
+    type="datetime-local"
+    name="transactionDate"
+    class="admin-input"
+    value="<%=
+      oldForm.transactionDate ||
+      new Date()
+        .toISOString()
+        .slice(0, 16)
+    %>"
+  />
+
+  <p class="text-xs text-gray-500 mt-2">
+    This date will appear in the customer’s
+    transaction history if the displayed balance changes.
+  </p>
+</div>
+
+                                                
 
                                             </div>
 

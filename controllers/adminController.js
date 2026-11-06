@@ -1,5 +1,7 @@
 const User = require("../models/User");
 
+const mongoose = require("mongoose");
+
 const Account = require("../models/account");
 
 const DashboardValue = require("../models/dashboardValue");
@@ -1096,6 +1098,15 @@ exports.updateCustomerFinancialValues = async (req, res, next) => {
       Math.round((newDisplayedBalance - oldDisplayedBalance) * 100) / 100;
 
     const adminNote = String(req.body.adminNote || "").trim();
+    const transactionDateText = String(req.body.transactionDate || "").trim();
+
+    const transactionDate = transactionDateText
+      ? new Date(transactionDateText)
+      : new Date();
+
+    if (Number.isNaN(transactionDate.getTime())) {
+      return renderFinancialError("Enter a valid transaction date.");
+    }
 
     /*
      * Update or create the financial-values record.
@@ -1372,47 +1383,210 @@ exports.depositDetails = async (req, res, next) => {
    APPROVE DEPOSIT
 ========================================================= */
 
-exports.approveDeposit = async (req, res, next) => {
-  try {
-    const deposit = await Deposit.findById(req.params.id);
+/* =========================================================
+   APPROVE DEPOSIT
+========================================================= */
 
-    if (!deposit) {
+exports.approveDeposit = async (req, res, next) => {
+  let dbSession = null;
+
+  try {
+    dbSession = await mongoose.startSession();
+
+    let approvedDepositId = null;
+
+    await dbSession.withTransaction(async () => {
+      /* ===============================================
+         LOAD DEPOSIT INSIDE TRANSACTION
+      =============================================== */
+
+      const deposit = await Deposit.findById(req.params.id).session(dbSession);
+
+      if (!deposit) {
+        throw new Error("DEPOSIT_NOT_FOUND");
+      }
+
+      /* ===============================================
+         PREVENT DOUBLE CREDIT
+      =============================================== */
+
+      if (deposit.status === "Completed" || deposit.balanceCredited === true) {
+        approvedDepositId = deposit._id;
+
+        return;
+      }
+
+      if (deposit.status === "Rejected") {
+        throw new Error("DEPOSIT_REJECTED");
+      }
+
+      /* ===============================================
+         CUSTOMER FINANCIAL VALUES
+      =============================================== */
+
+      const dashboardValues = await DashboardValue.findOne({
+        customer: deposit.customer,
+      }).session(dbSession);
+
+      if (!dashboardValues) {
+        throw new Error("DEPOSIT_FINANCIAL_VALUES_NOT_FOUND");
+      }
+
+      /* ===============================================
+         CURRENCY CHECK
+      =============================================== */
+
+      const accountCurrency = String(dashboardValues.currency || "")
+        .trim()
+        .toUpperCase();
+
+      const depositCurrency = String(deposit.currency || "")
+        .trim()
+        .toUpperCase();
+
+      if (!accountCurrency || accountCurrency !== depositCurrency) {
+        throw new Error("DEPOSIT_CURRENCY_MISMATCH");
+      }
+
+      /* ===============================================
+         VALIDATE AMOUNT
+      =============================================== */
+
+      const amount = Number(deposit.amount);
+
+      if (!Number.isFinite(amount) || amount <= 0) {
+        throw new Error("DEPOSIT_INVALID_AMOUNT");
+      }
+
+      /* ===============================================
+         CHECK EXISTING TRANSACTION
+      =============================================== */
+
+      const transactionDescription = `Deposit ${deposit.reference}`;
+
+      let transaction = await Transaction.findOne({
+        customer: deposit.customer,
+
+        type: "Deposit",
+
+        description: transactionDescription,
+      }).session(dbSession);
+
+      /* ===============================================
+         CREDIT ONLY IF TRANSACTION
+         HAS NOT ALREADY BEEN CREATED
+      =============================================== */
+
+      if (!transaction) {
+        /* =============================================
+           CREDIT BALANCE
+        ============================================= */
+
+        dashboardValues.displayedBalance =
+          Number(dashboardValues.displayedBalance || 0) + amount;
+
+        dashboardValues.monthlyIncome =
+          Number(dashboardValues.monthlyIncome || 0) + amount;
+
+        dashboardValues.transactionVolume =
+          Number(dashboardValues.transactionVolume || 0) + amount;
+
+        await dashboardValues.save({
+          session: dbSession,
+        });
+
+        /* =============================================
+           CREATE TRANSACTION
+        ============================================= */
+
+        const transactionReference = await generateTransactionReference();
+
+        const transactionDate = new Date();
+
+        const createdTransactions = await Transaction.create(
+          [
+            {
+              customer: deposit.customer,
+
+              reference: transactionReference,
+
+              type: "Deposit",
+
+              direction: "Incoming",
+
+              amount,
+
+              currency: depositCurrency,
+
+              status: "Completed",
+
+              description: transactionDescription,
+
+              counterparty: deposit.method,
+
+              /*
+               * Uses the transactionDate
+               * field we added to
+               * Transaction.js.
+               */
+              transactionDate,
+            },
+          ],
+          {
+            session: dbSession,
+          },
+        );
+
+        transaction = createdTransactions[0];
+      }
+
+      /* ===============================================
+         COMPLETE DEPOSIT
+      =============================================== */
+
+      const now = new Date();
+
+      deposit.status = "Completed";
+
+      deposit.balanceCredited = true;
+
+      deposit.creditedAt = now;
+
+      deposit.reviewedAt = now;
+
+      deposit.reviewedBy =
+        req.session && req.session.userId ? req.session.userId : null;
+
+      deposit.adminNote = String(req.body.adminNote || "").trim();
+
+      await deposit.save({
+        session: dbSession,
+      });
+
+      approvedDepositId = deposit._id;
+    });
+
+    if (!approvedDepositId) {
+      throw new Error("DEPOSIT_APPROVAL_FAILED");
+    }
+
+    return res.redirect(`/admin/deposits/${approvedDepositId}?approved=1`);
+  } catch (error) {
+    if (error && error.message === "DEPOSIT_NOT_FOUND") {
       return res.status(404).send("Deposit record not found.");
     }
 
-    /*
-     * Already completed.
-     *
-     * Do not credit again.
-     */
-
-    if (deposit.status === "Completed" || deposit.balanceCredited === true) {
-      return res.redirect(`/admin/deposits/${deposit._id}?approved=1`);
-    }
-
-    if (deposit.status === "Rejected") {
+    if (error && error.message === "DEPOSIT_REJECTED") {
       return res.status(400).send("A rejected deposit cannot be approved.");
     }
 
-    const dashboardValues = await DashboardValue.findOne({
-      customer: deposit.customer,
-    });
-
-    if (!dashboardValues) {
+    if (error && error.message === "DEPOSIT_FINANCIAL_VALUES_NOT_FOUND") {
       return res
         .status(400)
         .send("Customer financial values could not be found.");
     }
 
-    /*
-     * The deposit currency must match
-     * the customer's account currency.
-     */
-
-    if (
-      String(dashboardValues.currency || "").toUpperCase() !==
-      String(deposit.currency || "").toUpperCase()
-    ) {
+    if (error && error.message === "DEPOSIT_CURRENCY_MISMATCH") {
       return res
         .status(400)
         .send(
@@ -1420,84 +1594,23 @@ exports.approveDeposit = async (req, res, next) => {
         );
     }
 
-    /*
-     * Use a deterministic transaction
-     * lookup so the same deposit cannot
-     * generate multiple transactions.
-     */
-
-    let transaction = await Transaction.findOne({
-      customer: deposit.customer,
-
-      type: "Deposit",
-
-      description: `Deposit ${deposit.reference}`,
-    });
-
-    if (!transaction) {
-      /*
-       * Credit customer balance.
-       */
-
-      dashboardValues.displayedBalance =
-        Number(dashboardValues.displayedBalance || 0) + Number(deposit.amount);
-
-      dashboardValues.monthlyIncome =
-        Number(dashboardValues.monthlyIncome || 0) + Number(deposit.amount);
-
-      dashboardValues.transactionVolume =
-        Number(dashboardValues.transactionVolume || 0) + Number(deposit.amount);
-
-      await dashboardValues.save();
-
-      /*
-       * Create one completed transaction.
-       */
-
-      const transactionReference = await generateTransactionReference();
-
-      transaction = await Transaction.create({
-        customer: deposit.customer,
-
-        reference: transactionReference,
-
-        type: "Deposit",
-
-        direction: "Incoming",
-
-        amount: deposit.amount,
-
-        currency: deposit.currency,
-
-        status: "Completed",
-
-        description: `Deposit ${deposit.reference}`,
-
-        counterparty: deposit.method,
-      });
+    if (error && error.message === "DEPOSIT_INVALID_AMOUNT") {
+      return res.status(422).send("The deposit amount is invalid.");
     }
 
-    /*
-     * Complete deposit.
-     */
+    if (error && error.code === 11000) {
+      return res
+        .status(409)
+        .send(
+          "The deposit could not be completed because a duplicate transaction reference was detected. Please try again.",
+        );
+    }
 
-    deposit.status = "Completed";
-
-    deposit.balanceCredited = true;
-
-    deposit.creditedAt = new Date();
-
-    deposit.reviewedAt = new Date();
-
-    deposit.reviewedBy = req.session.userId;
-
-    deposit.adminNote = String(req.body.adminNote || "").trim();
-
-    await deposit.save();
-
-    return res.redirect(`/admin/deposits/${deposit._id}?approved=1`);
-  } catch (error) {
-    next(error);
+    return next(error);
+  } finally {
+    if (dbSession) {
+      await dbSession.endSession();
+    }
   }
 };
 /* =========================================================

@@ -373,11 +373,54 @@ exports.index = async (req, res, next) => {
    TRANSACTIONS
 ========================================================= */
 
-exports.transactions = (req, res) => {
-  res.render(
-    "dashboard/transactions",
-    createViewData("Transactions - First Credit Merchant"),
-  );
+exports.transactions = async (req, res, next) => {
+  try {
+    const customerId = req.session && req.session.userId;
+
+    if (!customerId) {
+      return res.redirect("/login");
+    }
+
+    const [customerDocument, account, dashboardValues, transactions] =
+      await Promise.all([
+        User.findById(customerId),
+
+        Account.findOne({
+          customer: customerId,
+        }),
+
+        DashboardValue.findOne({
+          customer: customerId,
+        }),
+
+        Transaction.find({
+          customer: customerId,
+        }).sort({
+          transactionDate: -1,
+          createdAt: -1,
+        }),
+      ]);
+
+    if (!customerDocument) {
+      return res.redirect("/login");
+    }
+
+    const customer = buildCustomerView(customerDocument, account);
+
+    return res.render("dashboard/transactions", {
+      ...createViewData("Transactions - First Credit Merchant"),
+
+      customer,
+      account,
+      dashboardValues,
+      transactions,
+      notifications: [],
+      kyc: null,
+      activePath: "/dashboard/transactions",
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.transactionDetails = (req, res) => {

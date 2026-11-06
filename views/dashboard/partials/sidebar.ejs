@@ -323,6 +323,24 @@
             </a>
 
 
+            <!-- Make Deposit -->
+
+            <a
+                href="/dashboard/deposits"
+                class="dashboard-nav-link
+                       <%= currentPath.includes("/deposits")
+                           ? "active"
+                           : ""
+                       %>"
+            >
+                <i data-lucide="download"></i>
+
+                <span>
+                    Make Deposit
+                </span>
+            </a>
+
+
             <a
                 href="/dashboard/cards"
                 class="dashboard-nav-link
@@ -339,7 +357,9 @@
             </a>
 
 
-            <!-- Transfers -->
+            <!-- =====================================
+                 TRANSFERS
+            ====================================== -->
 
             <p class="dashboard-sidebar-heading">
                 Transfers
@@ -394,23 +414,9 @@
             </a>
 
 
-            <a
-                href="/dashboard/deposits"
-                class="dashboard-nav-link
-                       <%= currentPath.includes("/deposits")
-                           ? "active"
-                           : ""
-                       %>"
-            >
-                <i data-lucide="download"></i>
-
-                <span>
-                    Deposits
-                </span>
-            </a>
-
-
-            <!-- Financial Services -->
+            <!-- =====================================
+                 FINANCIAL SERVICES
+            ====================================== -->
 
             <p class="dashboard-sidebar-heading">
                 Financial Services
@@ -481,7 +487,9 @@
             </a>
 
 
-            <!-- Account -->
+            <!-- =====================================
+                 ACCOUNT
+            ====================================== -->
 
             <p class="dashboard-sidebar-heading">
                 Account
