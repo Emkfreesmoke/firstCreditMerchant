@@ -1356,28 +1356,3 @@ a[href="/privacy"] {
 #login-form .create-account-link:hover .create-account-icon {
   color: #032d3f;
 }
-/* =========================================================
-   LOGIN DESKTOP THEME & SPLIT SCREEN FIX (APPEND TO LOGIN CSS)
-   ========================================================= */
-
-@media (min-width: 1024px) {
-  /* Force the left desktop branding panel to display with the exact emerald gradient theme */
-  .hidden.lg\:flex {
-    display: flex !important;
-    background: linear-gradient(135deg, #064e3b 0%, #022c22 100%) !important;
-  }
-
-  /* Force standard 50/50 split matching registration layout */
-  .lg\:w-1\/2 {
-    width: 50% !important;
-  }
-
-  /* Align container padding and height for desktop login */
-  .lg\:w-1\/2.flex.flex-col.justify-center.items-center {
-    justify-content: center !important;
-    padding-top: 40px !important;
-    padding-bottom: 40px !important;
-    padding-left: 55px !important;
-    padding-right: 55px !important;
-  }
-}
