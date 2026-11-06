@@ -7,54 +7,40 @@
     <div class="row">
       <div class="col-lg-12">
         <!-- =========================================
-             ABOUT VIDEO (Clean wrapper without grey box)
+             ABOUT VIDEO (Clean wrapper eliminating grey box and play button)
         ========================================== -->
 
         <div
-          class="post-image"
           style="
+            margin-bottom: 40px;
+            border-radius: 20px;
+            overflow: hidden;
             background: transparent !important;
             box-shadow: none !important;
-            padding: 0 !important;
           "
         >
-          <div
-            class="about-us-video"
-            style="background: transparent !important"
+          <video
+            id="aboutPageVideo"
+            autoplay
+            muted
+            loop
+            playsinline
+            webkit-playsinline
+            preload="auto"
+            style="
+              width: 100% !important;
+              max-width: 100% !important;
+              height: auto !important;
+              display: block !important;
+              object-fit: cover !important;
+              border-radius: 20px !important;
+              pointer-events: none !important;
+            "
           >
-            <figure
-              style="
-                margin: 0;
-                width: 100%;
-                max-width: 100%;
-                overflow: hidden;
-                border-radius: 20px;
-                background: transparent;
-              "
-            >
-              <video
-                id="aboutPageVideo"
-                autoplay
-                muted
-                loop
-                playsinline
-                webkit-playsinline
-                preload="auto"
-                style="
-                  width: 100%;
-                  max-width: 100%;
-                  height: auto;
-                  display: block;
-                  object-fit: cover;
-                  pointer-events: none;
-                "
-              >
-                <source src="/video/hero.mp4" type="video/mp4" />
+            <source src="/video/hero.mp4" type="video/mp4" />
 
-                Your browser does not support HTML5 video playback.
-              </video>
-            </figure>
-          </div>
+            Your browser does not support HTML5 video playback.
+          </video>
         </div>
 
         <!-- =========================================
