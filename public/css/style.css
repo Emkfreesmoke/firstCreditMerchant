@@ -8729,20 +8729,6 @@ header.main-header .header-sticky.active {
     box-sizing: border-box !important;
   }
 }
-/* =========================================================
-   NAVBAR DUPLICATE BUTTON & ABOUT VIDEO MOBILE FIX
-   ========================================================= */
-
-/* Prevent double hamburger menu triggers */
-.navbar-toggle {
-  display: none !important;
-}
-
-/* Ensure SlickNav single menu button is neatly positioned on mobile */
-.slicknav_btn {
-  background: #032d3f !important;
-  border-radius: 8px !important;
-}
 
 /* Force About Video to remain responsive on mobile without horizontal spill */
 .post-image,
@@ -8797,5 +8783,142 @@ header.main-header .header-sticky.active {
 @media (min-width: 992px) {
   .responsive-menu {
     display: none !important;
+  }
+}
+/* =========================================================
+   PUBLIC MOBILE NAV
+   SINGLE SLICKNAV CONTROL
+========================================================= */
+
+@media (max-width: 991px) {
+  /*
+   * SlickNav is mounted only inside .responsive-menu.
+   */
+
+  .responsive-menu {
+    display: block !important;
+
+    position: absolute;
+    top: 50%;
+    right: 15px;
+
+    width: auto;
+
+    transform: translateY(-50%);
+
+    z-index: 110;
+  }
+
+  /*
+   * Hide any legacy/generated secondary
+   * navbar-toggle wrapper.
+   */
+
+  .navbar-toggle {
+    display: none !important;
+  }
+
+  /*
+   * Only the SlickNav button belonging
+   * to responsive-menu is visible.
+   */
+
+  .responsive-menu .slicknav_menu {
+    position: static;
+
+    width: auto;
+
+    padding: 0;
+
+    background: transparent;
+  }
+
+  .responsive-menu .slicknav_btn {
+    display: flex !important;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 54px;
+    height: 48px;
+
+    margin: 0;
+
+    padding: 0;
+
+    border: 0;
+    border-radius: 12px;
+
+    background: #d8e28c !important;
+
+    box-shadow: none;
+  }
+
+  .responsive-menu .slicknav_icon {
+    display: block;
+
+    width: 24px;
+    height: auto;
+
+    margin: 0;
+  }
+
+  .responsive-menu .slicknav_icon-bar {
+    display: block;
+
+    width: 24px !important;
+    height: 3px;
+
+    margin: 4px auto !important;
+
+    border-radius: 999px;
+
+    background: #ffffff !important;
+  }
+
+  /*
+   * Dropdown menu itself.
+   */
+
+  .responsive-menu .slicknav_nav {
+    position: absolute;
+
+    top: calc(100% + 12px);
+    right: 0;
+
+    width: min(330px, calc(100vw - 30px));
+
+    margin: 0;
+
+    padding: 8px 0;
+
+    border-radius: 14px;
+
+    background: #d8e28c;
+
+    box-shadow: 0 14px 34px rgba(3, 45, 63, 0.18);
+  }
+
+  /*
+   * Keep desktop menu hidden.
+   */
+
+  .main-header .main-menu {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   SMALL PHONE
+========================================================= */
+
+@media (max-width: 575px) {
+  .responsive-menu {
+    right: 15px;
+  }
+
+  .responsive-menu .slicknav_btn {
+    width: 50px;
+    height: 46px;
   }
 }
