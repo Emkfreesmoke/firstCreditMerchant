@@ -8760,3 +8760,10 @@ header.main-header .header-sticky.active {
   height: auto !important;
   object-fit: cover !important;
 }
+
+/* Permanently kill any native theme toggle so only SlickNav shows */
+.navbar-toggle,
+.navbar-toggle-box,
+.mobile-menu-bar {
+  display: none !important;
+}
