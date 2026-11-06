@@ -1017,3 +1017,341 @@ button:active {
     font-size: 13px;
   }
 }
+/* =========================================================
+   REGISTER MOBILE FINAL OVERRIDE
+========================================================= */
+
+@media (max-width: 639px) {
+  /*
+   * Registration form-side container
+   */
+
+  #customer-register-form {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+
+  /*
+   * Container surrounding registration card.
+   */
+
+  .w-full.max-w-2xl {
+    width: 100% !important;
+    max-width: 460px !important;
+
+    margin-left: auto !important;
+    margin-right: auto !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  /*
+   * Registration card.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    margin: 0 auto !important;
+
+    border-radius: 20px !important;
+
+    overflow: hidden !important;
+
+    background: #ffffff !important;
+
+    box-shadow: 0 16px 36px rgba(15, 23, 42, 0.1) !important;
+  }
+
+  /*
+   * Progress/header area.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden > .bg-gray-50 {
+    padding: 22px 20px 18px !important;
+  }
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden > .bg-gray-50 h2 {
+    margin: 0 !important;
+
+    font-size: 25px !important;
+    line-height: 1.2 !important;
+
+    color: #111827 !important;
+  }
+
+  /*
+   * Step counter.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden > .bg-gray-50 .text-sm {
+    font-size: 12px !important;
+  }
+
+  /*
+   * Progress bar.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden .h-2.w-full {
+    height: 7px !important;
+
+    border-radius: 999px !important;
+
+    overflow: hidden !important;
+  }
+
+  /*
+   * Step names.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden .grid.grid-cols-4 {
+    display: grid !important;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+    gap: 4px !important;
+
+    width: 100% !important;
+
+    font-size: 9px !important;
+    line-height: 1.3 !important;
+  }
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden .grid.grid-cols-4 > div {
+    min-width: 0 !important;
+
+    overflow-wrap: anywhere !important;
+  }
+
+  /*
+   * Main registration-card form area.
+   */
+
+  .bg-white.rounded-2xl.shadow-xl.overflow-hidden > .px-8.py-7 {
+    padding: 24px 20px 26px !important;
+  }
+
+  /*
+   * Step title.
+   */
+
+  #customer-register-form h3 {
+    margin: 0 0 5px !important;
+
+    font-size: 21px !important;
+    line-height: 1.25 !important;
+
+    color: #111827 !important;
+  }
+
+  #customer-register-form h3 + p {
+    margin-top: 5px !important;
+
+    font-size: 14px !important;
+    line-height: 1.5 !important;
+
+    color: #6b7280 !important;
+  }
+
+  /*
+   * Personal-information grid.
+   */
+
+  #customer-register-form .grid.grid-cols-1 {
+    display: grid !important;
+
+    grid-template-columns: minmax(0, 1fr) !important;
+
+    gap: 18px !important;
+
+    width: 100% !important;
+  }
+
+  /*
+   * Labels.
+   */
+
+  #customer-register-form label {
+    font-size: 14px !important;
+
+    line-height: 1.35 !important;
+
+    color: #374151 !important;
+  }
+
+  /*
+   * Form controls.
+   */
+
+  #customer-register-form input[type="text"],
+  #customer-register-form input[type="email"],
+  #customer-register-form input[type="tel"],
+  #customer-register-form input[type="password"],
+  #customer-register-form select {
+    display: block !important;
+
+    width: 100% !important;
+    max-width: 100% !important;
+
+    height: 56px !important;
+    min-height: 56px !important;
+
+    margin: 0 !important;
+
+    padding: 0 15px !important;
+
+    border: 1px solid #d1d5db !important;
+
+    border-radius: 11px !important;
+
+    background-color: #ffffff !important;
+
+    color: #1f2937 !important;
+
+    font-size: 16px !important;
+
+    box-sizing: border-box !important;
+
+    outline: none !important;
+  }
+
+  /*
+   * Password controls need space
+   * for their eye buttons.
+   */
+
+  #customer-register-form #register-password,
+  #customer-register-form #password_confirmation {
+    padding-right: 54px !important;
+  }
+
+  #customer-register-form .relative {
+    position: relative !important;
+
+    width: 100% !important;
+  }
+
+  #customer-register-form .relative > button.absolute {
+    position: absolute !important;
+
+    top: 0 !important;
+    right: 0 !important;
+
+    width: 52px !important;
+    height: 56px !important;
+
+    display: flex !important;
+
+    align-items: center !important;
+    justify-content: center !important;
+
+    padding: 0 !important;
+
+    background: transparent !important;
+
+    box-shadow: none !important;
+  }
+
+  /*
+   * Previous / Next rows.
+   */
+
+  #customer-register-form .flex.items-center.justify-between.mt-8 {
+    display: grid !important;
+
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(0, 1fr) !important;
+
+    gap: 10px !important;
+
+    width: 100% !important;
+
+    margin-top: 25px !important;
+  }
+
+  /*
+   * Step-one Next button.
+   */
+
+  #customer-register-form .flex.justify-end.mt-8 {
+    display: flex !important;
+
+    width: 100% !important;
+
+    margin-top: 25px !important;
+  }
+
+  #customer-register-form .flex.justify-end.mt-8 button {
+    width: 100% !important;
+  }
+
+  /*
+   * Registration navigation buttons.
+   */
+
+  #customer-register-form button[type="button"],
+  #customer-register-form button[type="submit"] {
+    min-height: 53px !important;
+
+    border-radius: 11px !important;
+
+    font-size: 14px !important;
+  }
+
+  #customer-register-form button.bg-primary-600 {
+    background: #082f3f !important;
+
+    color: #ffffff !important;
+  }
+
+  #customer-register-form button.bg-gray-100 {
+    background: #f1f5f9 !important;
+
+    color: #475569 !important;
+  }
+
+  /*
+   * Password requirements.
+   */
+
+  #customer-register-form .grid.grid-cols-1.sm\:grid-cols-2 {
+    display: grid !important;
+
+    grid-template-columns: 1fr !important;
+
+    gap: 7px !important;
+
+    margin-top: 13px !important;
+  }
+
+  /*
+   * Terms checkbox.
+   */
+
+  #customer-register-form input[type="checkbox"] {
+    width: 19px !important;
+    height: 19px !important;
+
+    flex: 0 0 19px !important;
+
+    margin-top: 2px !important;
+  }
+
+  /*
+   * Sign-in link.
+   */
+
+  a[href="/login"] {
+    color: #032d3f !important;
+
+    font-weight: 600 !important;
+  }
+}
