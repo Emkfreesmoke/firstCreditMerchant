@@ -19,9 +19,14 @@ async function connectDatabase() {
     throw new Error("MONGODB_URI is missing from the environment.");
   }
 
+  // Disable mongoose buffering to prevent long hangs on serverless timeouts
+  mongoose.set("bufferCommands", false);
+
   connectionPromise = mongoose
     .connect(mongoUri, {
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000, // Reduced to fail fast instead of hanging
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 10000,
       maxPoolSize: 10,
       minPoolSize: 0,
       maxIdleTimeMS: 10000,
