@@ -8776,3 +8776,26 @@ header.main-header .header-sticky.active {
 .navbar-header .navbar-toggle:not(:has(.slicknav_btn)) {
   display: none;
 }
+/* Force single clean SlickNav mobile button display and hide old template toggles */
+.navbar-toggle {
+  display: none !important;
+}
+
+.responsive-menu .slicknav_menu {
+  display: block;
+}
+
+.responsive-menu .slicknav_btn {
+  display: flex !important;
+  background: #032d3f !important;
+  border-radius: 8px !important;
+  position: absolute;
+  right: 15px;
+  top: -55px;
+}
+
+@media (min-width: 992px) {
+  .responsive-menu {
+    display: none !important;
+  }
+}
