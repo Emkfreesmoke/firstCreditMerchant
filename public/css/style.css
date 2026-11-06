@@ -8767,3 +8767,12 @@ header.main-header .header-sticky.active {
 .mobile-menu-bar {
   display: none !important;
 }
+/* Ensure only SlickNav's injected button shows on mobile and prevent duplicates */
+.navbar-toggle .slicknav_btn {
+  display: flex !important;
+}
+
+/* Hide any stray native template triggers */
+.navbar-header .navbar-toggle:not(:has(.slicknav_btn)) {
+  display: none;
+}
