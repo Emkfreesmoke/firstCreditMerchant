@@ -81,17 +81,20 @@ const transactionSchema = new mongoose.Schema(
       trim: true,
       default: "",
     },
+
+    /* =========================================================
+       TRANSACTION DATE
+    ========================================================= */
+
+    transactionDate: {
+      type: Date,
+      default: Date.now,
+      index: true,
+    },
   },
   {
     timestamps: true,
   },
-
-  transactionDate: {
-  type: Date,
-  default: Date.now,
-  index: true,
-},
-
 );
 
 module.exports = mongoose.model("Transaction", transactionSchema);
