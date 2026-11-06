@@ -17,30 +17,21 @@ const authRoutes = require("./routes/auth");
 const { verifyMailer } = require("./utils/mailer");
 
 const app = express();
+
+// TRUST PROXY: Required for secure cookies and sessions behind Vercel's load balancer
+app.set("trust proxy", 1);
+
 app.locals.currentYear = new Date().getFullYear();
-app.use(async function connectDatabaseMiddleware(req, res, next) {
-  try {
-    await connectDatabase();
 
-    next();
-  } catch (error) {
-    console.error("Database connection failed:", error.message);
-
-    next(error);
-  }
+// Initialize database connection once on startup for serverless optimization
+connectDatabase().catch((error) => {
+  console.error("Initial database connection failed:", error.message);
 });
 
 /* =========================================================
    MAILER
 ========================================================= */
 
-// verifyMailer()
-//   .then(() => {
-//     console.log("Email service connected");
-//   })
-//   .catch((error) => {
-//     console.error("SMTP verification failed:", error.message);
-//   });
 if (
   process.env.NODE_ENV !== "production" &&
   process.env.VERIFY_SMTP_ON_START === "true"
@@ -53,6 +44,7 @@ if (
       console.error("SMTP verification failed:", error.message);
     });
 }
+
 /* =========================================================
    BODY PARSERS
 ========================================================= */
@@ -60,10 +52,15 @@ if (
 app.use(
   express.urlencoded({
     extended: true,
+    limit: "1mb",
   }),
 );
 
-app.use(express.json());
+app.use(
+  express.json({
+    limit: "1mb",
+  }),
+);
 
 /* =========================================================
    SESSION
@@ -98,6 +95,7 @@ app.use(
     },
   }),
 );
+
 /* =========================================================
    LOGIN PAGE MESSAGES
 ========================================================= */
@@ -114,34 +112,17 @@ app.use((req, res, next) => {
 });
 
 /* =========================================================
-   AUTHENTICATION ROUTES
+   VIEW ENGINE & STATIC ASSETS
 ========================================================= */
 
-/*
-|--------------------------------------------------------------------------
-| View engine
-|--------------------------------------------------------------------------
-*/
 app.set("view engine", "ejs");
 
 app.set("views", path.join(__dirname, "views"));
 
-app.use(express.static(path.join(__dirname, "public")));
-
-/* =========================================================
-   REQUEST PARSING
-========================================================= */
-
 app.use(
-  express.json({
-    limit: "1mb",
-  }),
-);
-
-app.use(
-  express.urlencoded({
-    extended: true,
-    limit: "1mb",
+  express.static(path.join(__dirname, "public"), {
+    index: false,
+    maxAge: app.get("env") === "production" ? "1d" : 0,
   }),
 );
 
@@ -152,41 +133,11 @@ app.use(
 app.use("/dashboard", dashboardRoutes);
 app.use("/admin", adminRoutes);
 app.use("/", authRoutes);
-
-/*
-|--------------------------------------------------------------------------
-| Static assets
-|--------------------------------------------------------------------------
-|
-| Files inside public are available from the site root.
-|
-| Examples:
-| public/css/style.css  -> /css/style.css
-| public/js/main.js     -> /js/main.js
-| public/images/logo.png -> /images/logo.png
-|
-*/
-
-app.use(
-  express.static(path.join(__dirname, "public"), {
-    index: false,
-    maxAge: app.get("env") === "production" ? "1d" : 0,
-  }),
-);
-
-/*
-|--------------------------------------------------------------------------
-| Routes
-|--------------------------------------------------------------------------
-*/
-
 app.use("/", indexRouter);
 
-/*
-|--------------------------------------------------------------------------
-| 404 handler
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   404 HANDLER
+========================================================= */
 
 app.use((req, res) => {
   res.status(404).render("errors/404", {
@@ -196,11 +147,9 @@ app.use((req, res) => {
   });
 });
 
-/*
-|--------------------------------------------------------------------------
-| Application error handler
-|--------------------------------------------------------------------------
-*/
+/* =========================================================
+   APPLICATION ERROR HANDLER
+========================================================= */
 
 app.use((error, req, res, next) => {
   console.error(error);
@@ -225,5 +174,16 @@ app.use((error, req, res, next) => {
     error: app.get("env") === "development" ? error : null,
   });
 });
+
+/* =========================================================
+   SERVER STARTUP / VERCEL EXPORT
+========================================================= */
+
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`Application running on port ${PORT}`);
+  });
+}
 
 module.exports = app;
