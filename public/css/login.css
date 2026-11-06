@@ -996,3 +996,363 @@ a[href="/privacy"] {
     font-size: 14px;
   }
 }
+/* =========================================================
+   LOGIN PAGE (FIXED FOR MOBILE VIEWS)
+   Target: original First Credit Merchant login screen
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   BASE & BODY
+   --------------------------------------------------------- */
+
+body {
+  min-height: 100vh;
+  overflow-x: hidden;
+  margin: 0;
+  background: #f8fafc;
+  font-family: "Lato", sans-serif;
+}
+
+body > .w-full {
+  min-height: 100vh;
+}
+
+/* ---------------------------------------------------------
+   CONTAINER & MOBILE PADDING FIX
+   --------------------------------------------------------- */
+
+/* Fix: The desktop padding was previously applying globally to mobile screens, 
+   causing severe horizontal squishing. Now scoped properly for mobile first. */
+.lg\:w-1\/2.flex.flex-col.justify-center.items-center {
+  width: 100%;
+  padding: 24px 16px;
+}
+
+#login-form {
+  width: 100%;
+  max-width: 100%;
+  font-family: "Lato", sans-serif;
+}
+
+#login-form input,
+#login-form button {
+  font-family: "Lato", sans-serif;
+}
+
+/* ---------------------------------------------------------
+   LOGIN CARD
+   --------------------------------------------------------- */
+
+.bg-white.rounded-2xl:has(#login-form) {
+  width: 100%;
+  max-width: 455px;
+  margin-left: auto;
+  margin-right: auto;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow:
+    0 12px 30px rgba(15, 23, 42, 0.08),
+    0 3px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* ---------------------------------------------------------
+   HEADER
+   --------------------------------------------------------- */
+
+.bg-white.rounded-2xl:has(#login-form) h2 {
+  font-size: 22px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #374151;
+  text-align: left;
+}
+
+.bg-white.rounded-2xl:has(#login-form) h2 + p {
+  max-width: 100%;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #64748b;
+  text-align: left;
+}
+
+/* ---------------------------------------------------------
+   FORM LABELS
+   --------------------------------------------------------- */
+
+#login-form label {
+  font-size: 14px;
+  color: #64748b;
+}
+
+#login-form label[for="email"] {
+  display: block;
+  text-align: left;
+}
+
+@media (min-width: 640px) {
+  #login-form label[for="email"] {
+    text-align: right;
+    padding-right: 2px;
+  }
+}
+
+#login-form label[for="password"] {
+  text-align: left;
+}
+
+/* ---------------------------------------------------------
+   INPUTS
+   --------------------------------------------------------- */
+
+#login-form input[type="text"],
+#login-form input[type="email"],
+#login-form input[type="password"] {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.45);
+  color: #475569;
+  font-size: 15px;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  #login-form input[type="text"],
+  #login-form input[type="email"],
+  #login-form input[type="password"] {
+    min-height: 54px;
+  }
+}
+
+#login-form input[type="text"]:focus,
+#login-form input[type="email"]:focus,
+#login-form input[type="password"]:focus {
+  border-color: #94a3b8;
+  box-shadow: 0 0 0 3px rgba(3, 45, 63, 0.08);
+}
+
+#login-form input::placeholder {
+  color: #8da0ba;
+}
+
+/* ---------------------------------------------------------
+   INPUT ICONS
+   --------------------------------------------------------- */
+
+#login-form .input-icon {
+  left: 16px;
+  color: #8da0ba;
+}
+
+#login-form .input-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2;
+}
+
+/* ---------------------------------------------------------
+   FORGOT PASSWORD
+   --------------------------------------------------------- */
+
+#login-form a[href="/forgot-password"] {
+  color: #52647c;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+#login-form a[href="/forgot-password"]:hover {
+  color: #032d3f;
+}
+
+/* ---------------------------------------------------------
+   PASSWORD TOGGLE
+   --------------------------------------------------------- */
+
+#password-toggle {
+  border: 0;
+  background: transparent;
+  color: #8da0ba;
+  cursor: pointer;
+  outline: none;
+}
+
+#password-toggle svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ---------------------------------------------------------
+   REMEMBER ME
+   --------------------------------------------------------- */
+
+#login-form input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #4f8fd8;
+  cursor: pointer;
+}
+
+#login-form input[type="checkbox"] + span {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ---------------------------------------------------------
+   SIGN IN BUTTON
+   --------------------------------------------------------- */
+
+#login-form button[type="submit"] {
+  width: 100%;
+  min-height: 48px;
+  border: 0;
+  border-radius: 7px;
+  background: #566b82;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: none;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  #login-form button[type="submit"] {
+    min-height: 51px;
+  }
+}
+
+#login-form button[type="submit"]:hover {
+  background: #475d74;
+}
+
+#login-form button[type="submit"]:active {
+  transform: translateY(1px);
+}
+
+/* ---------------------------------------------------------
+   CREATE ACCOUNT LINK / BUTTON
+   --------------------------------------------------------- */
+
+#login-form a[href="/register"] {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 14px;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #8191a8;
+  font-size: 15px;
+  font-weight: 400;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+@media (min-width: 640px) {
+  #login-form a[href="/register"] {
+    min-height: 51px;
+  }
+}
+
+#login-form a[href="/register"]:hover {
+  background: #f1f5f9;
+  color: #52647c;
+}
+
+#login-form a[href="/register"] svg {
+  color: #8191a8;
+}
+
+/* ---------------------------------------------------------
+   TERMS BELOW CARD
+   --------------------------------------------------------- */
+
+#login-form ~ * {
+  font-size: 13px;
+}
+
+a[href="/terms"],
+a[href="/privacy"] {
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------
+   DESKTOP SPLIT VIEW & MEDIA QUERY OVERRIDES
+   --------------------------------------------------------- */
+
+@media (min-width: 1024px) {
+  .lg\:w-1\/2 {
+    width: 50%;
+  }
+
+  .lg\:w-1\/2.flex.flex-col.justify-center.items-center {
+    justify-content: flex-start;
+    padding-top: 70px;
+    padding-bottom: 40px;
+    padding-left: 55px;
+    padding-right: 55px;
+  }
+
+  .lg\:w-1\/2.flex.flex-col.justify-center.items-center > .w-full.max-w-md {
+    max-width: 455px;
+  }
+
+  .bg-white.rounded-2xl:has(#login-form) h2 {
+    font-size: 25px;
+  }
+}
+
+/* ---------------------------------------------------------
+   ADDITIONAL UTILITIES & STACKED LAYOUTS
+   --------------------------------------------------------- */
+
+.enrole {
+  display: inline;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  background: transparent;
+  color: #032d3f;
+}
+
+#login-form .create-account-link {
+  width: 100%;
+  margin-top: 18px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-decoration: none;
+}
+
+#login-form .create-account-icon {
+  width: 23px;
+  height: 23px;
+  margin-bottom: 12px;
+  color: #64748b;
+  stroke-width: 1.7;
+}
+
+#login-form .create-account-link:hover {
+  background: transparent;
+  color: #032d3f;
+}
+
+#login-form .create-account-link:hover .create-account-icon {
+  color: #032d3f;
+}
