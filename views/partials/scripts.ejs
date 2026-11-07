@@ -1,4 +1,6 @@
-<!-- jQuery -->
+<!-- =====================================================
+     JAVASCRIPT LIBRARIES
+====================================================== -->
 
 <script src="/vendor/jquery/jquery.min.js"></script>
 <script src="/vendor/bootstrap/bootstrap.bundle.min.js"></script>
@@ -17,22 +19,27 @@
 <script src="/vendor/ytplayer/ytplayer.js"></script>
 <script src="/vendor/wow/wow.min.js"></script>
 <script src="/vendor/magiccursor/magiccursor.js"></script>
+
+<!-- CUSTOM JAVASCRIPT -->
 <script src="/js/cursor.js"></script>
 <script src="/js/main.js"></script>
 
-<!-- Smartsupp Live Chat -->
+
+<!-- =====================================================
+     SMARTSUPP LIVE CHAT
+====================================================== -->
 
 <script type="text/javascript">
-var _smartsupp = _smartsupp || {};
-_smartsupp.key = 'c65f5e99902ebf42fd9cb916f8c8394dc7562b53';
+  var _smartsupp = _smartsupp || {};
 
-window.smartsupp || (function(d) {
+  _smartsupp.key = 'c65f5e99902ebf42fd9cb916f8c8394dc7562b53';
 
+  window.smartsupp || (function (d) {
     var s;
     var c;
 
-    var o = smartsupp = function() {
-        o._.push(arguments);
+    var o = smartsupp = function () {
+      o._.push(arguments);
     };
 
     o._ = [];
@@ -47,19 +54,21 @@ window.smartsupp || (function(d) {
     c.src = 'https://www.smartsuppchat.com/loader.js?';
 
     s.parentNode.insertBefore(c, s);
-
-})(document);
+  })(document);
 </script>
 
 <noscript>
-    Powered by
-    <a
-        href="https://www.smartsupp.com"
-        target="_blank"
-    >
-        Smartsupp
-    </a>
+  Powered by
+  <a href="https://www.smartsupp.com" target="_blank">
+    Smartsupp
+  </a>
 </noscript>
+
+
+<!-- =====================================================
+     PRELOADER FALLBACK
+====================================================== -->
+
 <script>
   window.addEventListener("load", function () {
     const preloader = document.querySelector(".preloader");
@@ -74,7 +83,7 @@ window.smartsupp || (function(d) {
     }
   });
 
-  // Fallback so a missing image cannot trap the page indefinitely
+  // Prevent the preloader from trapping the page.
   setTimeout(function () {
     const preloader = document.querySelector(".preloader");
 
@@ -84,55 +93,102 @@ window.smartsupp || (function(d) {
   }, 3000);
 </script>
 
+
+<!-- =====================================================
+     GLOBAL VIDEO AUTOPLAY AND LOOP CONFIGURATION
+====================================================== -->
+
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-  const videos = document.querySelectorAll(
-    ".hero-bg-video video, .about-us-video video, .about-video video, section video"
-  );
+  (function () {
+    "use strict";
 
-  videos.forEach(function (video) {
-    video.muted = true;
-    video.defaultMuted = true;
-    video.loop = true;
-    video.playsInline = true;
-    video.setAttribute("autoplay", "");
-    video.setAttribute("muted", "");
-    video.setAttribute("loop", "");
-    video.setAttribute("playsinline", "");
+    function initializeVideos() {
+      const videos = document.querySelectorAll("video");
 
-    const startVideo = function () {
-      const playback = video.play();
+      videos.forEach(function (video) {
 
-      if (
-        playback &&
-        typeof playback.catch === "function"
-      ) {
-        playback.catch(function (error) {
-          console.warn(
-            "Video autoplay failed:",
-            video.currentSrc ||
-              video.querySelector("source")?.src,
-            error.name,
-            error.message
+        // Configure video for mobile and desktop playback.
+        video.setAttribute("autoplay", "");
+        video.setAttribute("muted", "");
+        video.setAttribute("loop", "");
+        video.setAttribute("playsinline", "");
+        video.setAttribute("webkit-playsinline", "");
+        video.setAttribute("preload", "auto");
+
+        video.muted = true;
+        video.defaultMuted = true;
+        video.autoplay = true;
+        video.loop = true;
+        video.playsInline = true;
+
+        // Attempt playback when the video is ready.
+        function startVideo() {
+          if (video.error) {
+            console.error(
+              "Video loading error:",
+              video.currentSrc,
+              video.error
+            );
+            return;
+          }
+
+          if (!video.paused && !video.ended) {
+            return;
+          }
+
+          const playback = video.play();
+
+          if (playback && typeof playback.catch === "function") {
+            playback.catch(function (error) {
+              console.warn(
+                "Video playback was prevented:",
+                video.currentSrc,
+                error.name,
+                error.message
+              );
+            });
+          }
+        }
+
+        // Start as soon as enough video data is available.
+        video.addEventListener("loadeddata", startVideo);
+        video.addEventListener("canplay", startVideo);
+
+        // Handle videos that are already loaded.
+        if (video.readyState >= 2) {
+          startVideo();
+        }
+
+        // Report media loading errors.
+        video.addEventListener("error", function () {
+          console.error(
+            "Unable to load video:",
+            video.currentSrc,
+            video.error
           );
         });
-      }
-    };
+      });
 
-    if (video.readyState >= 2) {
-      startVideo();
-    } else {
-      video.addEventListener(
-        "canplay",
-        startVideo,
-        {
-          once: true
-        }
+      console.log(
+        "Global video configuration initialized:",
+        videos.length,
+        "videos found."
       );
     }
-  });
-});
+
+    // Run after the page markup is available.
+    if (document.readyState === "loading") {
+      document.addEventListener(
+        "DOMContentLoaded",
+        initializeVideos
+      );
+    } else {
+      initializeVideos();
+    }
+
+  })();
 </script>
+
 
 </body>
 </html>

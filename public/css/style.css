@@ -9044,3 +9044,109 @@ header.main-header .header-sticky.active {
     background: rgba(0, 0, 0, 0.12) !important;
   }
 }
+/* =========================================================
+   GLOBAL VIDEO FIXES
+   MOBILE AND DESKTOP
+========================================================= */
+
+/* Keep all website videos visible */
+video {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* =========================================================
+   HOMEPAGE ABOUT VIDEO — REMOVE EXTRA BACKGROUND
+========================================================= */
+
+.about-video-image.local-about-video {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin-top: 40px !important;
+  margin-bottom: 40px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.about-video-image.local-about-video::before,
+.about-video-image.local-about-video::after {
+  display: none !important;
+  content: none !important;
+}
+
+.about-video-image.local-about-video .about-us-video {
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.about-video-image.local-about-video .about-local-video {
+  display: block !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  border-radius: 20px !important;
+  background: transparent !important;
+}
+
+/* =========================================================
+   HERO VIDEO — RESPONSIVE DISPLAY
+========================================================= */
+
+.hero-bg-video {
+  overflow: hidden !important;
+}
+
+.hero-bg-video video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+}
+
+/* =========================================================
+   MOBILE VIDEO OVERRIDES
+========================================================= */
+
+@media (max-width: 991px) {
+  .hero-bg-video,
+  .hero-bg-video video {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .hero-bg-video video {
+    display: block !important;
+    object-fit: cover !important;
+  }
+
+  .about-video-image.local-about-video,
+  .about-video-image.local-about-video .about-us-video {
+    height: auto !important;
+    min-height: 0 !important;
+    background: transparent !important;
+  }
+
+  .about-video-image.local-about-video .about-local-video {
+    width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+
+  .about-us-video video {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
