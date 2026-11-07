@@ -8967,7 +8967,7 @@ header.main-header .header-sticky.active {
     padding: 0 !important;
     border: none !important;
     border-radius: 12px !important;
-    background: #0d4b43 !important;
+    background: #d9e194 !important;
     box-shadow: none !important;
   }
 
@@ -9023,5 +9023,24 @@ header.main-header .header-sticky.active {
 @media (min-width: 992px) {
   .main-header .responsive-menu {
     display: none !important;
+  }
+}
+/* MOBILE DROPDOWN ARROWS */
+@media (max-width: 991px) {
+  .responsive-menu .slicknav_arrow {
+    color: #d9e194 !important;
+    font-size: 18px !important;
+    font-weight: bold;
+    margin-left: 8px !important;
+  }
+
+  .responsive-menu .slicknav_nav .slicknav_item {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .responsive-menu .slicknav_nav ul {
+    background: rgba(0, 0, 0, 0.12) !important;
   }
 }
