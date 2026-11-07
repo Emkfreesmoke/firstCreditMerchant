@@ -47,12 +47,17 @@
   /* =========================================================
      SLICK MOBILE MENU
   ========================================================= */
-
-  $("#menu").slicknav({
-    label: "",
-    prependTo: ".responsive-menu",
+  $(document).ready(function () {
+    if ($("#menu").length) {
+      $("#menu").slicknav({
+        label: "",
+        prependTo: ".responsive-menu",
+        closedSymbol: "&#9658;",
+        openedSymbol: "&#9660;",
+        allowParentLinks: true,
+      });
+    }
   });
-
   /* =========================================================
      BACK TO TOP
   ========================================================= */
