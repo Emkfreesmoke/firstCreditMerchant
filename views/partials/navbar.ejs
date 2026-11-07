@@ -51,7 +51,7 @@
 <header class="main-header">
   <div class="header-sticky">
     <nav class="navbar navbar-expand-lg" aria-label="Main navigation">
-      <div class="container">
+      <div class="container d-flex align-items-center justify-content-between">
         <!-- =========================================
              LOGO
         ========================================== -->
@@ -67,6 +67,16 @@
             class="landing-header-logo"
           />
         </a>
+
+        <!-- =========================================
+             MOBILE SLICKNAV DESTINATION
+             Placed right next to logo for clean flex alignment
+        ========================================== -->
+
+        <div
+          class="responsive-menu d-lg-none"
+          aria-label="Mobile navigation"
+        ></div>
 
         <!-- =========================================
              DESKTOP MAIN MENU
@@ -180,15 +190,6 @@
         <!-- =========================================
              DESKTOP MAIN MENU END
         ========================================== -->
-
-        <!-- =========================================
-             MOBILE SLICKNAV DESTINATION
-
-             The SlickNav-generated hamburger and
-             mobile menu are placed here.
-        ========================================== -->
-
-        <div class="responsive-menu" aria-label="Mobile navigation"></div>
       </div>
     </nav>
   </div>

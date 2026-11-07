@@ -8867,3 +8867,53 @@ header.main-header .header-sticky.active {
     display: none !important;
   }
 }
+/* =========================================================
+   SLICKNAV MOBILE MENU BUTTON FIX
+   ========================================================= */
+
+@media (max-width: 991px) {
+  .responsive-menu {
+    display: block !important;
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .responsive-menu .slicknav_btn {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 42px !important;
+    height: 42px !important;
+    background: #032d3f !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+    margin: 0 !important;
+    cursor: pointer;
+  }
+
+  .responsive-menu .slicknav_icon {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 20px !important;
+    height: 14px !important;
+    background: transparent !important;
+  }
+
+  .responsive-menu .slicknav_icon-bar {
+    display: block !important;
+    width: 20px !important;
+    height: 2.5px !important;
+    background-color: #ffffff !important;
+    border-radius: 2px !important;
+    margin: 0 !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .responsive-menu {
+    display: none !important;
+  }
+}
