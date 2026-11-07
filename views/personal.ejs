@@ -2,68 +2,31 @@
   title: "Personal Banking | First Credit Merchant"
 }) %>
 
-<body>
+<!-- Navigation -->
+<%- include("partials/navbar") %>
 
-  <!-- =============================================
-       PRELOADER
-  ============================================== -->
+<!-- Personal Banking Page -->
+<main>
 
-  <%- include("partials/preloader") %>
+  <!-- Personal Hero -->
+  <%- include("sections/personal/hero") %>
 
+  <!-- Personal Accounts -->
+  <%- include("sections/personal/account") %>
 
-  <!-- =============================================
-       NAVIGATION
-  ============================================== -->
+  <!-- Shared Company Wisdom -->
+  <%- include("sections/company-wisdom") %>
 
-  <%- include("partials/navbar") %>
+  <!-- Personal CTA -->
+  <%- include("sections/personal/cta") %>
 
+  <!-- Personal FAQ -->
+  <%- include("sections/personal/faq") %>
 
-  <!-- =============================================
-       PERSONAL BANKING PAGE
-  ============================================== -->
+</main>
 
-  <main>
+<!-- Footer -->
+<%- include("partials/footer") %>
 
-    <!-- Personal Hero -->
-
-    <%- include("sections/personal/hero") %>
-
-
-    <!-- Personal Accounts -->
-
-    <%- include("sections/personal/account") %>
-
-
-    <!-- Shared Company Wisdom -->
-
-    <%- include("sections/company-wisdom") %>
-
-
-    <!-- Personal CTA -->
-
-    <%- include("sections/personal/cta") %>
-
-
-    <!-- Personal FAQ -->
-
-    <%- include("sections/personal/faq") %>
-
-  </main>
-
-
-  <!-- =============================================
-       FOOTER
-  ============================================== -->
-
-  <%- include("partials/footer") %>
-
-
-  <!-- =============================================
-       SCRIPTS
-  ============================================== -->
-
-  <%- include("partials/scripts") %>
-
-</body>
-
-</html>
+<!-- Scripts -->
+<%- include("partials/scripts") %>
