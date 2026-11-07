@@ -8917,3 +8917,111 @@ header.main-header .header-sticky.active {
     display: none !important;
   }
 }
+/* =========================================================
+   MOBILE NAVBAR — FINAL SLICKNAV STYLING
+========================================================= */
+
+@media (max-width: 991px) {
+  /* Keep logo and hamburger on the same row */
+  .main-header .navbar > .container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    position: relative;
+  }
+
+  /* Mobile menu container */
+  .main-header .responsive-menu {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+    margin-left: auto !important;
+    z-index: 1200 !important;
+  }
+
+  /* SlickNav wrapper */
+  .responsive-menu .slicknav_menu {
+    display: block !important;
+    position: static !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  /* Hamburger button */
+  .responsive-menu .slicknav_btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: static !important;
+    width: 52px !important;
+    height: 48px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 12px !important;
+    background: #0d4b43 !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide MENU text */
+  .responsive-menu .slicknav_menutxt {
+    display: none !important;
+  }
+
+  /* Hamburger icon */
+  .responsive-menu .slicknav_icon {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 24px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    background: transparent !important;
+  }
+
+  .responsive-menu .slicknav_icon-bar {
+    display: block !important;
+    width: 24px !important;
+    height: 3px !important;
+    margin: 0 !important;
+    border-radius: 10px !important;
+    background: #ffffff !important;
+    box-shadow: none !important;
+  }
+
+  /* Dropdown navigation */
+  .responsive-menu .slicknav_nav {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    width: min(320px, calc(100vw - 30px)) !important;
+    margin: 0 !important;
+    padding: 10px 0 !important;
+    border-radius: 12px !important;
+    background: #0d4b43 !important;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2) !important;
+    z-index: 1201 !important;
+  }
+
+  .responsive-menu .slicknav_nav a {
+    color: #ffffff !important;
+  }
+
+  .main-header .main-menu {
+    display: none !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .main-header .responsive-menu {
+    display: none !important;
+  }
+}
