@@ -8784,60 +8784,48 @@ header.main-header .header-sticky.active {
   .responsive-menu {
     display: none !important;
   }
-}
-/* =========================================================
-   PUBLIC MOBILE NAV
-   SINGLE SLICKNAV INSTANCE
+} /* =========================================================
+   SINGLE PUBLIC MOBILE MENU
 ========================================================= */
 
 @media (max-width: 991px) {
+  .main-header .main-menu {
+    display: none !important;
+  }
+
   .navbar-toggle {
     display: none !important;
   }
 
   .responsive-menu {
     display: block !important;
-
     position: absolute;
-
     top: 50%;
     right: 15px;
-
     width: auto;
-
     transform: translateY(-50%);
-
     z-index: 120;
   }
 
   .responsive-menu .slicknav_menu {
     position: static;
-
     width: auto;
-
     padding: 0;
-
     background: transparent;
   }
 
   .responsive-menu .slicknav_btn {
     display: flex !important;
-
     align-items: center;
     justify-content: center;
-
-    width: 54px;
+    width: 52px;
     height: 48px;
-
     margin: 0;
-
     padding: 0;
-
     border: 0;
-
     border-radius: 12px;
-
     background: #d8e28c !important;
+    box-shadow: none;
   }
 
   .responsive-menu .slicknav_menutxt {
@@ -8845,59 +8833,37 @@ header.main-header .header-sticky.active {
   }
 
   .responsive-menu .slicknav_icon {
+    display: block;
     width: 24px;
-
     height: auto;
-
-    margin: 0;
+    margin: 0 !important;
   }
 
   .responsive-menu .slicknav_icon-bar {
     display: block;
-
     width: 24px !important;
     height: 3px !important;
-
     margin: 4px auto !important;
-
     border-radius: 999px;
-
     background: #ffffff !important;
-
-    box-shadow: none;
+    box-shadow: none !important;
   }
-
-  /* Actual dropdown */
 
   .responsive-menu .slicknav_nav {
     position: absolute;
-
     top: calc(100% + 12px);
     right: 0;
-
     width: min(330px, calc(100vw - 30px));
-
+    margin: 0;
     padding: 8px 0;
-
     border-radius: 14px;
-
     background: #d8e28c;
-
     box-shadow: 0 14px 34px rgba(3, 45, 63, 0.18);
-  }
-
-  .main-header .main-menu {
-    display: none !important;
   }
 }
 
-@media (max-width: 575px) {
+@media (min-width: 992px) {
   .responsive-menu {
-    right: 15px;
-  }
-
-  .responsive-menu .slicknav_btn {
-    width: 50px;
-    height: 46px;
+    display: none !important;
   }
 }
