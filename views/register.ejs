@@ -13,6 +13,7 @@
     <title><%= title || "Create an Account - First Credit Merchant" %></title>
 
     <!-- Favicon -->
+
     <link
       rel="shortcut icon"
       type="image/png"
@@ -20,49 +21,101 @@
     />
 
     <!-- Google Fonts -->
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
 
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com" rel="stylesheet" />
 
     <!-- Tailwind -->
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Tailwind Configuration -->
+
     <script src="/js/register-config.js"></script>
 
     <!-- Register CSS -->
 
-    <link rel="stylesheet" href="/css/register.css" />
+    <link rel="stylesheet" href="/css/register.css?v=11" />
 
     <!-- Alpine.js -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
+    ></script>
 
     <!-- Lucide -->
-    <script src=" https://unpkg.com/lucide@latest"></script>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
   </head>
 
   <body class="font-sans bg-gray-50 text-gray-900 flex min-h-screen">
     <!-- =============================================
-         PAGE LOADER
-    ============================================== -->
+       REGISTRATION PAGE LOADER
+  ============================================== -->
+
     <%- include("sections/register/loader") %>
 
     <!-- =============================================
-         REGISTER PAGE
-    ============================================== -->
+       REGISTER PAGE
+  ============================================== -->
+
     <div class="w-full">
       <div class="flex flex-col lg:flex-row min-h-screen">
         <!-- Left Branding Panel -->
+
         <%- include("sections/register/branding") %>
 
         <!-- Right Registration Form -->
+
         <%- include("sections/register/form") %>
       </div>
     </div>
 
-    <!-- Register JavaScript -->
-    <script src="/js/register.js"></script>
+    <!-- =============================================
+       REGISTER JAVASCRIPT
+  ============================================== -->
+
+    <script src="/js/register.js?v=11"></script>
+
+    <!-- =============================================
+       LOADER EMERGENCY FALLBACK
+  ============================================== -->
+
+    <script>
+      (function () {
+        function forceRemoveRegisterLoader() {
+          var loader = document.querySelector(".page-loading");
+
+          if (!loader) {
+            return;
+          }
+
+          loader.classList.remove("active");
+
+          loader.style.opacity = "0";
+
+          loader.style.visibility = "hidden";
+
+          loader.style.pointerEvents = "none";
+
+          setTimeout(function () {
+            if (loader && loader.parentNode) {
+              loader.parentNode.removeChild(loader);
+            }
+          }, 450);
+        }
+
+        /*
+         * Registration must never remain
+         * trapped behind its loader.
+         */
+
+        setTimeout(forceRemoveRegisterLoader, 2500);
+      })();
+    </script>
   </body>
 </html>
