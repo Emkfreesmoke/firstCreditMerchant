@@ -1,7 +1,75 @@
-document.addEventListener("DOMContentLoaded", function () {
-  if (window.lucide) {
-    lucide.createIcons();
+"use strict";
+
+/* =========================================================
+   LOGIN PAGE
+========================================================= */
+
+/* =========================================================
+   REMOVE LOGIN LOADER
+========================================================= */
+
+function removeLoginLoader() {
+  const loader = document.querySelector(".page-loading");
+
+  if (!loader) {
+    return;
   }
+
+  /*
+   * Trigger the CSS fade-out.
+   */
+
+  loader.classList.remove("active");
+
+  /*
+   * Explicit styles are a safety fallback
+   * in case the loader CSS does not transition
+   * as expected.
+   */
+
+  loader.style.opacity = "0";
+
+  loader.style.visibility = "hidden";
+
+  loader.style.pointerEvents = "none";
+
+  /*
+   * Remove the loader completely after
+   * the fade-out finishes.
+   */
+
+  setTimeout(function () {
+    if (loader && loader.parentNode) {
+      loader.remove();
+    }
+  }, 450);
+}
+
+/* =========================================================
+   DOM READY
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", function () {
+  /* =====================================================
+       LOGIN LOADER
+    ====================================================== */
+
+  setTimeout(removeLoginLoader, 500);
+
+  /* =====================================================
+       LUCIDE ICONS
+    ====================================================== */
+
+  if (
+    typeof window.lucide !== "undefined" &&
+    typeof window.lucide.createIcons === "function"
+  ) {
+    window.lucide.createIcons();
+  }
+
+  /* =====================================================
+       PASSWORD ELEMENTS
+    ====================================================== */
 
   const passwordInput = document.getElementById("password");
 
@@ -10,6 +78,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const showPasswordIcon = document.getElementById("show-password");
 
   const hidePasswordIcon = document.getElementById("hide-password");
+
+  /* =====================================================
+       PASSWORD SHOW / HIDE
+    ====================================================== */
 
   if (passwordInput && passwordToggle && showPasswordIcon && hidePasswordIcon) {
     passwordToggle.addEventListener("click", function () {
@@ -22,16 +94,23 @@ document.addEventListener("DOMContentLoaded", function () {
       hidePasswordIcon.classList.toggle("hidden", !passwordIsHidden);
     });
   }
-
-  const preloader = document.querySelector(".page-loading");
-
-  if (preloader) {
-    setTimeout(function () {
-      preloader.classList.remove("active");
-
-      setTimeout(function () {
-        preloader.remove();
-      }, 500);
-    }, 800);
-  }
 });
+
+/* =========================================================
+   WINDOW LOAD
+========================================================= */
+
+window.addEventListener("load", function () {
+  removeLoginLoader();
+});
+
+/* =========================================================
+   EMERGENCY LOADER FALLBACK
+
+   The Login page must never remain trapped behind
+   the loading screen if another resource fails.
+========================================================= */
+
+setTimeout(function () {
+  removeLoginLoader();
+}, 2000);
