@@ -45,17 +45,54 @@
   }
 
   /* =========================================================
-     SLICK MOBILE MENU
-  ========================================================= */
-  $(document).ready(function () {
-    if ($("#menu").length) {
-      $("#menu").slicknav({
-        label: "",
-        prependTo: ".responsive-menu",
-        closedSymbol: "&#9658;",
-        openedSymbol: "&#9660;",
-        allowParentLinks: true,
-      });
+   SLICK MOBILE MENU
+========================================================= */
+
+  $(function () {
+    const $menu = $("#menu");
+    const $container = $(".responsive-menu");
+
+    // Required elements must exist.
+    if (!$menu.length || !$container.length) {
+      console.warn("SlickNav: Navigation or mobile container missing.");
+      return;
+    }
+
+    // Check that the plugin is loaded.
+    if (typeof $.fn.slicknav !== "function") {
+      console.error("SlickNav: Plugin has not loaded.");
+      return;
+    }
+
+    // Prevent duplicate initialization.
+    if ($menu.data("plugin_slicknav")) {
+      console.warn("SlickNav: Already initialized.");
+      return;
+    }
+
+    // Initialize the mobile navigation.
+    $menu.slicknav({
+      label: "",
+      duplicate: true,
+      prependTo: $container,
+      closedSymbol: "&#9658;",
+      openedSymbol: "&#9660;",
+      allowParentLinks: true,
+      nestedParentLinks: true,
+    });
+
+    // Verify the generated hamburger.
+    const instance = $menu.data("plugin_slicknav");
+
+    if (
+      !instance ||
+      !instance.btn ||
+      !instance.btn.length ||
+      !instance.btn[0].isConnected
+    ) {
+      console.error("SlickNav: Hamburger button was not attached.");
+    } else {
+      console.log("SlickNav: Hamburger successfully initialized.");
     }
   });
   /* =========================================================
