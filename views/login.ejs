@@ -30,7 +30,7 @@
 
     <!-- Tailwind -->
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.tailwindcss.com"></script>
 
     <!-- Tailwind Configuration -->
 
@@ -49,7 +49,7 @@
 
     <!-- Login CSS -->
 
-    <link rel="stylesheet" href="/css/login.css?v=11" />
+    <link rel="stylesheet" href="/css/login.css?v=12" />
 
     <!-- Alpine -->
 
@@ -60,7 +60,7 @@
 
     <!-- Lucide -->
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://unpkg.com/lucide@latest"></script>
   </head>
 
   <body class="font-sans bg-gray-50 text-gray-900 flex min-h-screen">
@@ -90,14 +90,10 @@
        LOGIN JAVASCRIPT
   ====================================================== -->
 
-    <script src="/js/login.js?v=11"></script>
+    <script src="/js/login.js?v=12"></script>
 
     <!-- =====================================================
        LOADER EMERGENCY FALLBACK
-
-       This is intentionally independent from login.js.
-       If login.js ever fails to load, the page cannot
-       remain trapped behind the loader forever.
   ====================================================== -->
 
     <script>
@@ -125,12 +121,7 @@
         }
 
         /*
-         * Absolute fallback.
-         *
-         * Even if an external library,
-         * font, icon script, or login.js
-         * fails, the authentication page
-         * must still become accessible.
+         * Last-resort fallback.
          */
 
         setTimeout(forceRemoveLoginLoader, 2500);
