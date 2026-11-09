@@ -1250,3 +1250,333 @@ table tbody tr:hover {
     animation-iteration-count: 1 !important;
   }
 }
+/* =========================================================
+   DARK FINANCIAL CARD
+========================================================= */
+
+.dashboard-financial-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  color: #ffffff;
+  background: linear-gradient(145deg, #032d3f 0%, #011d2c 62%, #063f42 100%);
+  box-shadow: 0 18px 42px rgba(3, 45, 63, 0.18);
+}
+
+.dashboard-financial-card-glow {
+  position: absolute;
+  top: -10rem;
+  right: -8rem;
+  width: 26rem;
+  height: 26rem;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(210, 198, 106, 0.2),
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.dashboard-financial-card-content {
+  position: relative;
+  z-index: 1;
+  padding: 1.5rem;
+}
+
+.dashboard-financial-card-top,
+.dashboard-financial-balance,
+.dashboard-financial-account {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dashboard-financial-customer {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.dashboard-financial-avatar,
+.dashboard-financial-account-icon {
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-financial-avatar svg,
+.dashboard-financial-account-icon svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dashboard-financial-greeting,
+.dashboard-financial-label {
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.8rem;
+}
+
+.dashboard-financial-name {
+  margin-top: 0.15rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.dashboard-financial-status {
+  padding: 0.4rem 0.7rem;
+  border-radius: 9999px;
+  color: #fef3c7;
+  background: rgba(245, 158, 11, 0.18);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.dashboard-financial-status.active {
+  color: #bbf7d0;
+  background: rgba(34, 197, 94, 0.18);
+}
+
+.dashboard-financial-balance {
+  margin-top: 2rem;
+}
+
+.dashboard-financial-amount {
+  margin-top: 0.4rem;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+}
+
+.dashboard-balance-toggle {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+}
+
+.dashboard-balance-toggle svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dashboard-financial-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1.7rem;
+}
+
+.dashboard-financial-action {
+  min-height: 7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  padding: 0.8rem;
+  border-radius: 1rem;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-align: center;
+  transition:
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dashboard-financial-action:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.dashboard-financial-action span {
+  width: 2.8rem;
+  height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-financial-action svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.dashboard-financial-account {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-financial-account-copy {
+  min-width: 0;
+  flex: 1;
+}
+
+.dashboard-financial-account-copy span,
+.dashboard-financial-secondary span {
+  display: block;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.7rem;
+}
+
+.dashboard-financial-account-copy strong {
+  display: block;
+  margin-top: 0.25rem;
+  overflow-wrap: anywhere;
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.dashboard-financial-account-links {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.dashboard-financial-account-links a {
+  min-height: 2.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  color: #032d3f;
+  background: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.dashboard-financial-account-links svg {
+  width: 0.9rem;
+  height: 0.9rem;
+}
+
+.dashboard-financial-secondary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 1.25rem;
+  overflow: hidden;
+  border-radius: 0.8rem;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.dashboard-financial-secondary > div {
+  padding: 0.85rem;
+  background: rgba(3, 45, 63, 0.42);
+}
+
+.dashboard-financial-secondary strong {
+  display: block;
+  margin-top: 0.3rem;
+  color: #ffffff;
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   FLOATING SUPPORT WIDGET
+========================================================= */
+
+.dashboard-support-widget {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 55;
+  width: 3.6rem;
+  height: 3.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #ffffff;
+  border-radius: 9999px;
+  color: #ffffff;
+  background: linear-gradient(
+    135deg,
+    var(--dashboard-primary),
+    var(--dashboard-dark)
+  );
+  box-shadow: 0 10px 28px rgba(3, 45, 63, 0.3);
+}
+
+.dashboard-support-widget:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+}
+
+.dashboard-support-widget svg {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.dashboard-support-widget-dot {
+  position: absolute;
+  right: 0.1rem;
+  bottom: 0.1rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border: 2px solid #ffffff;
+  border-radius: 9999px;
+  background: #22c55e;
+}
+
+/* =========================================================
+   MOBILE FINANCIAL CARD AND SUPPORT POSITION
+========================================================= */
+
+@media (max-width: 767px) {
+  .dashboard-financial-card-content {
+    padding: 1.2rem;
+  }
+
+  .dashboard-financial-amount {
+    font-size: 2rem;
+  }
+
+  .dashboard-financial-action {
+    min-height: 6.6rem;
+    padding: 0.65rem 0.35rem;
+    font-size: 0.7rem;
+  }
+
+  .dashboard-financial-account {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .dashboard-financial-account-links {
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboard-financial-secondary {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-support-widget {
+    right: 1rem;
+    bottom: calc(
+      var(--dashboard-mobile-nav-height) + env(safe-area-inset-bottom) + 0.75rem
+    );
+  }
+}

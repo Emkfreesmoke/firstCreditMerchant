@@ -284,19 +284,13 @@ exports.resendRegistrationOtp = async (req, res, next) => {
    CUSTOMER LOGIN
 ========================================================= */
 
+/* =========================================================
+   CUSTOMER LOGIN
+========================================================= */
+
 exports.customerLogin = async (req, res, next) => {
   try {
-    /*
-     * The customer login form uses the field
-     * name "email", but customers can log in
-     * with either username or email.
-     */
-
     const identifier = normalize(req.body.email);
-
-    /* =========================================
-       FIND CUSTOMER
-    ========================================== */
 
     const user = await User.findOne({
       $or: [
@@ -309,17 +303,9 @@ exports.customerLogin = async (req, res, next) => {
       ],
     }).select("+password");
 
-    /*
-     * Keep login errors generic.
-     */
-
     if (!user) {
       return res.status(401).send("Invalid login details.");
     }
-
-    /* =========================================
-       CHECK PASSWORD
-    ========================================== */
 
     const passwordValid = await bcrypt.compare(
       req.body.password || "",
@@ -330,17 +316,9 @@ exports.customerLogin = async (req, res, next) => {
       return res.status(401).send("Invalid login details.");
     }
 
-    /* =========================================
-       CUSTOMER LOGIN ONLY
-    ========================================== */
-
     if (user.role !== "customer") {
       return res.status(403).send("Please use the administrator login.");
     }
-
-    /* =========================================
-       EMAIL MUST BE VERIFIED
-    ========================================== */
 
     if (!user.emailVerified) {
       return res
@@ -348,33 +326,245 @@ exports.customerLogin = async (req, res, next) => {
         .send("Please verify your email before signing in.");
     }
 
-    /* =========================================
-       ACCOUNT MUST BE APPROVED
-    ========================================== */
-
     if (user.status !== "Active") {
       return res.redirect("/login?accountStatus=pending");
     }
 
-    /* =========================================
-       SAVE USER ID BEFORE SESSION REGENERATION
-    ========================================== */
+    const pendingUserId = String(user._id);
 
-    const userId = String(user._id);
+    const rememberLogin = req.body.remember_me === "1";
 
-    /* =========================================
-       REGENERATE SESSION
-    ========================================== */
-
-    req.session.regenerate((error) => {
+    req.session.regenerate(function (error) {
       if (error) {
         return next(error);
       }
 
       /*
-       * Create authenticated
-       * customer session.
+       * Do not authenticate the customer yet.
+       * The existing 4-digit PIN must be verified first.
        */
+
+      req.session.pendingPinUserId = pendingUserId;
+
+      req.session.pendingPinRemember = rememberLogin;
+
+      req.session.authenticated = false;
+
+      req.session.save(function (saveError) {
+        if (saveError) {
+          return next(saveError);
+        }
+
+        return res.redirect("/verify-pin");
+      });
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+// exports.customerLogin = async (req, res, next) => {
+//   try {
+//     /*
+//      * The customer login form uses the field
+//      * name "email", but customers can log in
+//      * with either username or email.
+//      */
+
+//     const identifier = normalize(req.body.email);
+
+//     /* =========================================
+//        FIND CUSTOMER
+//     ========================================== */
+
+//     const user = await User.findOne({
+//       $or: [
+//         {
+//           username: identifier,
+//         },
+//         {
+//           email: identifier,
+//         },
+//       ],
+//     }).select("+password");
+
+//     /*
+//      * Keep login errors generic.
+//      */
+
+//     if (!user) {
+//       return res.status(401).send("Invalid login details.");
+//     }
+
+//     /* =========================================
+//        CHECK PASSWORD
+//     ========================================== */
+
+//     const passwordValid = await bcrypt.compare(
+//       req.body.password || "",
+//       user.password,
+//     );
+
+//     if (!passwordValid) {
+//       return res.status(401).send("Invalid login details.");
+//     }
+
+//     /* =========================================
+//        CUSTOMER LOGIN ONLY
+//     ========================================== */
+
+//     if (user.role !== "customer") {
+//       return res.status(403).send("Please use the administrator login.");
+//     }
+
+//     /* =========================================
+//        EMAIL MUST BE VERIFIED
+//     ========================================== */
+
+//     if (!user.emailVerified) {
+//       return res
+//         .status(403)
+//         .send("Please verify your email before signing in.");
+//     }
+
+//     /* =========================================
+//        ACCOUNT MUST BE APPROVED
+//     ========================================== */
+
+//     if (user.status !== "Active") {
+//       return res.redirect("/login?accountStatus=pending");
+//     }
+
+//     /* =========================================
+//        SAVE USER ID BEFORE SESSION REGENERATION
+//     ========================================== */
+
+//     const userId = String(user._id);
+
+//     /* =========================================
+//        REGENERATE SESSION
+//     ========================================== */
+
+//     req.session.regenerate((error) => {
+//       if (error) {
+//         return next(error);
+//       }
+
+//       /*
+//        * Create authenticated
+//        * customer session.
+//        */
+
+//       req.session.userId = userId;
+
+//       req.session.role = "customer";
+
+//       req.session.authenticated = true;
+
+//       /* =====================================
+//            REMEMBER ME
+//         ====================================== */
+
+//       if (req.body.remember_me === "1") {
+//         req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
+//       }
+
+//       /* =====================================
+//            SAVE SESSION
+//         ====================================== */
+
+//       req.session.save((saveError) => {
+//         if (saveError) {
+//           return next(saveError);
+//         }
+
+//         return res.redirect("/dashboard");
+//       });
+//     });
+//   } catch (error) {
+//     next(error);
+//   }
+// };
+
+/* =========================================================
+   SHOW LOGIN PIN PAGE
+========================================================= */
+
+exports.showLoginPin = (req, res) => {
+  const pendingUserId = req.session && req.session.pendingPinUserId;
+
+  if (!pendingUserId) {
+    return res.redirect("/login");
+  }
+
+  return res.render("verify-pin", {
+    title: "Security Verification - First Credit Merchant",
+
+    error: null,
+  });
+};
+
+/* =========================================================
+   VERIFY EXISTING LOGIN PIN
+========================================================= */
+
+exports.verifyLoginPin = async (req, res, next) => {
+  try {
+    const pendingUserId = req.session && req.session.pendingPinUserId;
+
+    if (!pendingUserId) {
+      return res.redirect("/login");
+    }
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(422).render("verify-pin", {
+        title: "Security Verification - First Credit Merchant",
+
+        error: "Enter your 4-digit transaction PIN.",
+      });
+    }
+
+    const user = await User.findById(pendingUserId).select(
+      "+transactionPinHash",
+    );
+
+    if (!user || user.role !== "customer" || user.status !== "Active") {
+      delete req.session.pendingPinUserId;
+      delete req.session.pendingPinRemember;
+
+      return res.redirect("/login");
+    }
+
+    if (!user.transactionPinHash) {
+      return res.status(403).render("verify-pin", {
+        title: "Security Verification - First Credit Merchant",
+
+        error: "A transaction PIN has not been configured for this account.",
+      });
+    }
+
+    const pinValid = await bcrypt.compare(
+      String(req.body.pin || ""),
+      user.transactionPinHash,
+    );
+
+    if (!pinValid) {
+      return res.status(401).render("verify-pin", {
+        title: "Security Verification - First Credit Merchant",
+
+        error: "The transaction PIN is incorrect.",
+      });
+    }
+
+    const userId = String(user._id);
+
+    const rememberLogin = req.session.pendingPinRemember === true;
+
+    req.session.regenerate(function (error) {
+      if (error) {
+        return next(error);
+      }
 
       req.session.userId = userId;
 
@@ -382,19 +572,13 @@ exports.customerLogin = async (req, res, next) => {
 
       req.session.authenticated = true;
 
-      /* =====================================
-           REMEMBER ME
-        ====================================== */
+      req.session.pinVerified = true;
 
-      if (req.body.remember_me === "1") {
+      if (rememberLogin) {
         req.session.cookie.maxAge = 1000 * 60 * 60 * 24 * 30;
       }
 
-      /* =====================================
-           SAVE SESSION
-        ====================================== */
-
-      req.session.save((saveError) => {
+      req.session.save(function (saveError) {
         if (saveError) {
           return next(saveError);
         }
@@ -403,7 +587,7 @@ exports.customerLogin = async (req, res, next) => {
       });
     });
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 

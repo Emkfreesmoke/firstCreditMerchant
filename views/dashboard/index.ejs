@@ -141,436 +141,314 @@
 
                         </div>
 
+<!-- =====================================
+     DARK FINANCIAL CARD
+====================================== -->
 
-                        <!-- =====================================
-                             FINANCIAL VALUES
-                        ====================================== -->
-
-                        <% if (values) { %>
-
-                            <div
-                                class="grid
-                                       grid-cols-1
-                                       sm:grid-cols-2
-                                       xl:grid-cols-4
-                                       gap-4
-                                       mb-6"
-                            >
-
-                                <!-- Current Balance -->
-
-                                <% if (
-                                    values.displayedBalance !==
-                                        undefined &&
-                                    values.displayedBalance !==
-                                        null
-                                ) { %>
-
-                                    <div class="dashboard-stat-card">
-
-                                        <div>
-
-                                            <p class="dashboard-stat-label">
-                                                Current Balance
-                                            </p>
-
-                                            <p class="dashboard-stat-value">
-                                                <%= values.currency || "" %>
-                                                <%= Number(
-                                                    values.displayedBalance
-                                                ).toLocaleString(
-                                                    undefined,
-                                                    {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2
-                                                    }
-                                                ) %>
-                                            </p>
-
-                                        </div>
-
-
-                                        <div
-                                            class="h-11 w-11
-                                                   rounded-full
-                                                   bg-primary-50
-                                                   flex
-                                                   items-center
-                                                   justify-center
-                                                   flex-shrink-0"
-                                        >
-                                            <i
-                                                data-lucide="wallet"
-                                                class="h-5 w-5
-                                                       text-primary-700"
-                                            ></i>
-                                        </div>
-
-                                    </div>
-
-                                <% } %>
-
-
-                                <!-- Monthly Income -->
-
-                                <% if (
-                                    values.monthlyIncome !==
-                                        undefined &&
-                                    values.monthlyIncome !==
-                                        null
-                                ) { %>
-
-                                    <div class="dashboard-stat-card">
-
-                                        <div>
-
-                                            <p class="dashboard-stat-label">
-                                                Monthly Income
-                                            </p>
-
-                                            <p
-                                                class="dashboard-stat-value
-                                                       text-green-700"
-                                            >
-                                                <%= values.currency || "" %>
-                                                <%= Number(
-                                                    values.monthlyIncome
-                                                ).toLocaleString(
-                                                    undefined,
-                                                    {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2
-                                                    }
-                                                ) %>
-                                            </p>
-
-                                        </div>
-
-
-                                        <div
-                                            class="h-11 w-11
-                                                   rounded-full
-                                                   bg-green-50
-                                                   flex
-                                                   items-center
-                                                   justify-center
-                                                   flex-shrink-0"
-                                        >
-                                            <i
-                                                data-lucide="trending-up"
-                                                class="h-5 w-5
-                                                       text-green-700"
-                                            ></i>
-                                        </div>
-
-                                    </div>
-
-                                <% } %>
-
-
-                                <!-- Monthly Outgoing -->
-
-                                <% if (
-                                    values.monthlyOutgoing !==
-                                        undefined &&
-                                    values.monthlyOutgoing !==
-                                        null
-                                ) { %>
-
-                                    <div class="dashboard-stat-card">
-
-                                        <div>
-
-                                            <p class="dashboard-stat-label">
-                                                Monthly Outgoing
-                                            </p>
-
-                                            <p
-                                                class="dashboard-stat-value
-                                                       text-red-700"
-                                            >
-                                                <%= values.currency || "" %>
-                                                <%= Number(
-                                                    values.monthlyOutgoing
-                                                ).toLocaleString(
-                                                    undefined,
-                                                    {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2
-                                                    }
-                                                ) %>
-                                            </p>
-
-                                        </div>
-
-
-                                        <div
-                                            class="h-11 w-11
-                                                   rounded-full
-                                                   bg-red-50
-                                                   flex
-                                                   items-center
-                                                   justify-center
-                                                   flex-shrink-0"
-                                        >
-                                            <i
-                                                data-lucide="trending-down"
-                                                class="h-5 w-5
-                                                       text-red-700"
-                                            ></i>
-                                        </div>
-
-                                    </div>
-
-                                <% } %>
-
-
-                                <!-- Transaction Limit -->
-
-                                <% if (
-                                    values.transactionLimit !==
-                                        undefined &&
-                                    values.transactionLimit !==
-                                        null
-                                ) { %>
-
-                                    <div class="dashboard-stat-card">
-
-                                        <div>
-
-                                            <p class="dashboard-stat-label">
-                                                Transaction Limit
-                                            </p>
-
-                                            <p class="dashboard-stat-value">
-                                                <%= values.currency || "" %>
-                                                <%= Number(
-                                                    values.transactionLimit
-                                                ).toLocaleString(
-                                                    undefined,
-                                                    {
-                                                        minimumFractionDigits: 2,
-                                                        maximumFractionDigits: 2
-                                                    }
-                                                ) %>
-                                            </p>
-
-                                        </div>
-
-
-                                        <div
-                                            class="h-11 w-11
-                                                   rounded-full
-                                                   bg-blue-50
-                                                   flex
-                                                   items-center
-                                                   justify-center
-                                                   flex-shrink-0"
-                                        >
-                                            <i
-                                                data-lucide="gauge"
-                                                class="h-5 w-5
-                                                       text-blue-700"
-                                            ></i>
-                                        </div>
-
-                                    </div>
-
-                                <% } %>
-
-                            </div>
-
-
-                        <% } else { %>
-
-                            <div
-                                class="dashboard-card
-                                       p-6
-                                       mb-6"
-                            >
-
-                                <div class="flex items-start">
-
-                                    <div
-                                        class="h-11 w-11
-                                               rounded-full
-                                               bg-gray-100
-                                               flex
-                                               items-center
-                                               justify-center
-                                               mr-4
-                                               flex-shrink-0"
-                                    >
-
-                                        <i
-                                            data-lucide="wallet"
-                                            class="h-5 w-5
-                                                   text-gray-400"
-                                        ></i>
-
-                                    </div>
+<section
+  class="dashboard-financial-card mb-6"
+>
 
+  <div
+    class="dashboard-financial-card-glow"
+    aria-hidden="true"
+  ></div>
+
+
+  <div
+    class="dashboard-financial-card-content"
+  >
+
+    <!-- Greeting and Account Status -->
+
+    <div
+      class="dashboard-financial-card-top"
+    >
+
+      <div
+        class="dashboard-financial-customer"
+      >
+
+        <div
+          class="dashboard-financial-avatar"
+        >
+          <i data-lucide="user"></i>
+        </div>
+
+
+        <div>
+
+          <p
+            class="dashboard-financial-greeting"
+          >
+            Welcome
+          </p>
+
+          <h2
+            class="dashboard-financial-name"
+          >
+            <%= dashboardCustomer &&
+                dashboardCustomer.firstName
+                  ? dashboardCustomer.firstName
+                  : "Customer"
+            %>
+          </h2>
+
+        </div>
+
+      </div>
+
+
+      <% if (
+        dashboardAccount &&
+        dashboardAccount.status
+      ) { %>
+
+        <span
+          class="dashboard-financial-status <%= dashboardAccount.status === 'Active'
+            ? 'active'
+            : ''
+          %>"
+        >
+          <%= dashboardAccount.status %>
+        </span>
+
+      <% } %>
+
+    </div>
+
+
+    <!-- Balance -->
+
+    <div
+      class="dashboard-financial-balance"
+      x-data="{ balanceVisible: true }"
+    >
+
+      <div>
+
+        <p
+          class="dashboard-financial-label"
+        >
+          Available Balance
+        </p>
+
+
+        <p
+          class="dashboard-financial-amount"
+          x-show="balanceVisible"
+        >
+          <%= values && values.currency
+            ? values.currency
+            : dashboardAccount &&
+              dashboardAccount.currency
+              ? dashboardAccount.currency
+              : ""
+          %>
+
+          <%= Number(
+            values &&
+            values.displayedBalance !== undefined &&
+            values.displayedBalance !== null
+              ? values.displayedBalance
+              : 0
+          ).toLocaleString(
+            undefined,
+            {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2
+            }
+          ) %>
+        </p>
+
+
+        <p
+          class="dashboard-financial-amount"
+          x-show="!balanceVisible"
+          x-cloak
+        >
+          ••••••••
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="dashboard-balance-toggle"
+        @click="balanceVisible = !balanceVisible"
+        :aria-label="
+          balanceVisible
+            ? 'Hide balance'
+            : 'Show balance'
+        "
+      >
+
+        <i
+          data-lucide="eye-off"
+          x-show="balanceVisible"
+        ></i>
+
+        <i
+          data-lucide="eye"
+          x-show="!balanceVisible"
+          x-cloak
+        ></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- Main Actions -->
 
-                                    <div>
+    <div
+      class="dashboard-financial-actions"
+    >
 
-                                        <h2
-                                            class="text-sm
-                                                   font-semibold
-                                                   text-gray-900"
-                                        >
-                                            Account values unavailable
-                                        </h2>
+      <a
+        href="/dashboard/deposits"
+        class="dashboard-financial-action"
+      >
+        <span>
+          <i data-lucide="download"></i>
+        </span>
 
+        Make Deposit
+      </a>
+
+
+      <a
+        href="/dashboard/local-transfer"
+        class="dashboard-financial-action"
+      >
+        <span>
+          <i data-lucide="send"></i>
+        </span>
 
-                                        <p
-                                            class="text-sm
-                                                   text-gray-500
-                                                   mt-1"
-                                        >
-                                            Financial values will appear
-                                            when account data is available.
-                                        </p>
+        Send
+      </a>
+
+
+      <a
+        href="/dashboard/international-transfer"
+        class="dashboard-financial-action"
+      >
+        <span>
+          <i data-lucide="globe"></i>
+        </span>
 
-                                    </div>
+        International
+      </a>
+
+    </div>
+
+
+    <!-- Account Information -->
 
-                                </div>
+    <div
+      class="dashboard-financial-account"
+    >
 
-                            </div>
+      <div
+        class="dashboard-financial-account-icon"
+      >
+        <i data-lucide="shield-check"></i>
+      </div>
 
-                        <% } %>
 
+      <div
+        class="dashboard-financial-account-copy"
+      >
 
-                        <!-- =====================================
-                             ACCOUNT INFORMATION
-                        ====================================== -->
+        <span>
+          Account Number
+        </span>
 
-                        <% if (dashboardAccount) { %>
+        <strong>
+          <%= dashboardAccount &&
+              dashboardAccount.accountNumber
+                ? dashboardAccount.accountNumber
+                : "Not available"
+          %>
+        </strong>
 
-                            <section
-                                class="dashboard-card
-                                       mb-6"
-                            >
+      </div>
 
-                                <div class="dashboard-card-header">
 
-                                    <div>
+      <div
+        class="dashboard-financial-account-links"
+      >
 
-                                        <h2
-                                            class="text-lg
-                                                   font-semibold
-                                                   text-gray-900"
-                                        >
-                                            Account Information
-                                        </h2>
+        <a
+          href="/dashboard/transactions"
+        >
+          <i data-lucide="activity"></i>
+          Transactions
+        </a>
 
-                                        <p
-                                            class="text-xs
-                                                   text-gray-500
-                                                   mt-1"
-                                        >
-                                            Your primary account details.
-                                        </p>
+        <a
+          href="/dashboard/deposits"
+        >
+          <i data-lucide="wallet"></i>
+          Deposit
+        </a>
 
-                                    </div>
+      </div>
 
-                                </div>
+    </div>
 
 
-                                <div
-                                    class="p-6
-                                           grid
-                                           grid-cols-1
-                                           sm:grid-cols-2
-                                           lg:grid-cols-4
-                                           gap-6"
-                                >
+    <!-- Secondary Values -->
 
-                                    <% if (
-                                        dashboardAccount.accountNumber
-                                    ) { %>
+    <% if (values) { %>
 
-                                        <div class="dashboard-detail">
+      <div
+        class="dashboard-financial-secondary"
+      >
 
-                                            <span>
-                                                Account Number
-                                            </span>
+        <div>
+          <span>Monthly Income</span>
 
-                                            <strong>
-                                                <%= dashboardAccount.accountNumber %>
-                                            </strong>
+          <strong>
+            <%= values.currency || "" %>
+            <%= Number(
+              values.monthlyIncome || 0
+            ).toLocaleString() %>
+          </strong>
+        </div>
 
-                                        </div>
 
-                                    <% } %>
+        <div>
+          <span>Monthly Outgoing</span>
 
+          <strong>
+            <%= values.currency || "" %>
+            <%= Number(
+              values.monthlyOutgoing || 0
+            ).toLocaleString() %>
+          </strong>
+        </div>
 
-                                    <% if (
-                                        dashboardAccount.accountType
-                                    ) { %>
 
-                                        <div class="dashboard-detail">
+        <div>
+          <span>Transaction Limit</span>
 
-                                            <span>
-                                                Account Type
-                                            </span>
+          <strong>
+            <%= values.currency || "" %>
+            <%= Number(
+              values.transactionLimit || 0
+            ).toLocaleString() %>
+          </strong>
+        </div>
 
-                                            <strong>
-                                                <%= dashboardAccount.accountType %>
-                                            </strong>
+      </div>
 
-                                        </div>
+    <% } %>
 
-                                    <% } %>
+  </div>
 
-
-                                    <% if (
-                                        dashboardAccount.currency
-                                    ) { %>
-
-                                        <div class="dashboard-detail">
-
-                                            <span>
-                                                Currency
-                                            </span>
-
-                                            <strong>
-                                                <%= dashboardAccount.currency %>
-                                            </strong>
-
-                                        </div>
-
-                                    <% } %>
-
-
-                                    <% if (
-                                        dashboardAccount.status
-                                    ) { %>
-
-                                        <div class="dashboard-detail">
-
-                                            <span>
-                                                Status
-                                            </span>
-
-                                            <strong
-                                                class="<%= dashboardAccount.status === 'Active'
-                                                    ? 'text-green-700'
-                                                    : ''
-                                                %>"
-                                            >
-                                                <%= dashboardAccount.status %>
-                                            </strong>
-
-                                        </div>
-
-                                    <% } %>
-
-                                </div>
-
-                            </section>
-
-                        <% } %>
-
+</section>
 
                         <!-- =====================================
                              QUICK ACTIONS

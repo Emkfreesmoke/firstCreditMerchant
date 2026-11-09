@@ -1,13 +1,19 @@
+"use strict";
+
 /* =========================================================
    REQUIRE AUTHENTICATION
 ========================================================= */
 
 function requireAuth(req, res, next) {
-  if (!req.session || !req.session.userId || req.session.otpVerified !== true) {
+  if (
+    !req.session ||
+    !req.session.userId ||
+    req.session.authenticated !== true
+  ) {
     return res.redirect("/login");
   }
 
-  next();
+  return next();
 }
 
 /* =========================================================
@@ -27,8 +33,9 @@ function requireCustomer(req, res, next) {
     return res.status(403).send("Access denied");
   }
 
-  next();
+  return next();
 }
+
 /* =========================================================
    REQUIRE ADMIN
 ========================================================= */
@@ -46,7 +53,7 @@ function requireAdmin(req, res, next) {
     return res.status(403).send("Access denied");
   }
 
-  next();
+  return next();
 }
 
 /* =========================================================
@@ -54,12 +61,20 @@ function requireAdmin(req, res, next) {
 ========================================================= */
 
 function redirectAuthenticated(req, res, next) {
-  if (!req.session || !req.session.userId || req.session.otpVerified !== true) {
+  if (!req.session) {
+    return next();
+  }
+
+  if (req.session.pendingPinUserId && req.session.authenticated !== true) {
+    return res.redirect("/verify-pin");
+  }
+
+  if (!req.session.userId || req.session.authenticated !== true) {
     return next();
   }
 
   if (req.session.role === "admin") {
-    return res.redirect("/admin");
+    return res.redirect("/admin/dashboard");
   }
 
   return res.redirect("/dashboard");

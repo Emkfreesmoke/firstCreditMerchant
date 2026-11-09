@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require("express");
 
 const rateLimit = require("express-rate-limit");
@@ -9,26 +11,27 @@ const authController = require("../controllers/authController");
 const router = express.Router();
 
 /* =========================================================
-   RATE LIMITER
+   RATE LIMITERS
 ========================================================= */
 
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-
   limit: 10,
-
   standardHeaders: "draft-8",
-
   legacyHeaders: false,
 });
 
 const otpLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-
   limit: 10,
-
   standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
 
+const pinLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  limit: 8,
+  standardHeaders: "draft-8",
   legacyHeaders: false,
 });
 
@@ -122,8 +125,28 @@ router.post(
 );
 
 /* =========================================================
+   LOGIN PIN VERIFICATION
+========================================================= */
+
+router.get("/verify-pin", authController.showLoginPin);
+
+router.post(
+  "/verify-pin",
+
+  pinLimiter,
+
+  body("pin")
+    .trim()
+    .matches(/^\d{4}$/)
+    .withMessage("Enter your 4-digit transaction PIN."),
+
+  authController.verifyLoginPin,
+);
+
+/* =========================================================
    REGISTRATION OTP
 ========================================================= */
+
 router.get("/verify-otp", authController.showRegistrationOtp);
 
 router.post(
@@ -151,10 +174,6 @@ router.post(
    LOGOUT
 ========================================================= */
 
-router.post(
-  "/logout",
-
-  authController.logout,
-);
+router.post("/logout", authController.logout);
 
 module.exports = router;
