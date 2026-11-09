@@ -30,12 +30,13 @@ async function verifyMailer() {
 
 async function sendOtpEmail({ to, code }) {
   await transporter.sendMail({
-    from: {
-      name: "First Credit Merchant",
-      address: process.env.MAIL_FROM,
-    },
+    from: `"First Credit Merchant" <${process.env.MAIL_FROM}>`,
 
-    to,
+    envelope: {
+      from: process.env.MAIL_FROM,
+      to: to,
+    },
+    to: to,
 
     subject: "Verify Your Email",
 
