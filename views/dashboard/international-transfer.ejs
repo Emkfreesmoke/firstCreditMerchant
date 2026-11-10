@@ -28,17 +28,11 @@
     <%- include("partials/loader") %>
 
 
-    <!-- =====================================================
-         DASHBOARD APPLICATION
-    ====================================================== -->
-
     <div
         x-data='{
             mobileMenuOpen: false,
 
             step: 1,
-
-            transferError: "",
 
             amount:
                 <%- JSON.stringify(
@@ -118,10 +112,6 @@
                 ) %>,
 
 
-            /* =============================================
-               MOVE TO REVIEW
-            ============================================== */
-
             nextStep() {
 
                 if (
@@ -136,8 +126,6 @@
                     this.transferPurpose
                 ) {
 
-                    this.transferError = "";
-
                     this.step = 2;
 
                     window.scrollTo({
@@ -147,27 +135,6 @@
 
                 }
 
-            },
-
-
-            /* =============================================
-               INTERNATIONAL TRANSFER UNAVAILABLE
-
-               No request is submitted.
-               No balance is deducted.
-               No transaction is created.
-            ============================================== */
-
-            submitWire() {
-
-                this.transferError =
-                    "Unable to complete this international transfer at this time. Please contact support for assistance.";
-
-                window.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-
             }
         }'
         class="dashboard-app-shell
@@ -176,17 +143,12 @@
                overflow-hidden"
     >
 
-
-        <!-- =================================================
-             DESKTOP SIDEBAR
-        ================================================== -->
+        <!-- =============================================
+             SIDEBAR
+        ============================================== -->
 
         <%- include("partials/sidebar") %>
 
-
-        <!-- =================================================
-             MAIN COLUMN
-        ================================================== -->
 
         <div
             class="dashboard-main-column
@@ -196,7 +158,6 @@
                    min-w-0
                    overflow-hidden"
         >
-
 
             <!-- Topbar -->
 
@@ -208,9 +169,9 @@
             <%- include("partials/mobile-menu") %>
 
 
-            <!-- =================================================
+            <!-- =========================================
                  MAIN CONTENT
-            ================================================== -->
+            ========================================== -->
 
             <main
                 class="dashboard-main-content
@@ -229,10 +190,9 @@
                                md:px-8"
                     >
 
-
-                        <!-- =====================================
+                        <!-- =================================
                              BACK
-                        ====================================== -->
+                        ================================== -->
 
                         <a
                             href="/dashboard/transfers"
@@ -254,9 +214,9 @@
                         </a>
 
 
-                        <!-- =====================================
+                        <!-- =================================
                              HEADER
-                        ====================================== -->
+                        ================================== -->
 
                         <div class="mb-6">
 
@@ -280,9 +240,9 @@
                         </div>
 
 
-                        <!-- =====================================
+                        <!-- =================================
                              SERVER ERROR
-                        ====================================== -->
+                        ================================== -->
 
                         <% if (
                             typeof error !== "undefined" &&
@@ -323,19 +283,20 @@
                         <% } %>
 
 
-                        <!-- =====================================
+                        <!-- =================================
                              INTERNATIONAL TRANSFER ERROR
-                        ====================================== -->
+                        ================================== -->
 
                         <div
-                            x-show="transferError"
-                            x-cloak
+                            id="internationalTransferError"
                             class="mb-6
                                    p-4
                                    bg-red-50
                                    border
                                    border-red-200
-                                   rounded-xl"
+                                   rounded-xl
+                                   hidden"
+                            role="alert"
                         >
 
                             <div class="flex items-start">
@@ -365,8 +326,11 @@
                                         class="text-sm
                                                text-red-700
                                                mt-1"
-                                        x-text="transferError"
-                                    ></p>
+                                    >
+                                        Unable to complete this international
+                                        transfer at this time. Please contact
+                                        support for assistance.
+                                    </p>
 
 
                                     <a
@@ -396,9 +360,9 @@
                         </div>
 
 
-                        <!-- =====================================
+                        <!-- =================================
                              SOURCE ACCOUNT
-                        ====================================== -->
+                        ================================== -->
 
                         <% if (sourceAccount) { %>
 
@@ -425,7 +389,6 @@
                                            gap-4
                                            mt-2"
                                 >
-
 
                                     <div>
 
@@ -498,16 +461,16 @@
                         <% } %>
 
 
-                        <!-- =================================================
-                             TRANSFER FORM
-                        ================================================== -->
+                        <!-- =================================
+                             TRANSFER CARD
+                        ================================== -->
 
                         <section class="dashboard-card">
 
 
-                            <!-- =============================================
+                            <!-- ==============================
                                  STEP 1
-                            ============================================== -->
+                            =============================== -->
 
                             <div
                                 x-show="step === 1"
@@ -543,14 +506,11 @@
                                            gap-5"
                                 >
 
-
                                     <!-- Recipient Name -->
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Recipient Name
                                         </label>
 
@@ -558,7 +518,6 @@
                                             type="text"
                                             x-model="recipientName"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -568,9 +527,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Recipient Country
                                         </label>
 
@@ -578,7 +535,6 @@
                                             type="text"
                                             x-model="recipientCountry"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -588,9 +544,7 @@
 
                                     <div class="md:col-span-2">
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Recipient Address
                                         </label>
 
@@ -607,9 +561,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Bank Name
                                         </label>
 
@@ -617,7 +569,6 @@
                                             type="text"
                                             x-model="recipientBank"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -627,9 +578,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Bank Country
                                         </label>
 
@@ -637,7 +586,6 @@
                                             type="text"
                                             x-model="bankCountry"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -647,9 +595,7 @@
 
                                     <div class="md:col-span-2">
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Bank Address
                                         </label>
 
@@ -666,9 +612,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Account Number
                                         </label>
 
@@ -676,7 +620,6 @@
                                             type="text"
                                             x-model="recipientAccount"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -686,9 +629,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             IBAN
                                         </label>
 
@@ -706,9 +647,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             SWIFT / BIC
                                         </label>
 
@@ -716,7 +655,6 @@
                                             type="text"
                                             x-model="swiftCode"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -726,9 +664,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Amount
                                         </label>
 
@@ -738,7 +674,6 @@
                                             min="0.01"
                                             x-model="amount"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                     </div>
@@ -748,16 +683,13 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Currency
                                         </label>
 
                                         <select
                                             x-model="currency"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                             <option value="">
@@ -785,16 +717,13 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Purpose
                                         </label>
 
                                         <select
                                             x-model="transferPurpose"
                                             class="dashboard-form-input"
-                                            required
                                         >
 
                                             <option value="">
@@ -834,9 +763,7 @@
 
                                     <div>
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Payment Reference
                                         </label>
 
@@ -854,9 +781,7 @@
 
                                     <div class="md:col-span-2">
 
-                                        <label
-                                            class="dashboard-form-label"
-                                        >
+                                        <label class="dashboard-form-label">
                                             Description
                                         </label>
 
@@ -911,9 +836,9 @@
                             </div>
 
 
-                            <!-- =============================================
-                                 STEP 2 - REVIEW
-                            ============================================== -->
+                            <!-- ==============================
+                                 STEP 2 REVIEW
+                            =============================== -->
 
                             <div
                                 x-show="step === 2"
@@ -951,7 +876,6 @@
                                            rounded-xl
                                            overflow-hidden"
                                 >
-
 
                                     <div class="transfer-review-row">
                                         <span>Recipient</span>
@@ -1012,23 +936,14 @@
 
 
                                     <div class="transfer-review-row">
-
-                                        <span>
-                                            Account
-                                        </span>
-
-                                        <strong
-                                            x-text="recipientAccount"
-                                        ></strong>
-
+                                        <span>Account</span>
+                                        <strong x-text="recipientAccount"></strong>
                                     </div>
 
 
                                     <div class="transfer-review-row">
 
-                                        <span>
-                                            IBAN
-                                        </span>
+                                        <span>IBAN</span>
 
                                         <strong
                                             x-text="
@@ -1041,23 +956,14 @@
 
 
                                     <div class="transfer-review-row">
-
-                                        <span>
-                                            SWIFT / BIC
-                                        </span>
-
-                                        <strong
-                                            x-text="swiftCode"
-                                        ></strong>
-
+                                        <span>SWIFT / BIC</span>
+                                        <strong x-text="swiftCode"></strong>
                                     </div>
 
 
                                     <div class="transfer-review-row">
 
-                                        <span>
-                                            Amount
-                                        </span>
+                                        <span>Amount</span>
 
                                         <strong>
 
@@ -1075,23 +981,14 @@
 
 
                                     <div class="transfer-review-row">
-
-                                        <span>
-                                            Purpose
-                                        </span>
-
-                                        <strong
-                                            x-text="transferPurpose"
-                                        ></strong>
-
+                                        <span>Purpose</span>
+                                        <strong x-text="transferPurpose"></strong>
                                     </div>
 
 
                                     <div class="transfer-review-row">
 
-                                        <span>
-                                            Reference
-                                        </span>
+                                        <span>Reference</span>
 
                                         <strong
                                             x-text="
@@ -1105,9 +1002,7 @@
 
                                     <div class="transfer-review-row">
 
-                                        <span>
-                                            Description
-                                        </span>
+                                        <span>Description</span>
 
                                         <strong
                                             class="text-right max-w-sm"
@@ -1158,9 +1053,7 @@
                                 </div>
 
 
-                                <!-- =====================================
-                                     REVIEW ACTIONS
-                                ====================================== -->
+                                <!-- Review Actions -->
 
                                 <div
                                     class="flex
@@ -1172,15 +1065,11 @@
                                            mt-7"
                                 >
 
-
                                     <!-- Edit -->
 
                                     <button
                                         type="button"
-                                        @click="
-                                            transferError = '';
-                                            step = 1
-                                        "
+                                        @click="step = 1"
                                         class="inline-flex
                                                items-center
                                                justify-center
@@ -1205,11 +1094,11 @@
                                     </button>
 
 
-                                    <!-- Submit -->
+                                    <!-- Submit Wire -->
 
                                     <button
                                         type="button"
-                                        @click="submitWire()"
+                                        id="submitInternationalWire"
                                         class="inline-flex
                                                items-center
                                                justify-center
@@ -1246,9 +1135,7 @@
             </main>
 
 
-            <!-- =================================================
-                 FOOTER
-            ================================================== -->
+            <!-- Footer -->
 
             <%- include("partials/footer") %>
 
@@ -1258,8 +1145,69 @@
 
 
     <!-- =====================================================
-         DASHBOARD SCRIPTS
+         INTERNATIONAL TRANSFER FAILURE HANDLER
     ====================================================== -->
+
+    <script>
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                var submitButton =
+                    document.getElementById(
+                        "submitInternationalWire"
+                    );
+
+                var errorBox =
+                    document.getElementById(
+                        "internationalTransferError"
+                    );
+
+
+                if (
+                    !submitButton ||
+                    !errorBox
+                ) {
+                    return;
+                }
+
+
+                submitButton.addEventListener(
+                    "click",
+                    function (event) {
+
+                        event.preventDefault();
+
+
+                        /*
+                         * International transfers are
+                         * intentionally unavailable.
+                         *
+                         * No form submission occurs here.
+                         * No balance is deducted.
+                         * No Transfer record is created.
+                         * No Transaction record is created.
+                         */
+
+                        errorBox.classList.remove(
+                            "hidden"
+                        );
+
+
+                        errorBox.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center"
+                        });
+
+                    }
+                );
+
+            }
+        );
+    </script>
+
+
+    <!-- Dashboard Scripts -->
 
     <%- include("partials/scripts") %>
 
