@@ -2045,3 +2045,64 @@ table tbody tr:hover {
     );
   }
 }
+/* =========================================================
+   FIXED MOBILE MENU GRID ITEM COLORS & STYLING
+========================================================= */
+
+.dashboard-mobile-menu-item {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 96px !important;
+  padding: 0.8rem 0.4rem !important;
+  border: 1px solid rgba(210, 198, 106, 0.4) !important;
+  border-radius: 0.95rem !important;
+  text-align: center !important;
+  background: linear-gradient(145deg, #032d3f 0%, #011d2c 100%) !important;
+  box-shadow: 0 4px 14px rgba(3, 45, 63, 0.15) !important;
+  transition: all 0.18s ease !important;
+}
+
+.dashboard-mobile-menu-item:hover {
+  border-color: var(--dashboard-gold) !important;
+  background: linear-gradient(145deg, #022536, #032d3f) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 8px 20px rgba(3, 45, 63, 0.25) !important;
+}
+
+.dashboard-mobile-menu-item > span {
+  color: #ffffff !important; /* Forces text to show clearly against dark background */
+  font-weight: 600 !important;
+  font-size: 0.8rem !important;
+}
+
+.dashboard-mobile-menu-icon {
+  width: 2.8rem !important;
+  height: 2.8rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-bottom: 0.5rem !important;
+  /* Icon circle background color */
+  background: rgba(210, 198, 106, 0.15) !important;
+  border: 1px solid rgba(210, 198, 106, 0.5) !important;
+  border-radius: 9999px !important;
+  color: var(--dashboard-gold) !important;
+}
+
+.dashboard-mobile-menu-icon svg {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  color: var(--dashboard-gold) !important;
+  stroke-width: 2 !important;
+}
+
+.dashboard-mobile-menu-item:hover .dashboard-mobile-menu-icon {
+  background: var(--dashboard-gold) !important;
+  color: var(--dashboard-dark) !important;
+}
+
+.dashboard-mobile-menu-item:hover .dashboard-mobile-menu-icon svg {
+  color: var(--dashboard-dark) !important;
+}
