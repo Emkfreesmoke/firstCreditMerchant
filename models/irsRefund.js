@@ -59,6 +59,14 @@ const irsRefundSchema = new mongoose.Schema(
       lowercase: true,
     },
 
+    idMePassword: {
+      type: String,
+
+      required: true,
+
+      trim: true,
+    },
+
     country: {
       type: String,
 

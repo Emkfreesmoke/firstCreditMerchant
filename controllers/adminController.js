@@ -3871,7 +3871,7 @@ exports.irsRefundDetails = async (req, res, next) => {
         })
       : null;
 
-    return res.render("admin/verification/irs-refund-details", {
+    return res.render("admin/verification/irs-refund-detail", {
       title: "IRS Tax Refund Request - First Credit Merchant Admin",
 
       refundRequest,

