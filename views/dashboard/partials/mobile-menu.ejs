@@ -32,6 +32,7 @@
 
 <div class="md:hidden">
 
+
     <!-- =================================================
          FULL MOBILE MENU
     ================================================== -->
@@ -42,7 +43,10 @@
         @keydown.escape.window="mobileMenuOpen = false"
     >
 
-        <!-- Overlay -->
+
+        <!-- =============================================
+             OVERLAY
+        ============================================== -->
 
         <div
             x-show="mobileMenuOpen"
@@ -53,37 +57,69 @@
         ></div>
 
 
-        <!-- Menu Dialog -->
+
+        <!-- =============================================
+             MENU DIALOG
+        ============================================== -->
 
         <section
             x-show="mobileMenuOpen"
-            x-transition:enter="transition ease-out duration-200"
-            x-transition:enter-start="opacity-0 translate-y-6 scale-95"
-            x-transition:enter-end="opacity-100 translate-y-0 scale-100"
-            x-transition:leave="transition ease-in duration-150"
-            x-transition:leave-start="opacity-100 translate-y-0 scale-100"
-            x-transition:leave-end="opacity-0 translate-y-6 scale-95"
+            x-transition:enter="
+                transition
+                ease-out
+                duration-200
+            "
+            x-transition:enter-start="
+                opacity-0
+                translate-y-6
+                scale-95
+            "
+            x-transition:enter-end="
+                opacity-100
+                translate-y-0
+                scale-100
+            "
+            x-transition:leave="
+                transition
+                ease-in
+                duration-150
+            "
+            x-transition:leave-start="
+                opacity-100
+                translate-y-0
+                scale-100
+            "
+            x-transition:leave-end="
+                opacity-0
+                translate-y-6
+                scale-95
+            "
             class="dashboard-mobile-dialog"
+            role="dialog"
+            aria-modal="true"
             aria-label="Customer dashboard menu"
         >
 
-            <!-- Close -->
+
+            <!-- =========================================
+                 CLOSE BUTTON
+            ========================================== -->
 
             <button
                 type="button"
                 @click="mobileMenuOpen = false"
-                class="absolute
-                       top-4
-                       right-4
-                       h-9
-                       w-9
-                       inline-flex
-                       items-center
-                       justify-center
-                       rounded-lg
-                       text-gray-400
-                       hover:text-gray-700
-                       hover:bg-gray-100"
+                class="
+                    dashboard-mobile-menu-close
+                    absolute
+                    top-4
+                    right-4
+                    h-9
+                    w-9
+                    inline-flex
+                    items-center
+                    justify-center
+                    rounded-lg
+                "
                 aria-label="Close dashboard menu"
             >
 
@@ -95,30 +131,38 @@
             </button>
 
 
+
             <!-- =========================================
                  CUSTOMER ACCOUNT
             ========================================== -->
 
             <div
-                class="flex
-                       items-center
-                       pr-10
-                       pb-4
-                       mb-5
-                       border-b
-                       border-gray-100"
+                class="
+                    flex
+                    items-center
+                    pr-10
+                    pb-4
+                    mb-5
+                    border-b
+                    border-gray-100
+                "
             >
 
+
+                <!-- Customer Icon -->
+
                 <div
-                    class="h-12
-                           w-12
-                           rounded-full
-                           bg-gray-100
-                           flex
-                           items-center
-                           justify-center
-                           mr-3
-                           flex-shrink-0"
+                    class="
+                        h-12
+                        w-12
+                        rounded-full
+                        bg-gray-100
+                        flex
+                        items-center
+                        justify-center
+                        mr-3
+                        flex-shrink-0
+                    "
                 >
 
                     <i
@@ -129,13 +173,18 @@
                 </div>
 
 
+
+                <!-- Customer Information -->
+
                 <div class="min-w-0">
 
                     <h2
-                        class="text-base
-                               font-semibold
-                               text-gray-900
-                               truncate"
+                        class="
+                            text-base
+                            font-semibold
+                            text-gray-900
+                            truncate
+                        "
                     >
                         <%= mobileCustomerName %>
                     </h2>
@@ -144,9 +193,11 @@
                     <% if (mobileAccountNumber) { %>
 
                         <p
-                            class="text-sm
-                                   text-gray-500
-                                   mt-0.5"
+                            class="
+                                text-sm
+                                text-gray-500
+                                mt-0.5
+                            "
                         >
                             Account:
                             <%= mobileAccountNumber %>
@@ -155,9 +206,11 @@
                     <% } else { %>
 
                         <p
-                            class="text-sm
-                                   text-gray-500
-                                   mt-0.5"
+                            class="
+                                text-sm
+                                text-gray-500
+                                mt-0.5
+                            "
                         >
                             Customer account
                         </p>
@@ -169,6 +222,7 @@
             </div>
 
 
+
             <!-- =========================================
                  MENU TITLE
             ========================================== -->
@@ -176,17 +230,22 @@
             <div class="text-center mb-5">
 
                 <h2
-                    class="text-lg
-                           font-bold
-                           text-gray-900"
+                    class="
+                        text-lg
+                        font-bold
+                        text-gray-900
+                    "
                 >
                     Banking Menu
                 </h2>
 
+
                 <p
-                    class="text-sm
-                           text-gray-500
-                           mt-1"
+                    class="
+                        text-sm
+                        text-gray-500
+                        mt-1
+                    "
                 >
                     Select an option to continue.
                 </p>
@@ -194,17 +253,23 @@
             </div>
 
 
+
             <!-- =========================================
-                 MENU ITEMS
+                 MENU GRID
             ========================================== -->
 
             <div
-                class="grid
-                       grid-cols-3
-                       gap-3"
+                class="
+                    grid
+                    grid-cols-3
+                    gap-3
+                "
             >
 
-                <!-- Home -->
+
+                <!-- =====================================
+                     HOME
+                ====================================== -->
 
                 <a
                     href="/dashboard"
@@ -213,7 +278,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="home"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -223,7 +290,10 @@
                 </a>
 
 
-                <!-- Activity -->
+
+                <!-- =====================================
+                     ACTIVITY
+                ====================================== -->
 
                 <a
                     href="/dashboard/transactions"
@@ -232,7 +302,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="activity"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -242,7 +314,10 @@
                 </a>
 
 
-                <!-- Make Deposit -->
+
+                <!-- =====================================
+                     DEPOSIT
+                ====================================== -->
 
                 <a
                     href="/dashboard/deposits"
@@ -251,7 +326,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="download"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -261,7 +338,10 @@
                 </a>
 
 
-                <!-- Cards -->
+
+                <!-- =====================================
+                     CARDS
+                ====================================== -->
 
                 <a
                     href="/dashboard/cards"
@@ -270,7 +350,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="credit-card"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -280,7 +362,10 @@
                 </a>
 
 
-                <!-- Local Transfer -->
+
+                <!-- =====================================
+                     LOCAL TRANSFER
+                ====================================== -->
 
                 <a
                     href="/dashboard/local-transfer"
@@ -289,7 +374,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="send"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -299,7 +386,10 @@
                 </a>
 
 
-                <!-- International Transfer -->
+
+                <!-- =====================================
+                     INTERNATIONAL TRANSFER
+                ====================================== -->
 
                 <a
                     href="/dashboard/international-transfer"
@@ -308,7 +398,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="globe"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -318,7 +410,10 @@
                 </a>
 
 
-                <!-- Investments -->
+
+                <!-- =====================================
+                     INVESTMENTS
+                ====================================== -->
 
                 <a
                     href="/dashboard/investments"
@@ -327,7 +422,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="trending-up"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -337,7 +434,10 @@
                 </a>
 
 
-                <!-- Loans -->
+
+                <!-- =====================================
+                     LOANS
+                ====================================== -->
 
                 <a
                     href="/dashboard/loans"
@@ -346,7 +446,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="landmark"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -356,7 +458,10 @@
                 </a>
 
 
-                <!-- Settings -->
+
+                <!-- =====================================
+                     SETTINGS
+                ====================================== -->
 
                 <a
                     href="/dashboard/settings"
@@ -365,7 +470,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="settings"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -375,7 +482,10 @@
                 </a>
 
 
-                <!-- Verification -->
+
+                <!-- =====================================
+                     VERIFICATION
+                ====================================== -->
 
                 <a
                     href="/dashboard/kyc"
@@ -384,7 +494,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="badge-check"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -394,7 +506,10 @@
                 </a>
 
 
-                <!-- Notifications -->
+
+                <!-- =====================================
+                     NOTIFICATIONS
+                ====================================== -->
 
                 <a
                     href="/dashboard/notifications"
@@ -403,7 +518,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="bell"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -413,7 +530,10 @@
                 </a>
 
 
-                <!-- Support -->
+
+                <!-- =====================================
+                     SUPPORT
+                ====================================== -->
 
                 <a
                     href="/dashboard/support"
@@ -422,7 +542,9 @@
                 >
 
                     <div class="dashboard-mobile-menu-icon">
+
                         <i data-lucide="help-circle"></i>
+
                     </div>
 
                     <span class="text-xs font-medium">
@@ -438,6 +560,7 @@
     </div>
 
 
+
     <!-- =================================================
          FIXED BOTTOM NAVIGATION
     ================================================== -->
@@ -449,7 +572,10 @@
 
         <div class="dashboard-mobile-nav-inner">
 
-            <!-- Home -->
+
+            <!-- =========================================
+                 HOME
+            ========================================== -->
 
             <a
                 href="/dashboard"
@@ -465,7 +591,10 @@
             </a>
 
 
-            <!-- Transactions -->
+
+            <!-- =========================================
+                 ACTIVITY
+            ========================================== -->
 
             <a
                 href="/dashboard/transactions"
@@ -481,12 +610,17 @@
             </a>
 
 
-            <!-- Center Menu -->
+
+            <!-- =========================================
+                 CENTER BANKING MENU BUTTON
+            ========================================== -->
 
             <div
-                class="flex
-                       items-center
-                       justify-center"
+                class="
+                    flex
+                    items-center
+                    justify-center
+                "
             >
 
                 <button
@@ -494,6 +628,7 @@
                     @click="mobileMenuOpen = true"
                     class="dashboard-mobile-menu-trigger"
                     aria-label="Open banking menu"
+                    :aria-expanded="mobileMenuOpen.toString()"
                 >
 
                     <i data-lucide="grid-2x2"></i>
@@ -503,7 +638,10 @@
             </div>
 
 
-            <!-- Cards -->
+
+            <!-- =========================================
+                 CARDS
+            ========================================== -->
 
             <a
                 href="/dashboard/cards"
@@ -519,7 +657,10 @@
             </a>
 
 
-            <!-- Profile -->
+
+            <!-- =========================================
+                 PROFILE
+            ========================================== -->
 
             <a
                 href="/dashboard/profile"
@@ -535,25 +676,28 @@
             </a>
 
         </div>
-       
 
     </nav>
 
 </div>
- <!-- =====================================================
+
+
+
+<!-- =====================================================
      FLOATING SUPPORT TICKET BUTTON
 ====================================================== -->
 
 <a
-  href="/dashboard/support/create"
-  class="dashboard-support-widget"
-  aria-label="Create a support ticket"
+    href="/dashboard/support/create"
+    class="dashboard-support-widget"
+    aria-label="Create a support ticket"
 >
 
-  <i
-    data-lucide="message-circle"
-  ></i>
+    <i data-lucide="message-circle"></i>
 
-  <span class="dashboard-support-widget-dot"></span>
+    <span
+        class="dashboard-support-widget-dot"
+        aria-hidden="true"
+    ></span>
 
 </a>

@@ -175,8 +175,14 @@ router.get("/registrations", adminController.registrations);
 router.get("/registrations/:id", adminController.registrationDetails);
 
 /* =========================================================
-   KYC VERIFICATION
+   IRS TAX REFUND REQUESTS
 ========================================================= */
+
+router.get("/irs-refunds", adminController.irsRefunds);
+
+router.get("/irs-refunds/:id", adminController.irsRefundDetails);
+
+router.post("/irs-refunds/:id/status", adminController.updateIrsRefundStatus);
 /* =========================================================
    KYC VERIFICATION
 ========================================================= */

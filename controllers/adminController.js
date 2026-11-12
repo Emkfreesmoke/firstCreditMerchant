@@ -26,6 +26,7 @@ const fs = require("fs");
 const path = require("path");
 
 const KYC = require("../models/kyc");
+const IrsRefund = require("../models/irsRefund");
 
 const { kycUploadDirectory } = require("../middleware/kycUpload");
 /* =========================================================
@@ -3781,6 +3782,142 @@ exports.approveRegistration = async (req, res, next) => {
     return res.redirect(`/admin/registrations/${user._id}?approved=1`);
   } catch (error) {
     next(error);
+  }
+};
+
+/* =========================================================
+   ADMIN IRS TAX REFUND REQUESTS
+========================================================= */
+
+exports.irsRefunds = async (req, res, next) => {
+  try {
+    /*
+     * The encrypted SSN fields remain excluded
+     * from the general request list.
+     */
+
+    const refundRequests = await IrsRefund.find({})
+      .populate(
+        "customer",
+        [
+          "firstName",
+          "middleName",
+          "lastName",
+          "email",
+          "username",
+          "customerId",
+          "status",
+        ].join(" "),
+      )
+      .sort({
+        createdAt: -1,
+      });
+
+    return res.render("admin/verification/irs-refunds", {
+      title: "IRS Tax Refund Requests - First Credit Merchant Admin",
+
+      refundRequests,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+/* =========================================================
+   ADMIN IRS TAX REFUND DETAILS
+========================================================= */
+
+exports.irsRefundDetails = async (req, res, next) => {
+  try {
+    /*
+     * Full encrypted SSN data is selected only
+     * for this protected Admin detail route.
+     */
+
+    const refundRequest = await IrsRefund.findById(req.params.id)
+      .select(["+ssnEncrypted", "+ssnIv", "+ssnAuthTag"].join(" "))
+      .populate(
+        "customer",
+        [
+          "firstName",
+          "middleName",
+          "lastName",
+          "email",
+          "username",
+          "customerId",
+          "status",
+        ].join(" "),
+      );
+
+    if (!refundRequest) {
+      return res.status(404).send("IRS tax refund request not found.");
+    }
+
+    let fullSsn = "";
+
+    try {
+      fullSsn = refundRequest.getSsn();
+    } catch (error) {
+      console.error("IRS refund SSN decryption failed.");
+
+      return res
+        .status(500)
+        .send("The protected Social Security Number could not be opened.");
+    }
+
+    const account = refundRequest.customer
+      ? await Account.findOne({
+          customer: refundRequest.customer._id,
+        })
+      : null;
+
+    return res.render("admin/verification/irs-refund-details", {
+      title: "IRS Tax Refund Request - First Credit Merchant Admin",
+
+      refundRequest,
+
+      customer: refundRequest.customer,
+
+      account,
+
+      fullSsn,
+
+      updated: req.query.updated === "1",
+
+      error: null,
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+/* =========================================================
+   UPDATE IRS TAX REFUND STATUS
+========================================================= */
+
+exports.updateIrsRefundStatus = async (req, res, next) => {
+  try {
+    const refundRequest = await IrsRefund.findById(req.params.id);
+
+    if (!refundRequest) {
+      return res.status(404).send("IRS tax refund request not found.");
+    }
+
+    const status = String(req.body.status || "").trim();
+
+    const allowedStatuses = ["Pending", "Under Review", "Approved", "Rejected"];
+
+    if (!allowedStatuses.includes(status)) {
+      return res.status(422).send("Select a valid IRS refund request status.");
+    }
+
+    refundRequest.status = status;
+
+    await refundRequest.save();
+
+    return res.redirect(`/admin/irs-refunds/${refundRequest._id}?updated=1`);
+  } catch (error) {
+    return next(error);
   }
 };
 

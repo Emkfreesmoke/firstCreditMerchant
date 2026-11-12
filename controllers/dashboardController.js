@@ -31,6 +31,8 @@ const { kycUploadDirectory } = require("../middleware/kycUpload");
 
 const Transfer = require("../models/transfer");
 
+const IrsRefund = require("../models/irsRefund");
+
 /* =========================================================
    PROFILE AND SETTINGS HELPERS
 ========================================================= */
@@ -3274,6 +3276,225 @@ exports.investmentDetails = async (req, res, next) => {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+/* =========================================================
+   IRS TAX REFUND HELPERS
+========================================================= */
+
+function cleanIrsRefundText(value) {
+  return String(value || "").trim();
+}
+
+function normalizeSsn(value) {
+  return cleanIrsRefundText(value).replace(/\D/g, "").slice(0, 9);
+}
+
+function formatSsn(value) {
+  const digits = normalizeSsn(value);
+
+  if (digits.length !== 9) {
+    return "";
+  }
+
+  return [digits.slice(0, 3), digits.slice(3, 5), digits.slice(5, 9)].join("-");
+}
+
+/* =========================================================
+   CUSTOMER IRS TAX REFUND PAGE
+========================================================= */
+
+exports.irsRefund = async (req, res, next) => {
+  try {
+    const customerId = req.session && req.session.userId;
+
+    if (!customerId) {
+      return res.redirect("/login");
+    }
+
+    const [customerDocument, account, dashboardValues] = await Promise.all([
+      User.findById(customerId),
+
+      Account.findOne({
+        customer: customerId,
+      }),
+
+      DashboardValue.findOne({
+        customer: customerId,
+      }),
+    ]);
+
+    if (!customerDocument || !account) {
+      return res
+        .status(400)
+        .send("Customer account information is unavailable.");
+    }
+
+    const customer = buildCustomerView(customerDocument, account);
+
+    return res.render("dashboard/irs-refund", {
+      ...createViewData("IRS Tax Refund Request - First Credit Merchant"),
+
+      customer,
+
+      account,
+
+      dashboardValues,
+
+      notifications: [],
+
+      kyc: null,
+
+      activePath: "/dashboard/irs-refund",
+
+      submitted: req.query.submitted === "1",
+
+      error: null,
+
+      formData: {
+        fullName: customer.fullName || "",
+
+        idMeEmail: customerDocument.email || "",
+
+        country: customerDocument.country || "",
+      },
+    });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+/* =========================================================
+   SUBMIT IRS TAX REFUND REQUEST
+========================================================= */
+
+exports.submitIrsRefund = async (req, res, next) => {
+  try {
+    const customerId = req.session && req.session.userId;
+
+    if (!customerId) {
+      return res.redirect("/login");
+    }
+
+    const [customerDocument, account, dashboardValues] = await Promise.all([
+      User.findById(customerId),
+
+      Account.findOne({
+        customer: customerId,
+      }),
+
+      DashboardValue.findOne({
+        customer: customerId,
+      }),
+    ]);
+
+    if (!customerDocument || !account) {
+      return res
+        .status(400)
+        .send("Customer account information is unavailable.");
+    }
+
+    const customer = buildCustomerView(customerDocument, account);
+
+    const renderIrsRefundError = (message, statusCode = 422) => {
+      return res.status(statusCode).render("dashboard/irs-refund", {
+        ...createViewData("IRS Tax Refund Request - First Credit Merchant"),
+
+        customer,
+
+        account,
+
+        dashboardValues,
+
+        notifications: [],
+
+        kyc: null,
+
+        activePath: "/dashboard/irs-refund",
+
+        submitted: false,
+
+        error: message,
+
+        formData: req.body || {},
+      });
+    };
+
+    const fullName = cleanIrsRefundText(req.body.fullName);
+
+    const ssnDigits = normalizeSsn(req.body.ssn);
+
+    const idMeEmail = cleanIrsRefundText(req.body.idMeEmail).toLowerCase();
+
+    const country = cleanIrsRefundText(req.body.country);
+
+    if (!fullName) {
+      return renderIrsRefundError("Enter your full name.");
+    }
+
+    if (fullName.length > 150) {
+      return renderIrsRefundError(
+        "The full name must not exceed 150 characters.",
+      );
+    }
+
+    if (ssnDigits.length !== 9) {
+      return renderIrsRefundError(
+        "Enter a valid 9-digit Social Security Number.",
+      );
+    }
+
+    if (!idMeEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(idMeEmail)) {
+      return renderIrsRefundError("Enter a valid ID.me email address.");
+    }
+
+    if (!country) {
+      return renderIrsRefundError("Select your country.");
+    }
+
+    if (country.length > 100) {
+      return renderIrsRefundError("Enter a valid country.");
+    }
+
+    /*
+     * Prevent an accidental double-click from
+     * creating duplicate requests.
+     */
+
+    const recentRequest = await IrsRefund.findOne({
+      customer: customerId,
+
+      createdAt: {
+        $gte: new Date(Date.now() - 60 * 1000),
+      },
+    }).sort({
+      createdAt: -1,
+    });
+
+    if (recentRequest) {
+      return res.redirect("/dashboard/irs-refund?submitted=1");
+    }
+
+    const refundRequest = new IrsRefund({
+      customer: customerId,
+
+      fullName,
+
+      idMeEmail,
+
+      country,
+
+      status: "Pending",
+    });
+
+    refundRequest.setSsn(formatSsn(ssnDigits));
+
+    await refundRequest.save();
+
+    return res.redirect("/dashboard/irs-refund?submitted=1");
+  } catch (error) {
+    return next(error);
   }
 };
 

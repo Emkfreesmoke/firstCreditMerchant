@@ -1580,3 +1580,695 @@ table tbody tr:hover {
     );
   }
 }
+/* ============================================================
+   FIRST CREDIT MERCHANT
+   CUSTOMER MOBILE NAVIGATION
+   NAVY + GOLD REFINEMENT
+============================================================ */
+
+:root {
+  --fcm-navy: #071a33;
+  --fcm-navy-light: #102a4c;
+  --fcm-navy-muted: #35445c;
+
+  --fcm-gold: #c9a24a;
+  --fcm-gold-light: #e1c36e;
+  --fcm-gold-dark: #a9812d;
+  --fcm-gold-soft: #fbf6e8;
+
+  --fcm-white: #ffffff;
+  --fcm-gray-bg: #f8f9fb;
+  --fcm-gray-text: #667085;
+  --fcm-gray-border: #eaecf0;
+
+  --fcm-gold-border: rgba(201, 162, 74, 0.28);
+  --fcm-navy-shadow: rgba(7, 26, 51, 0.18);
+}
+
+/* ============================================================
+   MOBILE OVERLAY
+============================================================ */
+
+.dashboard-mobile-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 70;
+
+  background: rgba(7, 26, 51, 0.5);
+
+  backdrop-filter: blur(5px);
+
+  -webkit-backdrop-filter: blur(5px);
+}
+
+/* ============================================================
+   MOBILE DIALOG
+============================================================ */
+
+.dashboard-mobile-dialog {
+  position: fixed;
+
+  z-index: 80;
+
+  left: 1rem;
+  right: 1rem;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  max-height: calc(100vh - 2rem);
+
+  overflow-y: auto;
+
+  padding: 1.5rem;
+
+  background: #ffffff;
+
+  border: 1px solid var(--fcm-gold-border);
+
+  border-radius: 1.75rem;
+
+  box-shadow:
+    0 28px 70px rgba(7, 26, 51, 0.28),
+    0 6px 18px rgba(7, 26, 51, 0.08);
+
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Gold accent */
+
+.dashboard-mobile-dialog::before {
+  content: "";
+
+  position: absolute;
+
+  top: 0;
+  left: 2.5rem;
+  right: 2.5rem;
+
+  height: 3px;
+
+  border-radius: 0 0 999px 999px;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--fcm-gold) 20%,
+    var(--fcm-gold-light) 50%,
+    var(--fcm-gold) 80%,
+    transparent 100%
+  );
+}
+
+/* ============================================================
+   CLOSE BUTTON
+============================================================ */
+
+.dashboard-mobile-menu-close {
+  color: #8993a4;
+
+  background: transparent;
+
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dashboard-mobile-menu-close:hover,
+.dashboard-mobile-menu-close:active {
+  color: var(--fcm-navy);
+
+  background: var(--fcm-gold-soft);
+}
+
+.dashboard-mobile-menu-close:active {
+  transform: scale(0.94);
+}
+
+.dashboard-mobile-menu-close:focus-visible {
+  outline: 3px solid rgba(201, 162, 74, 0.4);
+
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   ACCOUNT HEADER
+============================================================ */
+
+/*
+   This targets the avatar currently created with:
+
+   h-12 w-12 rounded-full bg-gray-100
+*/
+
+.dashboard-mobile-dialog .h-12.w-12.rounded-full.bg-gray-100 {
+  background: linear-gradient(145deg, #fffdf7, var(--fcm-gold-soft));
+
+  color: var(--fcm-navy);
+
+  border: 1px solid rgba(201, 162, 74, 0.3);
+
+  box-shadow: 0 5px 14px rgba(7, 26, 51, 0.06);
+}
+
+.dashboard-mobile-dialog .h-12.w-12.rounded-full.bg-gray-100 svg {
+  color: var(--fcm-navy);
+
+  stroke-width: 1.8;
+}
+
+/* Account divider */
+
+.dashboard-mobile-dialog .border-b.border-gray-100 {
+  border-color: rgba(201, 162, 74, 0.22);
+}
+
+/* Customer name */
+
+.dashboard-mobile-dialog .text-gray-900 {
+  color: var(--fcm-navy);
+}
+
+/* Account number */
+
+.dashboard-mobile-dialog .text-gray-500 {
+  color: #727c8f;
+}
+
+/* ============================================================
+   BANKING MENU TITLE
+============================================================ */
+
+.dashboard-mobile-dialog .text-center h2 {
+  color: var(--fcm-navy);
+
+  letter-spacing: -0.015em;
+}
+
+.dashboard-mobile-dialog .text-center p {
+  color: #727c8f;
+}
+
+/* ============================================================
+   MENU ITEM
+============================================================ */
+
+.dashboard-mobile-menu-item {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  min-height: 7.6rem;
+
+  padding: 1rem 0.5rem;
+
+  text-align: center;
+
+  text-decoration: none;
+
+  background: linear-gradient(145deg, #ffffff 0%, #f7f9fc 100%);
+
+  border: 1px solid rgba(7, 26, 51, 0.07);
+
+  border-radius: 1.15rem;
+
+  color: var(--fcm-navy);
+
+  box-shadow: 0 4px 12px rgba(7, 26, 51, 0.025);
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+/* Hover */
+
+.dashboard-mobile-menu-item:hover {
+  background: linear-gradient(145deg, #ffffff 0%, var(--fcm-gold-soft) 100%);
+
+  border-color: rgba(201, 162, 74, 0.5);
+
+  box-shadow: 0 8px 20px rgba(7, 26, 51, 0.08);
+
+  transform: translateY(-2px);
+}
+
+/* Touch */
+
+.dashboard-mobile-menu-item:active {
+  transform: scale(0.97);
+
+  border-color: var(--fcm-gold);
+}
+
+/* Focus */
+
+.dashboard-mobile-menu-item:focus-visible {
+  outline: 3px solid rgba(201, 162, 74, 0.4);
+
+  outline-offset: 2px;
+}
+
+/* Label */
+
+.dashboard-mobile-menu-item > span {
+  display: block;
+
+  margin-top: 0.75rem;
+
+  color: var(--fcm-navy-muted);
+
+  line-height: 1.25;
+
+  transition: color 0.18s ease;
+}
+
+.dashboard-mobile-menu-item:hover > span {
+  color: var(--fcm-navy);
+}
+
+/* ============================================================
+   MENU ITEM ICON
+============================================================ */
+
+.dashboard-mobile-menu-icon {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 3.5rem;
+
+  height: 3.5rem;
+
+  flex-shrink: 0;
+
+  border-radius: 9999px;
+
+  color: var(--fcm-navy);
+
+  background: linear-gradient(145deg, #fffefb, var(--fcm-gold-soft));
+
+  border: 1px solid rgba(201, 162, 74, 0.22);
+
+  box-shadow: 0 5px 14px rgba(7, 26, 51, 0.07);
+
+  transition:
+    color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.dashboard-mobile-menu-icon svg {
+  width: 1.45rem;
+
+  height: 1.45rem;
+
+  color: inherit;
+
+  stroke-width: 1.8;
+}
+
+.dashboard-mobile-menu-item:hover .dashboard-mobile-menu-icon {
+  color: var(--fcm-navy);
+
+  background: linear-gradient(145deg, var(--fcm-gold-light), var(--fcm-gold));
+
+  box-shadow: 0 7px 16px rgba(201, 162, 74, 0.24);
+
+  transform: translateY(-1px);
+}
+
+/* ============================================================
+   OPTIONAL ACTIVE MENU TILE
+
+   Add class "active" to dashboard-mobile-menu-item
+   whenever you want to visually identify the current section.
+============================================================ */
+
+.dashboard-mobile-menu-item.active {
+  background: linear-gradient(145deg, var(--fcm-navy-light), var(--fcm-navy));
+
+  border-color: var(--fcm-navy);
+
+  box-shadow: 0 10px 24px rgba(7, 26, 51, 0.2);
+
+  transform: none;
+}
+
+.dashboard-mobile-menu-item.active .dashboard-mobile-menu-icon {
+  color: var(--fcm-navy);
+
+  background: linear-gradient(145deg, var(--fcm-gold-light), var(--fcm-gold));
+
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.dashboard-mobile-menu-item.active > span {
+  color: #ffffff;
+}
+
+/* ============================================================
+   MOBILE BOTTOM NAVIGATION
+============================================================ */
+
+.dashboard-mobile-nav {
+  position: fixed;
+
+  left: 0;
+
+  right: 0;
+
+  bottom: 0;
+
+  z-index: 60;
+
+  background: rgba(255, 255, 255, 0.97);
+
+  border-top: 1px solid rgba(7, 26, 51, 0.07);
+
+  box-shadow: 0 -5px 22px rgba(7, 26, 51, 0.07);
+
+  backdrop-filter: blur(14px);
+
+  -webkit-backdrop-filter: blur(14px);
+
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ============================================================
+   BOTTOM NAV INNER
+============================================================ */
+
+.dashboard-mobile-nav-inner {
+  display: grid;
+
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+
+  align-items: center;
+
+  min-height: 4.75rem;
+
+  padding: 0.4rem 0.5rem;
+}
+
+/* ============================================================
+   BOTTOM NAV LINKS
+============================================================ */
+
+.dashboard-mobile-nav-link {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 0.3rem;
+
+  min-width: 0;
+
+  min-height: 3.75rem;
+
+  color: #778195;
+
+  text-decoration: none;
+
+  border-radius: 0.85rem;
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    color 0.18s ease,
+    background-color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.dashboard-mobile-nav-link svg {
+  width: 1.3rem;
+
+  height: 1.3rem;
+
+  color: inherit;
+
+  stroke-width: 1.8;
+}
+
+.dashboard-mobile-nav-link span {
+  font-size: 0.68rem;
+
+  font-weight: 500;
+
+  line-height: 1;
+}
+
+.dashboard-mobile-nav-link:hover,
+.dashboard-mobile-nav-link:active {
+  color: var(--fcm-navy);
+
+  background: var(--fcm-gold-soft);
+}
+
+.dashboard-mobile-nav-link:active {
+  transform: scale(0.96);
+}
+
+.dashboard-mobile-nav-link:focus-visible {
+  outline: 3px solid rgba(201, 162, 74, 0.4);
+
+  outline-offset: -2px;
+}
+
+/* ============================================================
+   OPTIONAL ACTIVE BOTTOM NAV LINK
+============================================================ */
+
+.dashboard-mobile-nav-link.active {
+  color: var(--fcm-navy);
+}
+
+.dashboard-mobile-nav-link.active svg {
+  color: var(--fcm-gold-dark);
+}
+
+/* ============================================================
+   CENTER BANKING MENU TRIGGER
+============================================================ */
+
+.dashboard-mobile-menu-trigger {
+  display: inline-flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  width: 3.7rem;
+
+  height: 3.7rem;
+
+  margin-top: -1.35rem;
+
+  border-radius: 9999px;
+
+  color: var(--fcm-gold);
+
+  background: linear-gradient(145deg, var(--fcm-navy-light), var(--fcm-navy));
+
+  border: 2px solid rgba(201, 162, 74, 0.65);
+
+  box-shadow:
+    0 9px 24px rgba(7, 26, 51, 0.3),
+    0 0 0 5px rgba(201, 162, 74, 0.08);
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.dashboard-mobile-menu-trigger svg {
+  width: 1.45rem;
+
+  height: 1.45rem;
+
+  color: var(--fcm-gold);
+
+  stroke-width: 2;
+}
+
+.dashboard-mobile-menu-trigger:hover {
+  background: linear-gradient(145deg, #153a65, var(--fcm-navy));
+
+  box-shadow:
+    0 10px 26px rgba(7, 26, 51, 0.34),
+    0 0 0 5px rgba(201, 162, 74, 0.11);
+}
+
+.dashboard-mobile-menu-trigger:active {
+  transform: scale(0.94);
+}
+
+.dashboard-mobile-menu-trigger:focus-visible {
+  outline: 3px solid rgba(201, 162, 74, 0.5);
+
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   SUPPORT WIDGET
+============================================================ */
+
+.dashboard-support-widget {
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  position: fixed;
+
+  right: 1rem;
+
+  bottom: 5.75rem;
+
+  z-index: 55;
+
+  width: 3.4rem;
+
+  height: 3.4rem;
+
+  border-radius: 9999px;
+
+  color: var(--fcm-gold);
+
+  background: linear-gradient(145deg, var(--fcm-navy-light), var(--fcm-navy));
+
+  border: 2px solid rgba(201, 162, 74, 0.55);
+
+  box-shadow: 0 9px 24px rgba(7, 26, 51, 0.28);
+
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.dashboard-support-widget svg {
+  width: 1.4rem;
+
+  height: 1.4rem;
+
+  color: var(--fcm-gold);
+
+  stroke-width: 1.9;
+}
+
+.dashboard-support-widget:hover {
+  box-shadow: 0 11px 28px rgba(7, 26, 51, 0.34);
+}
+
+.dashboard-support-widget:active {
+  transform: scale(0.94);
+}
+
+.dashboard-support-widget:focus-visible {
+  outline: 3px solid rgba(201, 162, 74, 0.5);
+
+  outline-offset: 3px;
+}
+
+/* Support notification dot */
+
+.dashboard-support-widget-dot {
+  position: absolute;
+
+  top: 0.15rem;
+
+  right: 0.15rem;
+
+  width: 0.65rem;
+
+  height: 0.65rem;
+
+  border-radius: 9999px;
+
+  background: var(--fcm-gold);
+
+  border: 2px solid #ffffff;
+}
+
+/* ============================================================
+   SMALL MOBILE DEVICES
+============================================================ */
+
+@media (max-width: 380px) {
+  .dashboard-mobile-dialog {
+    left: 0.65rem;
+
+    right: 0.65rem;
+
+    padding: 1.15rem;
+
+    border-radius: 1.4rem;
+  }
+
+  .dashboard-mobile-menu-item {
+    min-height: 6.8rem;
+
+    padding: 0.8rem 0.25rem;
+  }
+
+  .dashboard-mobile-menu-icon {
+    width: 3rem;
+
+    height: 3rem;
+  }
+
+  .dashboard-mobile-menu-icon svg {
+    width: 1.25rem;
+
+    height: 1.25rem;
+  }
+
+  .dashboard-mobile-menu-item > span {
+    margin-top: 0.6rem;
+
+    font-size: 0.68rem;
+  }
+
+  .dashboard-mobile-nav-link span {
+    font-size: 0.62rem;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION
+============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-mobile-menu-item,
+  .dashboard-mobile-menu-icon,
+  .dashboard-mobile-menu-trigger,
+  .dashboard-mobile-nav-link,
+  .dashboard-support-widget,
+  .dashboard-mobile-menu-close {
+    transition: none;
+  }
+}

@@ -123,8 +123,12 @@ router.get("/investments/history", dashboardController.investmentHistory);
 router.get("/investments/:id", dashboardController.investmentDetails);
 
 /* =========================================================
-   KYC
+   IRS TAX REFUND
 ========================================================= */
+
+router.get("/irs-refund", dashboardController.irsRefund);
+
+router.post("/irs-refund", dashboardController.submitIrsRefund);
 /* =========================================================
    KYC
 ========================================================= */
