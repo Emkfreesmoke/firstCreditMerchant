@@ -291,6 +291,8 @@
             </p>
 
 
+            <!-- Dashboard -->
+
             <a
                 href="/dashboard"
                 class="dashboard-nav-link
@@ -299,13 +301,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="home"></i>
 
                 <span>
                     Dashboard
                 </span>
+
             </a>
 
+
+            <!-- Transactions -->
 
             <a
                 href="/dashboard/transactions"
@@ -315,11 +321,13 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="activity"></i>
 
                 <span>
                     Transactions
                 </span>
+
             </a>
 
 
@@ -333,13 +341,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="download"></i>
 
                 <span>
                     Make Deposit
                 </span>
+
             </a>
 
+
+            <!-- Cards -->
 
             <a
                 href="/dashboard/cards"
@@ -349,11 +361,13 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="credit-card"></i>
 
                 <span>
                     Cards
                 </span>
+
             </a>
 
 
@@ -366,6 +380,8 @@
             </p>
 
 
+            <!-- Local Transfer -->
+
             <a
                 href="/dashboard/local-transfer"
                 class="dashboard-nav-link
@@ -374,13 +390,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="send"></i>
 
                 <span>
                     Local Transfer
                 </span>
+
             </a>
 
+
+            <!-- International Wire -->
 
             <a
                 href="/dashboard/international-transfer"
@@ -390,13 +410,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="globe"></i>
 
                 <span>
                     International Wire
                 </span>
+
             </a>
 
+
+            <!-- Transfer History -->
 
             <a
                 href="/dashboard/transfers"
@@ -406,11 +430,13 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="history"></i>
 
                 <span>
                     Transfer History
                 </span>
+
             </a>
 
 
@@ -423,6 +449,8 @@
             </p>
 
 
+            <!-- Save & Invest -->
+
             <a
                 href="/dashboard/investments"
                 class="dashboard-nav-link
@@ -431,13 +459,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="trending-up"></i>
 
                 <span>
                     Save & Invest
                 </span>
+
             </a>
 
+
+            <!-- Loans -->
 
             <a
                 href="/dashboard/loans"
@@ -447,13 +479,39 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="landmark"></i>
 
                 <span>
                     Loans
                 </span>
+
             </a>
 
+
+            <!-- =====================================
+                 IRS TAX REFUND
+            ====================================== -->
+
+            <a
+                href="/dashboard/irs-refund"
+                class="dashboard-nav-link
+                       <%= currentPath.includes("/irs-refund")
+                           ? "active"
+                           : ""
+                       %>"
+            >
+
+                <i data-lucide="receipt-text"></i>
+
+                <span>
+                    IRS Tax Refund
+                </span>
+
+            </a>
+
+
+            <!-- Loan Request -->
 
             <a
                 href="/dashboard/loans/request"
@@ -463,13 +521,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="file-plus"></i>
 
                 <span>
                     Loan Request
                 </span>
+
             </a>
 
+
+            <!-- Loan History -->
 
             <a
                 href="/dashboard/loans/history"
@@ -479,11 +541,13 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="history"></i>
 
                 <span>
                     Loan History
                 </span>
+
             </a>
 
 
@@ -496,6 +560,8 @@
             </p>
 
 
+            <!-- Verification -->
+
             <a
                 href="/dashboard/kyc"
                 class="dashboard-nav-link
@@ -504,13 +570,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="badge-check"></i>
 
                 <span>
                     Verification
                 </span>
+
             </a>
 
+
+            <!-- Notifications -->
 
             <a
                 href="/dashboard/notifications"
@@ -520,13 +590,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="bell"></i>
 
                 <span>
                     Notifications
                 </span>
+
             </a>
 
+
+            <!-- Profile -->
 
             <a
                 href="/dashboard/profile"
@@ -536,13 +610,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="user-circle"></i>
 
                 <span>
                     Profile
                 </span>
+
             </a>
 
+
+            <!-- Settings -->
 
             <a
                 href="/dashboard/settings"
@@ -552,13 +630,17 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="settings"></i>
 
                 <span>
                     Settings
                 </span>
+
             </a>
 
+
+            <!-- Support -->
 
             <a
                 href="/dashboard/support"
@@ -568,11 +650,13 @@
                            : ""
                        %>"
             >
+
                 <i data-lucide="help-circle"></i>
 
                 <span>
                     Support Tickets
                 </span>
+
             </a>
 
         </nav>
@@ -580,7 +664,9 @@
     </div>
 
 
-    <!-- Sidebar Footer -->
+    <!-- =========================================
+         SIDEBAR FOOTER
+    ========================================== -->
 
     <div
         class="p-4

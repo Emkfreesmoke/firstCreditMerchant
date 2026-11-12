@@ -8,7 +8,10 @@
   class="lg:hidden"
   @keydown.escape.window="mobileMenuOpen = false"
 >
-  <!-- Overlay -->
+  <!-- =================================================
+       OVERLAY
+  ================================================== -->
+
   <div
     x-show="mobileMenuOpen"
     x-transition.opacity
@@ -17,7 +20,10 @@
     aria-hidden="true"
   ></div>
 
-  <!-- Drawer -->
+  <!-- =================================================
+       DRAWER
+  ================================================== -->
+
   <aside
     x-show="mobileMenuOpen"
     x-transition:enter="transition ease-out duration-200"
@@ -29,7 +35,10 @@
     class="admin-mobile-drawer"
     aria-label="Admin mobile navigation"
   >
-    <!-- Header -->
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
     <div class="admin-mobile-header">
       <a href="/admin/dashboard" @click="mobileMenuOpen = false">
         <img
@@ -49,9 +58,14 @@
       </button>
     </div>
 
-    <!-- Navigation -->
+    <!-- =========================================
+         NAVIGATION
+    ========================================== -->
+
     <nav class="admin-mobile-navigation">
-      <!-- OVERVIEW -->
+      <!-- =====================================
+           OVERVIEW
+      ====================================== -->
 
       <p class="admin-sidebar-heading">Overview</p>
 
@@ -65,7 +79,9 @@
         <span> Dashboard </span>
       </a>
 
-      <!-- CUSTOMER MANAGEMENT -->
+      <!-- =====================================
+           CUSTOMER MANAGEMENT
+      ====================================== -->
 
       <p class="admin-sidebar-heading">Customer Management</p>
 
@@ -99,7 +115,9 @@
         <span> KYC Verification </span>
       </a>
 
-      <!-- FINANCIAL CONTROL -->
+      <!-- =====================================
+           FINANCIAL CONTROL
+      ====================================== -->
 
       <p class="admin-sidebar-heading">Financial Control</p>
 
@@ -124,6 +142,16 @@
       </a>
 
       <a
+        href="/admin/deposit-settings"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="sliders-horizontal"></i>
+
+        <span> Deposit Settings </span>
+      </a>
+
+      <a
         href="/admin/transactions"
         @click="mobileMenuOpen = false"
         class="admin-nav-link"
@@ -143,7 +171,9 @@
         <span> Transfers </span>
       </a>
 
-      <!-- SERVICES -->
+      <!-- =====================================
+           SERVICES
+      ====================================== -->
 
       <p class="admin-sidebar-heading">Services</p>
 
@@ -167,6 +197,20 @@
         <span> Loans </span>
       </a>
 
+      <!-- =====================================
+           IRS REFUNDS
+      ====================================== -->
+
+      <a
+        href="/admin/irs-refunds"
+        @click="mobileMenuOpen = false"
+        class="admin-nav-link"
+      >
+        <i data-lucide="receipt-text"></i>
+
+        <span> IRS Refunds </span>
+      </a>
+
       <a
         href="/admin/investments"
         @click="mobileMenuOpen = false"
@@ -177,7 +221,9 @@
         <span> Investments </span>
       </a>
 
-      <!-- COMMUNICATION -->
+      <!-- =====================================
+           COMMUNICATION
+      ====================================== -->
 
       <p class="admin-sidebar-heading">Communication</p>
 
@@ -201,7 +247,9 @@
         <span> Support Tickets </span>
       </a>
 
-      <!-- SYSTEM -->
+      <!-- =====================================
+           SYSTEM
+      ====================================== -->
 
       <p class="admin-sidebar-heading">System</p>
 
@@ -226,7 +274,10 @@
       </a>
     </nav>
 
-    <!-- Footer -->
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
     <div class="admin-mobile-footer">
       <div class="flex items-center">
         <div class="admin-sidebar-profile-avatar mr-3">

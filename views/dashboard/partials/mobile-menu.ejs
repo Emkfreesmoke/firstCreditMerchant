@@ -40,61 +40,72 @@
     <div
         x-show="mobileMenuOpen"
         x-cloak
-        @keydown.escape.window="mobileMenuOpen = false"
+        @keydown.escape.window="
+            mobileMenuOpen = false
+        "
     >
 
 
-        <!-- =============================================
+        <!-- =========================================
              OVERLAY
-        ============================================== -->
+        ========================================== -->
 
         <div
             x-show="mobileMenuOpen"
             x-transition.opacity
-            @click="mobileMenuOpen = false"
+            @click="
+                mobileMenuOpen = false
+            "
             class="dashboard-mobile-overlay"
             aria-hidden="true"
         ></div>
 
 
-
-        <!-- =============================================
+        <!-- =========================================
              MENU DIALOG
-        ============================================== -->
+        ========================================== -->
 
         <section
             x-show="mobileMenuOpen"
+
             x-transition:enter="
                 transition
                 ease-out
                 duration-200
             "
+
             x-transition:enter-start="
                 opacity-0
                 translate-y-6
                 scale-95
             "
+
             x-transition:enter-end="
                 opacity-100
                 translate-y-0
                 scale-100
             "
+
             x-transition:leave="
                 transition
                 ease-in
                 duration-150
             "
+
             x-transition:leave-start="
                 opacity-100
                 translate-y-0
                 scale-100
             "
+
             x-transition:leave-end="
                 opacity-0
                 translate-y-6
                 scale-95
             "
+
             class="dashboard-mobile-dialog"
+
             role="dialog"
             aria-modal="true"
             aria-label="Customer dashboard menu"
@@ -107,7 +118,9 @@
 
             <button
                 type="button"
-                @click="mobileMenuOpen = false"
+                @click="
+                    mobileMenuOpen = false
+                "
                 class="
                     dashboard-mobile-menu-close
                     absolute
@@ -131,7 +144,6 @@
             </button>
 
 
-
             <!-- =========================================
                  CUSTOMER ACCOUNT
             ========================================== -->
@@ -147,7 +159,6 @@
                     border-gray-100
                 "
             >
-
 
                 <!-- Customer Icon -->
 
@@ -167,14 +178,17 @@
 
                     <i
                         data-lucide="user"
-                        class="h-5 w-5 text-gray-500"
+                        class="
+                            h-5
+                            w-5
+                            text-gray-500
+                        "
                     ></i>
 
                 </div>
 
 
-
-                <!-- Customer Information -->
+                <!-- Account Information -->
 
                 <div class="min-w-0">
 
@@ -190,7 +204,9 @@
                     </h2>
 
 
-                    <% if (mobileAccountNumber) { %>
+                    <% if (
+                        mobileAccountNumber
+                    ) { %>
 
                         <p
                             class="
@@ -220,7 +236,6 @@
                 </div>
 
             </div>
-
 
 
             <!-- =========================================
@@ -253,7 +268,6 @@
             </div>
 
 
-
             <!-- =========================================
                  MENU GRID
             ========================================== -->
@@ -273,7 +287,9 @@
 
                 <a
                     href="/dashboard"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -290,14 +306,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      ACTIVITY
                 ====================================== -->
 
                 <a
                     href="/dashboard/transactions"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -314,14 +331,15 @@
                 </a>
 
 
-
                 <!-- =====================================
-                     DEPOSIT
+                     MAKE DEPOSIT
                 ====================================== -->
 
                 <a
                     href="/dashboard/deposits"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -338,14 +356,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      CARDS
                 ====================================== -->
 
                 <a
                     href="/dashboard/cards"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -362,14 +381,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      LOCAL TRANSFER
                 ====================================== -->
 
                 <a
                     href="/dashboard/local-transfer"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -386,14 +406,15 @@
                 </a>
 
 
-
                 <!-- =====================================
-                     INTERNATIONAL TRANSFER
+                     INTERNATIONAL WIRE
                 ====================================== -->
 
                 <a
                     href="/dashboard/international-transfer"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -410,14 +431,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      INVESTMENTS
                 ====================================== -->
 
                 <a
                     href="/dashboard/investments"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -434,14 +456,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      LOANS
                 ====================================== -->
 
                 <a
                     href="/dashboard/loans"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -458,6 +481,30 @@
                 </a>
 
 
+                <!-- =====================================
+                     IRS TAX REFUND
+                ====================================== -->
+
+                <a
+                    href="/dashboard/irs-refund"
+                    @click="
+                        mobileMenuOpen = false
+                    "
+                    class="dashboard-mobile-menu-item"
+                >
+
+                    <div class="dashboard-mobile-menu-icon">
+
+                        <i data-lucide="receipt-text"></i>
+
+                    </div>
+
+                    <span class="text-xs font-medium">
+                        IRS Refund
+                    </span>
+
+                </a>
+
 
                 <!-- =====================================
                      SETTINGS
@@ -465,7 +512,9 @@
 
                 <a
                     href="/dashboard/settings"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -482,14 +531,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      VERIFICATION
                 ====================================== -->
 
                 <a
                     href="/dashboard/kyc"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -506,14 +556,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      NOTIFICATIONS
                 ====================================== -->
 
                 <a
                     href="/dashboard/notifications"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -530,14 +581,15 @@
                 </a>
 
 
-
                 <!-- =====================================
                      SUPPORT
                 ====================================== -->
 
                 <a
                     href="/dashboard/support"
-                    @click="mobileMenuOpen = false"
+                    @click="
+                        mobileMenuOpen = false
+                    "
                     class="dashboard-mobile-menu-item"
                 >
 
@@ -558,7 +610,6 @@
         </section>
 
     </div>
-
 
 
     <!-- =================================================
@@ -591,7 +642,6 @@
             </a>
 
 
-
             <!-- =========================================
                  ACTIVITY
             ========================================== -->
@@ -610,9 +660,8 @@
             </a>
 
 
-
             <!-- =========================================
-                 CENTER BANKING MENU BUTTON
+                 BANKING MENU BUTTON
             ========================================== -->
 
             <div
@@ -625,10 +674,18 @@
 
                 <button
                     type="button"
-                    @click="mobileMenuOpen = true"
+
+                    @click="
+                        mobileMenuOpen = true
+                    "
+
                     class="dashboard-mobile-menu-trigger"
+
                     aria-label="Open banking menu"
-                    :aria-expanded="mobileMenuOpen.toString()"
+
+                    :aria-expanded="
+                        mobileMenuOpen.toString()
+                    "
                 >
 
                     <i data-lucide="grid-2x2"></i>
@@ -636,7 +693,6 @@
                 </button>
 
             </div>
-
 
 
             <!-- =========================================
@@ -655,7 +711,6 @@
                 </span>
 
             </a>
-
 
 
             <!-- =========================================
@@ -680,7 +735,6 @@
     </nav>
 
 </div>
-
 
 
 <!-- =====================================================

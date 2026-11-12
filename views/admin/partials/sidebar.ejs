@@ -3,16 +3,24 @@
 ====================================================== -->
 
 <aside class="admin-sidebar" aria-label="Admin navigation">
-  <!-- Logo -->
+  <!-- =================================================
+       LOGO
+  ================================================== -->
+
   <div class="admin-sidebar-logo">
     <a href="/admin/dashboard" aria-label="Admin dashboard">
       <img src="/images/logo.png" alt="First Credit Merchant" />
     </a>
   </div>
 
-  <!-- Navigation -->
+  <!-- =================================================
+       NAVIGATION
+  ================================================== -->
+
   <nav class="admin-sidebar-scroll">
-    <!-- OVERVIEW -->
+    <!-- =========================================
+         OVERVIEW
+    ========================================== -->
 
     <p class="admin-sidebar-heading">Overview</p>
 
@@ -22,7 +30,9 @@
       <span> Dashboard </span>
     </a>
 
-    <!-- CUSTOMER MANAGEMENT -->
+    <!-- =========================================
+         CUSTOMER MANAGEMENT
+    ========================================== -->
 
     <p class="admin-sidebar-heading">Customer Management</p>
 
@@ -44,7 +54,9 @@
       <span> KYC Verification </span>
     </a>
 
-    <!-- FINANCIAL CONTROL -->
+    <!-- =========================================
+         FINANCIAL CONTROL
+    ========================================== -->
 
     <p class="admin-sidebar-heading">Financial Control</p>
 
@@ -59,6 +71,7 @@
 
       <span> Deposits </span>
     </a>
+
     <a href="/admin/deposit-settings" class="admin-nav-link">
       <i data-lucide="sliders-horizontal"></i>
 
@@ -77,7 +90,9 @@
       <span> Transfers </span>
     </a>
 
-    <!-- SERVICES -->
+    <!-- =========================================
+         SERVICES
+    ========================================== -->
 
     <p class="admin-sidebar-heading">Services</p>
 
@@ -93,13 +108,25 @@
       <span> Loans </span>
     </a>
 
+    <!-- =========================================
+         IRS REFUNDS
+    ========================================== -->
+
+    <a href="/admin/irs-refunds" class="admin-nav-link">
+      <i data-lucide="receipt-text"></i>
+
+      <span> IRS Refunds </span>
+    </a>
+
     <a href="/admin/investments" class="admin-nav-link">
       <i data-lucide="trending-up"></i>
 
       <span> Investments </span>
     </a>
 
-    <!-- COMMUNICATION -->
+    <!-- =========================================
+         COMMUNICATION
+    ========================================== -->
 
     <p class="admin-sidebar-heading">Communication</p>
 
@@ -115,7 +142,9 @@
       <span> Support Tickets </span>
     </a>
 
-    <!-- SYSTEM -->
+    <!-- =========================================
+         SYSTEM
+    ========================================== -->
 
     <p class="admin-sidebar-heading">System</p>
 
@@ -132,12 +161,19 @@
     </a>
   </nav>
 
-  <!-- Admin Profile -->
+  <!-- =================================================
+       ADMIN PROFILE
+  ================================================== -->
+
   <div class="admin-sidebar-profile">
     <div class="flex items-center">
+      <!-- Admin Icon -->
+
       <div class="admin-sidebar-profile-avatar mr-3">
         <i data-lucide="shield" class="h-4 w-4"></i>
       </div>
+
+      <!-- Admin Information -->
 
       <div class="flex-1 min-w-0">
         <p class="text-sm font-medium text-white truncate">Administrator</p>
@@ -145,7 +181,7 @@
         <p class="text-xs text-white/50">Admin Panel</p>
       </div>
 
-      <!-- Real Logout -->
+      <!-- Logout -->
 
       <form action="/logout" method="POST">
         <button
